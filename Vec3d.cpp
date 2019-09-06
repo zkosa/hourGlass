@@ -33,6 +33,10 @@ Vec3d operator*(const Vec3d& a, const double m) {
 	return Multiply(a, m);
 }
 
+double operator*(const Vec3d& a, const Vec3d& b) {
+	return a.x*b.x + a.y*b.y + a.z*b.z;
+}
+
 Vec3d operator/(const Vec3d& a, const double m) {
 	return Divide(a, m);
 }

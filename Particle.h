@@ -18,8 +18,8 @@ private:
 	const double volume = radius*radius*radius * pi * 4.0 / 3.0;
 	const double mass = volume*density;
 	const double A = radius*radius * pi;
-	double Cd = 0.5;
-	double CdA = Cd * A;
+	const double Cd = 0; //0.5;
+	const double CdA = Cd * A;
 
 	Vec3d apply_forces();
 
@@ -28,6 +28,9 @@ public:
 	~Particle();
 
 	void update(double dt);
+	double kinetic_energy();
+	double potential_energy();
+	double energy();
 	void info();
 
 	double getZ() {return pos.z;}

@@ -29,6 +29,8 @@ Vec3d operator*(const double m, const Vec3d& a);
 
 Vec3d operator*(const Vec3d& a, const double m);
 
+double operator*(const Vec3d& a, const Vec3d& b);
+
 Vec3d operator/(const Vec3d& a, const double m);
 
 double abs(const Vec3d& a);

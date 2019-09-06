@@ -17,6 +17,18 @@ void Particle::update(double dt) {
     acc = new_acc;
 }
 
+double Particle::kinetic_energy() {
+	return vel * vel * (mass/2);
+}
+
+double Particle::potential_energy() {
+	return mass * gravity * pos.z;
+}
+
+double Particle::energy() {
+	return kinetic_energy() + potential_energy();
+}
+
 Vec3d Particle::apply_forces(){
     Vec3d grav_acc = Vec3d{0.0, 0.0, -9.81 }; // 9.81m/s^2 down in the Z-axis
     Vec3d drag_force = 0.5 * density * CdA * (vel * abs(vel)); // D = 0.5 * (rho * C * Area * vel^2)
@@ -30,6 +42,7 @@ void Particle::info() {
 	std::cout << "pos: " << pos.x << ", " << pos.y << ", " << pos.z << std::endl;
 	std::cout << "vel: " << vel.x << ", " << vel.y << ", " << vel.z << std::endl;
 	std::cout << "acc: " << acc.x << ", " << acc.y << ", " << acc.z << std::endl;
+	std::cout << "energy: " << energy() << std::endl;
 }
 
 

@@ -1,6 +1,7 @@
 #include "Particle.h"
 
 int main(){
+
 	Particle particle;
 
 	do {
