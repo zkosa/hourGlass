@@ -22,7 +22,7 @@ double Particle::kinetic_energy() {
 }
 
 double Particle::potential_energy() {
-	return mass * gravity * pos.z;
+	return mass * gravity * pos.y;
 }
 
 double Particle::energy() {
@@ -30,7 +30,7 @@ double Particle::energy() {
 }
 
 Vec3d Particle::apply_forces(){
-    Vec3d grav_acc = Vec3d{0.0, 0.0, -9.81 }; // 9.81m/s^2 down in the Z-axis
+    Vec3d grav_acc = Vec3d{0.0, -gravity, 0.0 }; // 9.81m/s^2 down in the Z-axis
     Vec3d drag_force = 0.5 * density * CdA * (vel * abs(vel)); // D = 0.5 * (rho * C * Area * vel^2)
     Vec3d drag_acc = drag_force / mass; // a = F/m
 
