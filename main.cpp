@@ -1,46 +1,6 @@
-#include <GLFW/glfw3.h>  // version 3.3 is installed to Dependencies
 #include "Particle.h"
+#include "Boundary_planar.h"
 
-void drawFilledCircle(GLfloat x, GLfloat y, GLfloat radius){
-	int i;
-	int triangleAmount = 20; //# of triangles used to draw circle
-
-	//GLfloat radius = 0.8f; //radius
-	GLfloat twicePi = 2.0f * pi;
-
-	glBegin(GL_TRIANGLE_FAN);
-	glVertex2f(x, y); // center of circle
-	for(i = 0; i <= triangleAmount;i++) {
-		glVertex2f(
-				x + (radius * cos(i *  twicePi / triangleAmount)),
-			y + (radius * sin(i * twicePi / triangleAmount))
-		);
-	}
-	glEnd();
-}
-
-
-GLfloat boundaries[6] { // x,y,z, x,y,z
-	-1.0, 0.0, 0.0,
-	1.0, 0.0, 0.0
-
-};
-
-void drawBoundaries(GLfloat b[]){
-	int i;
-	int points = 2;
-	std::cout << "points: " << points << std::endl;
-
-
-	glBegin(GL_LINE_LOOP);
-	for(i = 0; i < points; i++) {
-		glVertex2f(
-				b[i*3], 	// x
-				b[i*3 + 1] 	// ys
-		);
-	}
-	glEnd();
-}
 
 int main(){
 
@@ -62,17 +22,48 @@ int main(){
     glfwMakeContextCurrent(window);
 
 
-    Particle particle;
+    int number_of_particles = 20;
+    int number_of_distinct_random = 100;
+    Particle particle[number_of_particles];
+    for (int i=0; i < number_of_particles; i++) {
+    	double shift = (rand() % (2*number_of_distinct_random) - number_of_distinct_random) / (number_of_distinct_random + 1.);
+    	std::cout << shift << std::endl;
+    	particle[i].setX(shift);
+
+    	particle[i].setR(0.01);
+    }
+
+    float corner = 0.999;
+    Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, 0., 0), Vec3d(-1, -corner, 1));
+    Boundary_planar side_wall(Vec3d(1, -corner, 0), Vec3d(1, corner, 0), Vec3d(1, 0, 1));
+    Boundary_planar side_wall2(Vec3d(-corner, -corner, 0), Vec3d(-corner, corner, 0), Vec3d(-corner, 0, 1));
+
     // Loop until the user closes the window
-    while (!glfwWindowShouldClose(window) && particle.getY() > 0.0)
+    while (!glfwWindowShouldClose(window))
     {
         // Render here
         glClear(GL_COLOR_BUFFER_BIT);
 
-		drawBoundaries(boundaries);
-		particle.update(0.01);
-		particle.info();
-		drawFilledCircle(GLfloat(-0.0), GLfloat(particle.getY()), GLfloat(0.1));
+        ground.draw2D();
+        side_wall.draw2D();
+        side_wall2.draw2D();
+
+        for (int i=0; i < number_of_particles; i++) {
+
+        	Particle& p = particle[i];
+			p.draw2D();
+			p.update(0.001);
+
+			if (ground.distance(p) < p.getR()) {
+				p.bounce_back(ground);
+			}
+			if (side_wall.distance(p) < p.getR()) {
+				p.bounce_back(side_wall);
+			}
+			if (side_wall2.distance(p) < p.getR()) {
+				p.bounce_back(side_wall2);
+			}
+        }
 
 
         // Swap front and back buffers

@@ -2,6 +2,7 @@
 #define VEC3D_H_
 
 #include <math.h>
+#include <iostream>
 
 struct Vec3d {
 
@@ -10,6 +11,7 @@ struct Vec3d {
 	double z;
 
 	Vec3d(double x, double y, double z): x(x), y(y), z(z) {};
+	std::ostream& print();
 
 };
 
@@ -31,8 +33,12 @@ Vec3d operator*(const Vec3d& a, const double m);
 
 double operator*(const Vec3d& a, const Vec3d& b);
 
+Vec3d crossProduct(const Vec3d& a, const Vec3d& b);
+
 Vec3d operator/(const Vec3d& a, const double m);
 
 double abs(const Vec3d& a);
+
+Vec3d norm(const Vec3d& a);
 
 #endif /* VEC3D_H_ */
