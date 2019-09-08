@@ -1,6 +1,6 @@
 #include "Particle.h"
 #include "Boundary_planar.h"
-
+#include <random>
 
 int main(){
 
@@ -22,19 +22,24 @@ int main(){
     glfwMakeContextCurrent(window);
 
 
-    int number_of_particles = 20;
-    int number_of_distinct_random = 100;
+    int number_of_particles = 25;
     Particle particle[number_of_particles];
-    for (int i=0; i < number_of_particles; i++) {
-    	double shift = (rand() % (2*number_of_distinct_random) - number_of_distinct_random) / (number_of_distinct_random + 1.);
-    	std::cout << shift << std::endl;
-    	particle[i].setX(shift);
 
-    	particle[i].setR(0.01);
+    int number_of_distinct_random = 100;
+    std::random_device rd; // obtain a random number from hardware
+    std::mt19937 eng(rd()); // seed the generator
+    std::uniform_int_distribution<> distr(-number_of_distinct_random, number_of_distinct_random); // define the range
+
+    for (int i=0; i < number_of_particles; i++) {
+		double shift = double(distr(eng))  / number_of_distinct_random;
+		particle[i].setX(shift);
+
+		shift = 0; //double(distr(eng));
+		particle[i].setR(0.05 * (1 + shift/2.));
     }
 
     float corner = 0.999;
-    Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, 0., 0), Vec3d(-1, -corner, 1));
+    Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, 0, 0), Vec3d(-1, -corner, 1));
     Boundary_planar side_wall(Vec3d(1, -corner, 0), Vec3d(1, corner, 0), Vec3d(1, 0, 1));
     Boundary_planar side_wall2(Vec3d(-corner, -corner, 0), Vec3d(-corner, corner, 0), Vec3d(-corner, 0, 1));
 
@@ -50,9 +55,8 @@ int main(){
 
         for (int i=0; i < number_of_particles; i++) {
 
-        	Particle& p = particle[i];
-			p.draw2D();
-			p.update(0.001);
+			Particle& p = particle[i];
+			p.update(0.005);
 
 			if (ground.distance(p) < p.getR()) {
 				p.bounce_back(ground);
@@ -63,6 +67,7 @@ int main(){
 			if (side_wall2.distance(p) < p.getR()) {
 				p.bounce_back(side_wall2);
 			}
+			p.draw2D();
         }
 
 
@@ -74,8 +79,5 @@ int main(){
     }
 
     glfwTerminate();
-
-
-
 
 }

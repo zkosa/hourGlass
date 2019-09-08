@@ -1,7 +1,7 @@
 #include "Vec3d.h"
 
 std::ostream& Vec3d::print() {
-	return std::cout << x << ", " << y << ", " << z;
+	return std::cout << x << ", " << y << ", " << z << std::endl;
 }
 
 Vec3d Add(const Vec3d& a, const Vec3d& b) {
