@@ -15,6 +15,7 @@ void Particle::update(double dt) {
     pos = new_pos;
     vel = new_vel;
     acc = new_acc;
+
 }
 
 double Particle::kinetic_energy() {
@@ -28,6 +29,10 @@ double Particle::potential_energy() {
 
 double Particle::energy() {
 	return kinetic_energy() + potential_energy();
+}
+
+Vec3d Particle::impulse() {
+	return mass()*vel;
 }
 
 Vec3d Particle::apply_forces(){
@@ -64,7 +69,11 @@ void Particle::draw2D() {
 	glEnd();
 }
 
-void Particle::bounce_back(Boundary_planar wall) {
+double Particle::distance(class Particle& other) {
+	return abs(pos - other.pos);
+}
+
+void Particle::collide_wall(Boundary_planar& wall) {
 
 	Vec3d n = wall.getNormal();
 
@@ -83,4 +92,34 @@ void Particle::bounce_back(Boundary_planar wall) {
 
 	// revert the wall normal velocity component
 	vel = vel - 2*(vel*n)*n;
+}
+
+void Particle::collide_particle(class Particle& other) {
+
+	Vec3d n = other.pos - this->pos; // pointing towards the other
+
+	double distance = abs(n);
+	n = norm(n); // normalize
+
+	Vec3d pos_corr = -1 * n * (this->getR() + other.getR() - distance);
+	// move back to the position when it touched the other:
+	pos = pos + 0.5*pos_corr;
+	draw2D();
+	other.setPos(other.getPos() -0.5*pos_corr);
+	draw2D();
+
+	// correct the velocity to conserve energy (dissipation work is not considered!)
+	vel = std::sqrt(vel*vel + 2*gravity*pos_corr/2)  * norm(vel);
+	draw2D();
+	other.setV(std::sqrt(other.getV()*other.getV() + 2*gravity*pos_corr/2) * norm(other.getV())) ;
+	draw2D();
+
+	// impulse exchange
+	Vec3d vel_old = vel;
+	Vec3d vel_old_other = other.getV();
+	vel = vel_old - n*(n*vel_old) + (mass()-other.mass())/(mass() + other.mass())*n*(vel_old*n) + 2*other.mass()/(mass()+other.mass())*n*(other.getV()*n);
+	draw2D();
+	other.setV(  other.getV() - n*(other.getV()*n)  +  2*mass()/(other.getM()+mass())*n*(vel_old*n) + (other.mass()-mass())/(other.mass()+mass())*n*(other.getV()*n) );
+	draw2D();
+	//vel = vel_old - n*(n*vel_old) + n*(n*)
 }

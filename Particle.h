@@ -14,13 +14,13 @@ private:
 	Vec3d vel {0.0, 0.0, 0.0};
 	Vec3d acc = gravity;
 
-	const double Cd = 0;
+	const double Cd = 50;
 	const double density = 3.0;
-	double radius = 0.005;
-	double volume() {return radius*radius*radius * pi * 4.0 / 3.0;}
-	double mass() {return volume()*density;}
-	double A() {return radius*radius * pi;}
-	double CdA() {return Cd * A();}
+	double radius = 0.05;
+	double volume() const {return radius*radius*radius * pi * 4.0 / 3.0;}
+	double mass() const {return volume()*density;}
+	double A() const {return radius*radius * pi;}
+	double CdA() const {return Cd * A();}
 
 	Vec3d apply_forces();
 
@@ -32,18 +32,27 @@ public:
 	double kinetic_energy();
 	double potential_energy();
 	double energy();
+	Vec3d impulse();
+
 	void info();
 	void draw2D();
 
-	void bounce_back(class Boundary_planar ground);
+	double distance(class Particle& other);
 
-	void setX(double _x) { pos.x = _x;}
-	void setR(double _r) { radius = _r;}
+	void collide_wall(class Boundary_planar& ground);
+	void collide_particle(class Particle& other);
+
+	void setX(double _x) {pos.x = _x;}
+	void setPos(Vec3d _pos) {pos = _pos;}
+	void setR(double _r) {radius = _r;}
+	void setV(Vec3d _v) {vel = _v;}
 
 	double getX() const {return pos.x;}
 	double getY() const {return pos.y;}
 	double getZ() const {return pos.z;}
 	double getR() const {return radius;}
+	double getM() const {return mass();}
+	Vec3d getV() const {return vel;}
 	Vec3d getPos() const {return pos;}
 };
 

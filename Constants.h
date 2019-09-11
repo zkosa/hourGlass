@@ -12,5 +12,4 @@ const double SMALL = 1e-10;
 const double VSMALL = 1e-90;
 
 
-
 #endif /* CONSTANTS_H_ */
