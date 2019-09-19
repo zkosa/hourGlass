@@ -12,10 +12,16 @@ class Particle {
 private:
 	Vec3d pos {0.0, 1.0, 0.0};
 	Vec3d vel {0.0, 0.0, 0.0};
-	Vec3d acc = gravity;
+	Vec3d old_pos {0.0, 1.0, 0.0};
+	Vec3d old_vel {0.0, 0.0, 0.0};
 
-	const double Cd = 50;
-	const double density = 3.0;
+	std::string last_collision = "";
+
+	Vec3d acc = gravity;
+	GLFWwindow* window =0;
+
+	const double Cd = 0.5;
+	const double density = 2700; // kg/m3
 	double radius = 0.05;
 	double volume() const {return radius*radius*radius * pi * 4.0 / 3.0;}
 	double mass() const {return volume()*density;}
@@ -36,16 +42,19 @@ public:
 
 	void info();
 	void draw2D();
+	void drawNow2D();
 
 	double distance(class Particle& other);
 
 	void collide_wall(class Boundary_planar& ground);
 	void collide_particle(class Particle& other);
+	Vec3d findPlace(class Particle& other);
 
 	void setX(double _x) {pos.x = _x;}
 	void setPos(Vec3d _pos) {pos = _pos;}
 	void setR(double _r) {radius = _r;}
 	void setV(Vec3d _v) {vel = _v;}
+	void setWindow(GLFWwindow* _window) {window = _window;}
 
 	double getX() const {return pos.x;}
 	double getY() const {return pos.y;}
@@ -54,6 +63,8 @@ public:
 	double getM() const {return mass();}
 	Vec3d getV() const {return vel;}
 	Vec3d getPos() const {return pos;}
+
+	void debug() const;
 };
 
 #endif /* PARTICLE_H_ */

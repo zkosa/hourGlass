@@ -1,7 +1,11 @@
 #include "Vec3d.h"
 
-std::ostream& Vec3d::print() {
+std::ostream& Vec3d::print() const {
 	return std::cout << x << ", " << y << ", " << z << std::endl;
+}
+
+bool Vec3d::large() const {
+	return ( abs(*this) > LARGE || abs(*this) < -LARGE || std::isnan(abs(*this)) );
 }
 
 Vec3d Add(const Vec3d& a, const Vec3d& b) {
@@ -17,7 +21,7 @@ Vec3d Multiply(const Vec3d& a, const double m) {
 }
 
 Vec3d Divide(const Vec3d& a, const double m) {
-	// TODO: treat division by zero
+	// TODO: handle division by zero
 	return Vec3d(a.x/m, a.y/m, a.z/m);
 }
 
@@ -59,7 +63,7 @@ double abs(const Vec3d& a) {
 
 Vec3d norm(const Vec3d& a){
 	double length = abs(a);
-	if (length > 1e-10) {
+	if (length > SMALL) {
 		return a/length;
 	}
 	else {

@@ -3,6 +3,7 @@
 
 #include <math.h>
 #include <iostream>
+#include "Constants.h"
 
 struct Vec3d {
 
@@ -11,9 +12,12 @@ struct Vec3d {
 	double z;
 
 	Vec3d(double x, double y, double z): x(x), y(y), z(z) {};
-	std::ostream& print();
+	std::ostream& print() const;
+	bool large() const;
 
 };
+
+const Vec3d gravity {0, -g, 0};
 
 Vec3d Add(const Vec3d& a, const Vec3d& b);
 

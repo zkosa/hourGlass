@@ -36,7 +36,7 @@ Vec3d Particle::impulse() {
 }
 
 Vec3d Particle::apply_forces(){
-	double density_medium = 0.001;
+	double density_medium = 1; // air kg/m3
     Vec3d grav_acc = gravity;
     Vec3d drag_force = 0.5 * density_medium * CdA() * (vel * abs(vel)); // D = 0.5 * (rho * C * Area * vel^2)
     Vec3d drag_acc = drag_force / mass(); // a = F/m
@@ -53,7 +53,7 @@ void Particle::info() {
 }
 
 void Particle::draw2D() {
-	int triangleAmount = 20; //# of triangles used to draw circle
+	int triangleAmount = 10; //# of triangles used to draw circle
 
 	GLfloat display_radius = radius; //radius
 	GLfloat twicePi = 2.0f * pi;
@@ -69,11 +69,18 @@ void Particle::draw2D() {
 	glEnd();
 }
 
+void Particle::drawNow2D() {
+	Particle::draw2D();
+	glfwSwapBuffers(window);
+}
+
 double Particle::distance(class Particle& other) {
 	return abs(pos - other.pos);
 }
 
 void Particle::collide_wall(Boundary_planar& wall) {
+	old_pos = pos;
+	old_vel = vel;
 
 	Vec3d n = wall.getNormal();
 
@@ -88,38 +95,74 @@ void Particle::collide_wall(Boundary_planar& wall) {
 	pos = pos + pos_corr;
 
 	// correct the velocity to conserve energy (dissipation work is not considered!)
-	vel = std::sqrt(vel*vel + 2*gravity*pos_corr)  * norm(vel);
+	if (vel*vel + 2*gravity*pos_corr >= 0.0) {
+		vel = std::sqrt(vel*vel + 2*gravity*pos_corr)  * norm(vel);
+	}
+	else {
+		vel = -std::sqrt(-1*(vel*vel + 2*gravity*pos_corr) )  * norm(vel);
+	}
 
 	// revert the wall normal velocity component
 	vel = vel - 2*(vel*n)*n;
+
 }
 
 void Particle::collide_particle(class Particle& other) {
+	old_pos = pos;
+	old_vel = vel;
+	other.old_pos = other.pos;
+	other.old_vel = other.vel;
+	Particle old_other = other;
 
 	Vec3d n = other.pos - this->pos; // pointing towards the other
 
 	double distance = abs(n);
 	n = norm(n); // normalize
 
-	Vec3d pos_corr = -1 * n * (this->getR() + other.getR() - distance);
+	Vec3d pos_corr = -0.5 * n * (this->getR() + other.getR() - distance);
 	// move back to the position when it touched the other:
-	pos = pos + 0.5*pos_corr;
-	draw2D();
-	other.setPos(other.getPos() -0.5*pos_corr);
-	draw2D();
+	pos = pos + pos_corr;
+	//drawNow2D();
+	other.setPos(other.getPos() - pos_corr);
+	//other.drawNow2D();
 
 	// correct the velocity to conserve energy (dissipation work is not considered!)
-	vel = std::sqrt(vel*vel + 2*gravity*pos_corr/2)  * norm(vel);
-	draw2D();
-	other.setV(std::sqrt(other.getV()*other.getV() + 2*gravity*pos_corr/2) * norm(other.getV())) ;
-	draw2D();
+	if (vel*vel + 2*gravity*pos_corr >= 0.0){
+		vel = std::sqrt(vel*vel + 2*gravity*pos_corr)  * norm(vel);
+	}
+	else {
+		vel = -std::sqrt( -1*(vel*vel + 2*gravity*pos_corr) )  * norm(vel);
+	}
+	//drawNow2D();
+	if (other.getV()*other.getV() + 2*gravity*pos_corr >= 0.0) {
+		other.setV(std::sqrt(other.getV()*other.getV() + 2*gravity*pos_corr) * norm(other.getV())) ;
+	}
+	else {
+		other.setV(-std::sqrt( -1*(other.getV()*other.getV() + 2*gravity*pos_corr) ) * norm(other.getV())) ;
+	}
+	//other.drawNow2D();
 
 	// impulse exchange
 	Vec3d vel_old = vel;
-	Vec3d vel_old_other = other.getV();
 	vel = vel_old - n*(n*vel_old) + (mass()-other.mass())/(mass() + other.mass())*n*(vel_old*n) + 2*other.mass()/(mass()+other.mass())*n*(other.getV()*n);
-	draw2D();
+	//drawNow2D();
 	other.setV(  other.getV() - n*(other.getV()*n)  +  2*mass()/(other.getM()+mass())*n*(vel_old*n) + (other.mass()-mass())/(other.mass()+mass())*n*(other.getV()*n) );
-	draw2D();
-	//vel = vel_old - n*(n*vel_old) + n*(n*)
+	//other.drawNow2D();
+
+}
+
+Vec3d Particle::findPlace(class Particle& other) {
+	// gives a direction in case of null vectors (coinciding particles!)
+	// TODO: choose later from available place (scene must be known!)
+	return Vec3d {1,0,0};
+}
+
+void Particle::debug() const{
+	if (pos.large()) {
+		std::cout << "WARNING: large pos: ";  pos.print(); // place breakpoint here
+	}
+	if (vel.large()) {
+		std::cout << "WARNING: large vel: ";  vel.print(); // place breakpoint here
+	}
+
 }
