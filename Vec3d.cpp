@@ -58,7 +58,7 @@ Vec3d operator/(const Vec3d& a, const double m) {
 }
 
 double abs(const Vec3d& a) {
-	return std::sqrt( a.x*a.x + a.y*a.y + a.z*a.z);
+	return std::sqrt(a.x*a.x + a.y*a.y + a.z*a.z);
 }
 
 Vec3d norm(const Vec3d& a){

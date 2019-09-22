@@ -5,7 +5,7 @@ Particle::Particle(){};
 
 Particle::~Particle(){};
 
-void Particle::update(double dt) {
+void Particle::advance(double dt) {
 	// velocity Verlet integration
 
     Vec3d new_pos = pos + vel*dt + acc*(dt*dt*0.5);
@@ -36,7 +36,7 @@ Vec3d Particle::impulse() {
 }
 
 Vec3d Particle::apply_forces(){
-	double density_medium = 1; // air kg/m3
+
     Vec3d grav_acc = gravity;
     Vec3d drag_force = 0.5 * density_medium * CdA() * (vel * abs(vel)); // D = 0.5 * (rho * C * Area * vel^2)
     Vec3d drag_acc = drag_force / mass(); // a = F/m
@@ -103,7 +103,7 @@ void Particle::collide_wall(Boundary_planar& wall) {
 	}
 
 	// revert the wall normal velocity component
-	vel = vel - 2*(vel*n)*n;
+	vel = vel - (1 + this->CoR())*(vel*n)*n;
 
 }
 

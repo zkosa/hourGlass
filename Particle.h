@@ -20,21 +20,26 @@ private:
 	Vec3d acc = gravity;
 	GLFWwindow* window =0;
 
-	const double Cd = 0.5;
+	const double restitution_coeff = 0.9;
+	const double Cd = 5;
 	const double density = 2700; // kg/m3
+	const double density_medium = 1; // air kg/m3
 	double radius = 0.05;
 	double volume() const {return radius*radius*radius * pi * 4.0 / 3.0;}
 	double mass() const {return volume()*density;}
 	double A() const {return radius*radius * pi;}
 	double CdA() const {return Cd * A();}
+	double CoR() const {return restitution_coeff;}
 
 	Vec3d apply_forces();
 
 public:
 	Particle();
+	Particle(Vec3d pos_, double r_=0.05) : pos(pos_), radius(r_) {};
+	Particle(Vec3d pos_, Vec3d vel_, double r_=0.05) : pos(pos_), vel(vel_), radius(r_) {};
 	~Particle();
 
-	void update(double dt);
+	void advance(double dt);
 	double kinetic_energy();
 	double potential_energy();
 	double energy();
