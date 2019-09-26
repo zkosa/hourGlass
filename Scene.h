@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "Particle.h"
+#include "Boundary.h"
 
 class Scene {
 
@@ -10,6 +11,7 @@ class Scene {
 	double time = 0;
 	std::vector<Particle> particles;
 	std::vector<Boundary_planar> boundaries;
+	std::vector<Boundary_axis_symmetric> boundaries_ax;
 
 public:
 	void init();

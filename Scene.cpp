@@ -1,4 +1,6 @@
 #include "Scene.h"
+#include "Boundary_planar.h"
+#include "Boundary_axis_symmetric.h"
 #include <random>
 
 void Scene::init() {
@@ -8,9 +10,12 @@ void Scene::init() {
     Boundary_planar side_wall(Vec3d(1, -corner, 0), Vec3d(1, corner, 0), Vec3d(1, 0, 1));
     Boundary_planar side_wall2(Vec3d(-corner, -corner, 0), Vec3d(-corner, corner, 0), Vec3d(-corner, 0, 1));
 
+    Boundary_axis_symmetric glass;
+
     boundaries.push_back(ground);
     boundaries.push_back(side_wall);
     boundaries.push_back(side_wall2);
+    boundaries_ax.push_back(glass);
 
     int number_of_particles = 500;
 
@@ -27,7 +32,7 @@ void Scene::init() {
     for (int i=0; i < number_of_particles; i++) {
 		//particle[i].setWindow(window);
 		//x = double(distr(eng))  / number_of_distinct_random;
-    	x = -corner + i*(2*corner)/number_of_particles;
+		x = -corner*0.99 + i*(2*corner*0.99)/number_of_particles;
 		random1 = 0; //double(distr(eng))  / number_of_distinct_random;
 		random2 = double(distr(eng))  / number_of_distinct_random;
 		r *= (1 + random1/2.);
@@ -39,6 +44,9 @@ void Scene::init() {
 void Scene::draw() {
     for (auto& b : boundaries) {
     	b.draw2D();
+    }
+    for (auto& b : boundaries_ax) {
+        b.draw2D();
     }
 
     for (auto& p : particles) {
@@ -57,6 +65,11 @@ void Scene::advance() {
 void Scene::collide_boundaries() {
 	for (auto& p : particles) {
 		for (auto& b : boundaries) {
+			if ( b.distance(p) < p.getR() ) {
+				p.collide_wall(b);
+			}
+		}
+		for (auto& b : boundaries_ax) {
 			if ( b.distance(p) < p.getR() ) {
 				p.collide_wall(b);
 			}

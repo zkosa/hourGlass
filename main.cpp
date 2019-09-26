@@ -1,5 +1,6 @@
 #include "Particle.h"
 #include "Boundary_planar.h"
+#include "Boundary_axis_symmetric.h"
 #include "Logger.h"
 #include <random>
 #include "Scene.h"
@@ -27,6 +28,7 @@ int main(){
 
     Scene scene;
     scene.init();
+    scene.draw(); glfwSwapBuffers(window);
     for (int sweep=0; sweep < 25; ++sweep) {
 		for (auto& p1 : scene.getParticles()) {
 			for (auto& p2 : scene.getParticles()) {

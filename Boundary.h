@@ -8,6 +8,8 @@
 class Boundary {
 
 public:
+	//virtual ~Boundary();
+
 	virtual void draw2D()=0;
 	//virtual void draw3D()=0;
 	virtual double distance(const class Particle & particle) const = 0;

@@ -1,4 +1,6 @@
 #include "Particle.h"
+#include "Boundary_planar.h"
+#include "Boundary_axis_symmetric.h"
 
 
 Particle::Particle(){};
@@ -105,6 +107,33 @@ void Particle::collide_wall(Boundary_planar& wall) {
 	// revert the wall normal velocity component
 	vel = vel - (1 + this->CoR())*(vel*n)*n;
 
+}
+
+void Particle::collide_wall(Boundary_axis_symmetric& wall) {
+	std::cout << "Axis-symmetric wall is reached!" << std::endl;
+
+	Vec3d n = wall.getNormal(*this);
+
+	Vec3d pos_corr {0,0,0};
+	if ( abs(n*vel) > SMALL) // not parallel, and moving
+		pos_corr = (radius - wall.distance(*this)) / abs(n*vel) * vel *(-1); // move along the OLD! velocity vector
+	else {
+		pos_corr = (radius - wall.distance(*this)) * n; // move in surface normal direction
+	}
+
+	// move back to the position when it touched the boundary:
+	pos = pos + pos_corr;
+
+	// correct the velocity to conserve energy (dissipation work is not considered!)
+	if (vel*vel + 2*gravity*pos_corr >= 0.0) {
+		vel = std::sqrt(vel*vel + 2*gravity*pos_corr)  * norm(vel);
+	}
+	else {
+		vel = -std::sqrt(-1*(vel*vel + 2*gravity*pos_corr) )  * norm(vel);
+	}
+
+	// revert the wall normal velocity component
+	vel = vel - (1 + this->CoR())*(vel*n)*n;
 }
 
 void Particle::collide_particle(class Particle& other) {

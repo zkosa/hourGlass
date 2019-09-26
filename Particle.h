@@ -4,9 +4,12 @@
 #include <iostream>
 #include "Vec3d.h"
 #include "Constants.h"
-#include "Boundary_planar.h"
+//#include "Boundary_planar.h"
 #include <GLFW/glfw3.h>  // version 3.3 is installed to Dependencies
 
+class Boundary;
+class Boundary_planar;
+class Boundary_axis_symmetric;
 
 class Particle {
 private:
@@ -20,10 +23,10 @@ private:
 	Vec3d acc = gravity;
 	GLFWwindow* window =0;
 
-	const double restitution_coeff = 0.9;
-	const double Cd = 5;
-	const double density = 2700; // kg/m3
-	const double density_medium = 1; // air kg/m3
+	static constexpr double restitution_coeff = 0.9; // now used only between walls and particles
+	static constexpr double Cd = 5;
+	static constexpr double density = 2700; // kg/m3
+	static constexpr double density_medium = 1; // air kg/m3
 	double radius = 0.05;
 	double volume() const {return radius*radius*radius * pi * 4.0 / 3.0;}
 	double mass() const {return volume()*density;}
@@ -51,7 +54,8 @@ public:
 
 	double distance(class Particle& other);
 
-	void collide_wall(class Boundary_planar& ground);
+	void collide_wall(class Boundary_planar& wall);
+	void collide_wall(class Boundary_axis_symmetric& wall);
 	void collide_particle(class Particle& other);
 	Vec3d findPlace(class Particle& other);
 
