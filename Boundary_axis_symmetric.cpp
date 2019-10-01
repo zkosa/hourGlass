@@ -45,18 +45,7 @@ Vec3d Boundary_axis_symmetric::getNormal(const Particle & particle) const {
 
 	Vec3d contactPoint = axis * contactPointInRadialCoord.X + norm(Radial) *contactPointInRadialCoord.R;
 
-	std::cout << "Particle pos: ";
-	pos.print();
-
-	std::cout << "X0: " << X0 << " R0: " << R0 << std::endl;
-
-	std::cout << "Contact point: ";
-	contactPoint.print();
-
 	Vec3d n = norm(particle.getPos() - contactPoint);
-
-	std::cout << "Normal: ";
-	n.print();
 
 	return n;
 }

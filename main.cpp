@@ -28,6 +28,8 @@ int main(){
 
     Scene scene;
     scene.init();
+    scene.createCells();
+    scene.drawCells();
     scene.draw(); glfwSwapBuffers(window);
     for (int sweep=0; sweep < 25; ++sweep) {
 		for (auto& p1 : scene.getParticles()) {
@@ -37,7 +39,15 @@ int main(){
 						p1.collide_particle(p2);
 					}
 				}
-				for (auto& b : scene.getBoundaries()) {
+				for (auto& b : scene.getBoundariesPlanar()) {
+					if ( b.distance(p1) < p1.getR() ) {
+						p1.collide_wall(b);
+					}
+					if ( b.distance(p2) < p2.getR() ) {
+						p2.collide_wall(b);
+					}
+				}
+				for (auto& b : scene.getBoundariesAxiSym()) {
 					if ( b.distance(p1) < p1.getR() ) {
 						p1.collide_wall(b);
 					}
@@ -54,7 +64,7 @@ int main(){
     double duration = 0.;
     auto begin_all = std::chrono::steady_clock::now();
     // Loop until the user closes the window
-    while (!glfwWindowShouldClose(window) && counter < 1000)
+    while (!glfwWindowShouldClose(window) && counter < 10000)
     {
     	++counter;
     	std::cout << counter << std::endl;

@@ -13,6 +13,8 @@ class Boundary_axis_symmetric;
 
 class Particle {
 private:
+	int ID = -1;
+
 	Vec3d pos {0.0, 1.0, 0.0};
 	Vec3d vel {0.0, 0.0, 0.0};
 	Vec3d old_pos {0.0, 1.0, 0.0};
@@ -65,6 +67,7 @@ public:
 	void setV(Vec3d _v) {vel = _v;}
 	void setWindow(GLFWwindow* _window) {window = _window;}
 
+	int getID() const {return ID;}
 	double getX() const {return pos.x;}
 	double getY() const {return pos.y;}
 	double getZ() const {return pos.z;}

@@ -110,7 +110,6 @@ void Particle::collide_wall(Boundary_planar& wall) {
 }
 
 void Particle::collide_wall(Boundary_axis_symmetric& wall) {
-	std::cout << "Axis-symmetric wall is reached!" << std::endl;
 
 	Vec3d n = wall.getNormal(*this);
 

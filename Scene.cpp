@@ -6,18 +6,21 @@
 void Scene::init() {
 
     float corner = 0.999;
+    Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, -corner, 0), Vec3d(-1, -corner, 1));
+    /*
     Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, 0, 0), Vec3d(-1, -corner, 1));
     Boundary_planar side_wall(Vec3d(1, -corner, 0), Vec3d(1, corner, 0), Vec3d(1, 0, 1));
     Boundary_planar side_wall2(Vec3d(-corner, -corner, 0), Vec3d(-corner, corner, 0), Vec3d(-corner, 0, 1));
+     */
 
     Boundary_axis_symmetric glass;
 
-    boundaries.push_back(ground);
-    boundaries.push_back(side_wall);
-    boundaries.push_back(side_wall2);
+    boundaries_pl.push_back(ground);
+    //boundaries.push_back(side_wall);
+    //boundaries.push_back(side_wall2);
     boundaries_ax.push_back(glass);
 
-    int number_of_particles = 500;
+    int number_of_particles = 2000; //500
 
     int number_of_distinct_random = 500;
     std::random_device rd; // obtain a random number from hardware
@@ -27,7 +30,7 @@ void Scene::init() {
 
     double x;
     double y = 1; //0.95;
-    double r = 0.01;
+    double r = 0.007; //0.01
     double random1, random2;
     for (int i=0; i < number_of_particles; i++) {
 		//particle[i].setWindow(window);
@@ -42,7 +45,7 @@ void Scene::init() {
 }
 
 void Scene::draw() {
-    for (auto& b : boundaries) {
+    for (auto& b : boundaries_pl) {
     	b.draw2D();
     }
     for (auto& b : boundaries_ax) {
@@ -64,7 +67,7 @@ void Scene::advance() {
 
 void Scene::collide_boundaries() {
 	for (auto& p : particles) {
-		for (auto& b : boundaries) {
+		for (auto& b : boundaries_pl) {
 			if ( b.distance(p) < p.getR() ) {
 				p.collide_wall(b);
 			}
@@ -86,5 +89,34 @@ void Scene::collide_particles() {
 				}
 			}
 		}
+	}
+}
+
+void Scene::createCells() {
+
+	int Nx = 10;
+	int Ny = 10;
+	int Nz = 1;
+	double dx = boundingBox.diagonal().x/Nx;
+	double dy = boundingBox.diagonal().y/Ny;
+	double dz = boundingBox.diagonal().z/Nz;
+
+	for (int i=0; i < Nx; ++i) {
+		for (int j=0; j < Ny; ++j) {
+			for (int k=0; k < Nz; ++k) {
+				cells.emplace_back(
+					Cell((boundingBox.getCorner1()*Vec3d::i)*Vec3d::i + dx*(i+0.5)*Vec3d::i + (boundingBox.getCorner1()*Vec3d::j)*Vec3d::j + dy*(j+0.5)*Vec3d::j + (boundingBox.getCorner1()*Vec3d::k)*Vec3d::k + dz*(k+0.5)*Vec3d::k,
+					dx*Vec3d::i + dy*Vec3d::j + dy*Vec3d::k)
+				);
+			}
+		}
+	}
+
+}
+
+void Scene::drawCells() {
+
+	for ( auto& c : cells) {
+		c.draw2D();
 	}
 }

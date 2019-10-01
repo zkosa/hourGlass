@@ -57,6 +57,12 @@ Vec3d operator/(const Vec3d& a, const double m) {
 	return Divide(a, m);
 }
 
+const Vec3d Vec3d::i = Vec3d(1,0,0);
+
+const Vec3d Vec3d::j = Vec3d(0,1,0);
+
+const Vec3d Vec3d::k = Vec3d(0,0,1);
+
 double abs(const Vec3d& a) {
 	return std::sqrt(a.x*a.x + a.y*a.y + a.z*a.z);
 }

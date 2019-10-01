@@ -5,6 +5,8 @@
 #include <iostream>
 #include "Constants.h"
 
+struct Vec3d;
+
 struct Vec3d {
 
 	double x;
@@ -14,6 +16,8 @@ struct Vec3d {
 	Vec3d(double x, double y, double z): x(x), y(y), z(z) {};
 	std::ostream& print() const;
 	bool large() const;
+
+	const static Vec3d i, j, k;
 
 };
 
