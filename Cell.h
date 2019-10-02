@@ -36,15 +36,26 @@ public:
 	void shrink();
 	void update();
 
+	void clear();
+	void populate(std::vector<Particle>& particles);
 	bool contains(const Particle&);
 	void addParticle(const Particle&);
 	void addBoundaryPlanar(const Boundary_planar&);
 	void addBoundaryAxiSym(const Boundary_axis_symmetric&);
 
-	Vec3d center() {return center_;}
-
 	void draw2D();
 
+	const Vec3d center() const {return center_;}
+
+	const std::vector<int>& getBoundaryIDsAxisSymmetric() const { return boundary_IDs_axis_symmetric; }
+
+	const std::vector<int>& getBoundaryIDsPlanar() const {return boundary_IDs_planar;}
+
+	const Bounds& getBounds() const {return bounds;}
+
+	const Vec3d& getCenter() const {return center_;}
+
+	const std::vector<int>& getParticleIDs() const {return particle_IDs;}
 };
 
 

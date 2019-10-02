@@ -24,6 +24,18 @@ void Cell::shrink() {
 void Cell::update() {
 }
 
+void Cell::clear() {
+	particle_IDs.clear();
+}
+
+void Cell::populate(std::vector<Particle>& particles) {
+	for (auto& p : particles) {
+		if (this->contains(p)) {
+			this->addParticle(p);
+		}
+	}
+}
+
 bool Cell::contains(const Particle& p) {
 	Vec3d pos = p.getPos(); // TODO implement getX, ...
 

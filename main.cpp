@@ -58,13 +58,14 @@ int main(){
 			}
 		}
     }
+    scene.populateCells();
     scene.draw(); glfwSwapBuffers(window);
 
     int counter = 0;
     double duration = 0.;
     auto begin_all = std::chrono::steady_clock::now();
     // Loop until the user closes the window
-    while (!glfwWindowShouldClose(window) && counter < 10000)
+    while (!glfwWindowShouldClose(window) && counter < 1000)
     {
     	++counter;
     	std::cout << counter << std::endl;
@@ -78,7 +79,9 @@ int main(){
         scene.advance();
         for (int i=0; i < 1; i++) { // smoothing iterations
 			scene.collide_boundaries();
-			scene.collide_particles();
+			//scene.collide_particles();
+			scene.populateCells();
+			scene.collide_cells();
         }
 
         auto end = std::chrono::steady_clock::now();

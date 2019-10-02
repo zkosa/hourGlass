@@ -13,12 +13,13 @@ class Boundary_axis_symmetric;
 
 class Particle {
 private:
-	int ID = -1;
 
 	Vec3d pos {0.0, 1.0, 0.0};
 	Vec3d vel {0.0, 0.0, 0.0};
 	Vec3d old_pos {0.0, 1.0, 0.0};
 	Vec3d old_vel {0.0, 0.0, 0.0};
+
+	int ID = -1;
 
 	std::string last_collision = "";
 
@@ -42,6 +43,7 @@ public:
 	Particle();
 	Particle(Vec3d pos_, double r_=0.05) : pos(pos_), radius(r_) {};
 	Particle(Vec3d pos_, Vec3d vel_, double r_=0.05) : pos(pos_), vel(vel_), radius(r_) {};
+	Particle(Vec3d pos_, Vec3d vel_, int ID_, double r_=0.05) : pos(pos_), vel(vel_), ID(ID_), radius(r_) {};
 	~Particle();
 
 	void advance(double dt);

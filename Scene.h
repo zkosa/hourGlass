@@ -9,7 +9,7 @@
 
 class Scene {
 
-	double time_step = 0.0004; //0.001
+	double time_step = 0.001; //0.001
 	double time = 0;
 	std::vector<Particle> particles;
 	std::vector<Boundary_planar> boundaries_pl;
@@ -23,6 +23,7 @@ public:
 	void advance();
 	void collide_boundaries();
 	void collide_particles();
+	void collide_cells();
 
 	std::vector<Particle>& getParticles() { return particles; }
 	std::vector<Boundary_planar>& getBoundariesPlanar() { return boundaries_pl; }
@@ -30,8 +31,10 @@ public:
 
 	BoundingBox boundingBox = BoundingBox(*this);
 
-	void createCells();
+	void createCells(const int Nx=10, const int Ny=10, const int Nz=1);
 	void drawCells();
+	void populateCells();
+	void clearCells();
 
 };
 
