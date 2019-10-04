@@ -27,11 +27,14 @@ int main(){
     glfwMakeContextCurrent(window);
 
     Scene scene;
-    scene.init();
-    scene.createCells();
+    //scene.init(8000, 0.0035);
+    scene.init(5000, 0.004);
+    scene.createCells(35, 35, 1);
     scene.drawCells();
     scene.draw(); glfwSwapBuffers(window);
-    for (int sweep=0; sweep < 25; ++sweep) {
+    int sweeps = 1; // 25
+    for (int sweep=0; sweep < sweeps; ++sweep) {
+    	std::cout << sweep << " " << std::flush;
 		for (auto& p1 : scene.getParticles()) {
 			for (auto& p2 : scene.getParticles()) {
 				if ( p1.distance(p2) < p1.getR() + p2.getR() ) {
@@ -58,6 +61,7 @@ int main(){
 			}
 		}
     }
+    std::cout << std::endl;
     scene.populateCells();
     scene.draw(); glfwSwapBuffers(window);
 
@@ -65,7 +69,7 @@ int main(){
     double duration = 0.;
     auto begin_all = std::chrono::steady_clock::now();
     // Loop until the user closes the window
-    while (!glfwWindowShouldClose(window) && counter < 1000)
+    while (!glfwWindowShouldClose(window) && counter < 10000)
     {
     	++counter;
     	std::cout << counter << std::endl;

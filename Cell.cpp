@@ -38,10 +38,11 @@ void Cell::populate(std::vector<Particle>& particles) {
 
 bool Cell::contains(const Particle& p) {
 	Vec3d pos = p.getPos(); // TODO implement getX, ...
+	double r = p.getR();
 
-	return ( pos.x > bounds.x && pos.x < bounds.X ) &&
-			( pos.y > bounds.y && pos.y < bounds.Y ) &&
-			( pos.z > bounds.z && pos.z < bounds.Z );
+	return ( pos.x + r > bounds.x && pos.x - r < bounds.X ) &&
+			( pos.y + r > bounds.y && pos.y - r < bounds.Y ) &&
+			( pos.z + r > bounds.z && pos.z - r < bounds.Z );
 }
 
 void Cell::addParticle(const Particle& p) {

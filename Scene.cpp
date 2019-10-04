@@ -3,7 +3,7 @@
 #include "Boundary_axis_symmetric.h"
 #include <random>
 
-void Scene::init() {
+void Scene::init(int number_of_particles, double radius) {
 
     float corner = 0.999;
     Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, -corner, 0), Vec3d(-1, -corner, 1));
@@ -20,7 +20,7 @@ void Scene::init() {
     //boundaries.push_back(side_wall2);
     boundaries_ax.push_back(glass);
 
-    int number_of_particles = 500; //500
+    //int number_of_particles = 500; //500
 
     int number_of_distinct_random = 500;
     std::random_device rd; // obtain a random number from hardware
@@ -30,7 +30,7 @@ void Scene::init() {
 
     double x;
     double y = 1; //0.95;
-    double r = 0.01; //0.01
+    double r = radius; //0.01
     double random1, random2;
     for (int i=0; i < number_of_particles; i++) {
 		//particle[i].setWindow(window);

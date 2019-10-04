@@ -26,7 +26,7 @@ private:
 	Vec3d acc = gravity;
 	GLFWwindow* window =0;
 
-	static constexpr double restitution_coeff = 0.9; // now used only between walls and particles
+	static constexpr double restitution_coeff = 0.5; // now used only between walls and particles 0.9
 	static constexpr double Cd = 5;
 	static constexpr double density = 2700; // kg/m3
 	static constexpr double density_medium = 1; // air kg/m3

@@ -9,7 +9,7 @@
 
 class Scene {
 
-	double time_step = 0.001; //0.001
+	double time_step = 0.00025; //0.001
 	double time = 0;
 	std::vector<Particle> particles;
 	std::vector<Boundary_planar> boundaries_pl;
@@ -18,7 +18,7 @@ class Scene {
 
 
 public:
-	void init();
+	void init(int number_of_particles=500, double radius=0.01);
 	void draw();
 	void advance();
 	void collide_boundaries();
