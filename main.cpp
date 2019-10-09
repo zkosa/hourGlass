@@ -27,9 +27,9 @@ int main(){
     glfwMakeContextCurrent(window);
 
     Scene scene;
-    //scene.init(8000, 0.0035);
-    scene.init(5000, 0.004);
-    scene.createCells(35, 35, 1);
+    scene.init(5000, 0.005);
+    //scene.init(500, 0.01);
+    scene.createCells(25, 25, 1);
     scene.drawCells();
     scene.draw(); glfwSwapBuffers(window);
     int sweeps = 1; // 25

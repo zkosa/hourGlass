@@ -2,6 +2,8 @@
 #include "Boundary_planar.h"
 #include "Boundary_axis_symmetric.h"
 #include <random>
+#include <algorithm>
+#include <execution>
 
 void Scene::init(int number_of_particles, double radius) {
 
@@ -93,7 +95,12 @@ void Scene::collide_particles() {
 }
 
 void Scene::collide_cells() {
-	for (auto& c : cells) {
+	//for (auto& c : cells) {
+	std::for_each( std::execution::par,
+			cells.begin(),
+			cells.end(),
+			[&](auto&& c) {
+
 		for (int p1ID : c.getParticleIDs()) {
 			auto& p1 = particles[p1ID];
 			for (int p2ID : c.getParticleIDs()) {
@@ -106,6 +113,8 @@ void Scene::collide_cells() {
 			}
 		}
 	}
+	);
+
 }
 
 void Scene::createCells(const int Nx, const int Ny, const int Nz) {

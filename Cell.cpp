@@ -3,6 +3,8 @@
 #include "Boundary_axis_symmetric.h"
 #include "Cell.h"
 #include "Scene.h"
+#include <algorithm>
+#include <execution>
 
 Cell::Cell(const Vec3d& center, const Vec3d& dX)
 {
@@ -29,11 +31,16 @@ void Cell::clear() {
 }
 
 void Cell::populate(std::vector<Particle>& particles) {
-	for (auto& p : particles) {
-		if (this->contains(p)) {
-			this->addParticle(p);
-		}
-	}
+	//for (auto& p : particles) {
+	std::for_each( std::execution::par,
+			particles.begin(),
+			particles.end(),
+			[&](auto&& p) {
+				if (this->contains(p)) {
+					this->addParticle(p);
+				}
+			}
+	);
 }
 
 bool Cell::contains(const Particle& p) {
