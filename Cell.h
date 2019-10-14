@@ -10,12 +10,12 @@ class Boundary_planar;
 class Boundary_axis_symmetric;
 
 struct Bounds {
-	double x; // lower bound coordinate
-	double X; // upper bound coordinate
-	double y;
-	double Y;
-	double z;
-	double Z;
+	double x = 0; // lower bound coordinate
+	double y = 0;
+	double z = 0;
+	double X = 0; // upper bound coordinate
+	double Y = 0;
+	double Z = 0;
 };
 
 class Cell {

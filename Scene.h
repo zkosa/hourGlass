@@ -9,7 +9,7 @@
 
 class Scene {
 
-	double time_step = 0.0002; //0.001
+	double time_step = 0.001; //0.001
 	double time = 0;
 	std::vector<Particle> particles;
 	std::vector<Boundary_planar> boundaries_pl;

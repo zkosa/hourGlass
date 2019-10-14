@@ -1,10 +1,9 @@
 #include "Particle.h"
 #include "Boundary_planar.h"
 #include "Boundary_axis_symmetric.h"
-#include "Logger.h"
-#include <random>
 #include "Scene.h"
-#include <chrono>
+#include <omp.h>
+#include "Timer.h"
 
 //GLFWwindow* window;
 int main(){
@@ -27,9 +26,9 @@ int main(){
     glfwMakeContextCurrent(window);
 
     Scene scene;
-    scene.init(5000, 0.005);
-    //scene.init(500, 0.01);
-    scene.createCells(25, 25, 1);
+    //scene.init(5000, 0.005);
+    scene.init(500, 0.01);
+    scene.createCells(10, 10, 1);
     scene.drawCells();
     scene.draw(); glfwSwapBuffers(window);
     int sweeps = 1; // 25
@@ -67,9 +66,10 @@ int main(){
 
     int counter = 0;
     double duration = 0.;
-    auto begin_all = std::chrono::steady_clock::now();
+    Timer timer_all, timer;
+    timer_all.start();
     // Loop until the user closes the window
-    while (!glfwWindowShouldClose(window) && counter < 10000)
+    while (!glfwWindowShouldClose(window) && counter < 1000)
     {
     	++counter;
     	std::cout << counter << std::endl;
@@ -78,7 +78,7 @@ int main(){
         glClear(GL_COLOR_BUFFER_BIT);
 
         //scene.draw();
-        auto begin = std::chrono::steady_clock::now();
+        timer.start();
 
         scene.advance();
         for (int i=0; i < 1; i++) { // smoothing iterations
@@ -88,10 +88,9 @@ int main(){
 			scene.collide_cells();
         }
 
-        auto end = std::chrono::steady_clock::now();
-        auto step_duration =  end - begin;
-        duration += std::chrono::duration_cast<std::chrono::microseconds> (step_duration).count()/1000.;
-        std::cout << std::chrono::duration_cast<std::chrono::microseconds> (step_duration).count()/1000. << " ms" << std::endl;
+        timer.stop();
+        duration += timer.milliSeconds();
+        std::cout << timer.milliSeconds() << " ms" << std::endl;
 
         scene.draw();
 
@@ -101,9 +100,9 @@ int main(){
         // Poll for and process events
         glfwPollEvents();
     }
-    auto end_all = std::chrono::steady_clock::now();
-    std::cout << "Total: " << std::chrono::duration_cast<std::chrono::milliseconds> (end_all - begin_all).count()/1000. << " s" << std::endl;
-    std::cout << "Per time step: " << std::chrono::duration_cast<std::chrono::milliseconds> (end_all - begin_all).count()/double(counter) << " ms/timestep" << std::endl;
+    timer_all.stop();
+    std::cout << "Total: " << timer_all.seconds() << " s" << std::endl;
+    std::cout << "Total per time step: " << timer_all.milliSeconds()/double(counter) << " ms/timestep" << std::endl;
     std::cout << "Steps per time step: " << duration/double(counter) << " ms/timestep" << std::endl;
 
     glfwTerminate();

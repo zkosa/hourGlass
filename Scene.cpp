@@ -2,8 +2,7 @@
 #include "Boundary_planar.h"
 #include "Boundary_axis_symmetric.h"
 #include <random>
-#include <algorithm>
-#include <execution>
+#include <omp.h>
 
 void Scene::init(int number_of_particles, double radius) {
 
@@ -68,6 +67,7 @@ void Scene::advance() {
 }
 
 void Scene::collide_boundaries() {
+//#pragma omp parallel for
 	for (auto& p : particles) {
 		for (auto& b : boundaries_pl) {
 			if ( b.distance(p) < p.getR() ) {
@@ -95,12 +95,8 @@ void Scene::collide_particles() {
 }
 
 void Scene::collide_cells() {
-	//for (auto& c : cells) {
-	std::for_each( std::execution::par,
-			cells.begin(),
-			cells.end(),
-			[&](auto&& c) {
-
+//#pragma omp parallel for
+	for (auto& c : cells) {
 		for (int p1ID : c.getParticleIDs()) {
 			auto& p1 = particles[p1ID];
 			for (int p2ID : c.getParticleIDs()) {
@@ -113,8 +109,6 @@ void Scene::collide_cells() {
 			}
 		}
 	}
-	);
-
 }
 
 void Scene::createCells(const int Nx, const int Ny, const int Nz) {
@@ -127,10 +121,11 @@ void Scene::createCells(const int Nx, const int Ny, const int Nz) {
 		for (int j=0; j < Ny; ++j) {
 			for (int k=0; k < Nz; ++k) {
 				cells.emplace_back(
-					Cell(( boundingBox.getCorner1()*Vec3d::i)*Vec3d::i + dx*(i+0.5)*Vec3d::i +
+					Cell(   (boundingBox.getCorner1()*Vec3d::i)*Vec3d::i + dx*(i+0.5)*Vec3d::i +
 							(boundingBox.getCorner1()*Vec3d::j)*Vec3d::j + dy*(j+0.5)*Vec3d::j +
 							(boundingBox.getCorner1()*Vec3d::k)*Vec3d::k + dz*(k+0.5)*Vec3d::k,
-							dx*Vec3d::i + dy*Vec3d::j + dy*Vec3d::k)
+							dx*Vec3d::i + dy*Vec3d::j + dy*Vec3d::k
+						)
 				);
 			}
 		}
@@ -146,6 +141,7 @@ void Scene::drawCells() {
 
 void Scene::populateCells() {
 	this->clearCells();
+//#pragma omp parallel for
 	for (auto& c : cells) {
 		c.populate(particles);
 	}
