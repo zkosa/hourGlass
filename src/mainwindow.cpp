@@ -1,65 +1,62 @@
-#include "Particle.h"
-#include "Boundary_planar.h"
-#include "Boundary_axis_symmetric.h"
-#include "Scene.h"
-#include <omp.h>
-#include "Timer.h"
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+#include <iostream>
 
-//GLFWwindow* window;
-int main(){
+#include "Timer.h"
+#include <GLFW/glfw3.h>
+#include "Scene.h"
+
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow),
+	geometry(box),
+	Nx(10), Ny(10), Nz(1),
+	number_of_particles(500),
+	radius(0.005),
+	drag_coefficient(1.0)
+
+{
+    ui->setupUi(this);
+
+/*  connect(ui->Particle_number_slider, SIGNAL(valueChanged(int)),
+    		ui->Particle_number_value, SLOT(setNum(int))     ); */
+
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::on_startButton_clicked() {
 
 	GLFWwindow* window;
 
     // Initialize the library
-    if (!glfwInit())
-        return -1;
+    if (!glfwInit()){
+        //return -1;
+    }
 
     // Create a windowed mode window and its OpenGL context
     window = glfwCreateWindow(640, 640, "Simulation Window", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
-        return -1;
+        //return -1;
     }
 
     // Make the window's context current
     glfwMakeContextCurrent(window);
 
+
     Scene scene;
-    //scene.init(5000, 0.005);
-    scene.init(500, 0.01);
-    scene.createCells(10, 10, 1);
+    scene.init(number_of_particles, radius);
+    //scene.init(500, 0.01);
+    scene.createCells(Nx, Ny, Nz);
     scene.drawCells();
     scene.draw(); glfwSwapBuffers(window);
-    int sweeps = 1; // 25
-    for (int sweep=0; sweep < sweeps; ++sweep) {
-    	std::cout << sweep << " " << std::flush;
-		for (auto& p1 : scene.getParticles()) {
-			for (auto& p2 : scene.getParticles()) {
-				if ( p1.distance(p2) < p1.getR() + p2.getR() ) {
-					if ( &p1 != &p2 ) { // do not collide with itself
-						p1.collide_particle(p2);
-					}
-				}
-				for (auto& b : scene.getBoundariesPlanar()) {
-					if ( b.distance(p1) < p1.getR() ) {
-						p1.collide_wall(b);
-					}
-					if ( b.distance(p2) < p2.getR() ) {
-						p2.collide_wall(b);
-					}
-				}
-				for (auto& b : scene.getBoundariesAxiSym()) {
-					if ( b.distance(p1) < p1.getR() ) {
-						p1.collide_wall(b);
-					}
-					if ( b.distance(p2) < p2.getR() ) {
-						p2.collide_wall(b);
-					}
-				}
-			}
-		}
-    }
+    scene.resolve_constraints_on_init(2);
+
     std::cout << std::endl;
     scene.populateCells();
     scene.draw(); glfwSwapBuffers(window);
@@ -107,4 +104,34 @@ int main(){
 
     glfwTerminate();
 
+}
+
+void MainWindow::on_geometryComboBox_currentIndexChanged(int geo) {
+	geometry = Geometry(geo);
+	std::cout << "Geometry -- " << geometry_names[geometry] << " -- is activated." << std::endl;
+}
+
+void MainWindow::on_Particle_number_slider_valueChanged(int particle_number_) {
+	ui->Particle_number_value->setNum(particle_number_);
+	number_of_particles = particle_number_;
+}
+
+void MainWindow::on_Particle_diameter_slider_valueChanged(int particle_diameter_) {
+	ui->Particle_diameter_value->setNum(particle_diameter_);
+	radius = particle_diameter_/1000./2.; // int [mm] --> double [m], diamter --> radius
+}
+
+void MainWindow::on_cells_Nx_SpinBox_valueChanged(int Nx_)
+{
+	Nx = Nx_;
+}
+
+void MainWindow::on_cells_Ny_SpinBox_valueChanged(int Ny_)
+{
+	Ny = Ny_;
+}
+
+void MainWindow::on_cells_Nz_SpinBox_valueChanged(int Nz_)
+{
+	Nz = Nz_;
 }

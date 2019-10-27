@@ -4,6 +4,10 @@
 #include <random>
 #include <omp.h>
 
+void beep() {
+	std::cout << '\a';
+}
+
 void Scene::init(int number_of_particles, double radius) {
 
     float corner = 0.999;
@@ -43,6 +47,39 @@ void Scene::init(int number_of_particles, double radius) {
 
 		particles.emplace_back(  Vec3d(x, y*(1+random2/200.), 0), Vec3d(0, 0, 0), i , r );  // no need to type the constructor!!!
     }
+}
+
+void Scene::resolve_constraints_on_init(int sweeps) {
+
+    for (int sweep=0; sweep < sweeps; ++sweep) {
+    	std::cout << sweep << " " << std::flush;
+		for (auto& p1 : particles) {
+			for (auto& p2 : particles) {
+				if ( p1.distance(p2) < p1.getR() + p2.getR() ) {
+					if ( &p1 != &p2 ) { // do not collide with itself
+						p1.collide_particle(p2);
+					}
+				}
+				for (auto& b : boundaries_pl) {
+					if ( b.distance(p1) < p1.getR() ) {
+						p1.collide_wall(b);
+					}
+					if ( b.distance(p2) < p2.getR() ) {
+						p2.collide_wall(b);
+					}
+				}
+				for (auto& b : boundaries_ax) {
+					if ( b.distance(p1) < p1.getR() ) {
+						p1.collide_wall(b);
+					}
+					if ( b.distance(p2) < p2.getR() ) {
+						p2.collide_wall(b);
+					}
+				}
+			}
+		}
+    }
+    beep();
 }
 
 void Scene::draw() {
