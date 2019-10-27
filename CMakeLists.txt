@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 set(CMAKE_VERBOSE_MAKEFILE On) # enabling indexing in eclipse?
 
-project(test-qt-widgets)
+project(hourGlass)
 #set(PROJECT_NAME test-qt-widgets)
 #project(${PROJECT_NAME})
 
@@ -21,12 +21,10 @@ set(CMAKE_AUTOUIC ON)
 
 find_package(Qt5 REQUIRED Core Gui Widgets)
 
-#set(GLOB SOURCES "*.cpp")
-#set(GLOB HEADERS "*.h")
+
 file(GLOB SOURCES "src/*.cpp")
-#set(HEADERS mainwindow.h)
 file(GLOB HEADERS "include/*.h")
-set(UI "mainwindow.ui")
+set(UI "src/mainwindow.ui")
 
 add_subdirectory("Dependencies/glfw")
 include_directories("include" "Dependencies/glfw/include")
@@ -59,3 +57,4 @@ list (SORT _variableNames)
 foreach (_variableName ${_variableNames})
     message(STATUS "${_variableName}=${${_variableName}}")
 endforeach()
+message(STATUS "SOURCES=${SOURCES}")
