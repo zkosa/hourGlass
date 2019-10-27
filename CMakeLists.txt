@@ -1,40 +1,61 @@
-cmake_minimum_required(VERSION 3.1)
-project(hourGlass LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.13)
+set(CMAKE_VERBOSE_MAKEFILE On) # enabling indexing in eclipse?
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
+project(test-qt-widgets)
+#set(PROJECT_NAME test-qt-widgets)
+#project(${PROJECT_NAME})
+
+#set(GUI gui)
+
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O3")
-#set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2")
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -O3")
 
+# Find includes in corresponding build directories
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# Instruct CMake to run moc automatically when needed.
+set(CMAKE_AUTOMOC ON)
+# Instruct CMake to run uic automatically when needed.
+set(CMAKE_AUTOUIC ON)
 
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+#set_target_properties(${GUI} PROPERTIES AUTOMOC TRUE)
 
-add_subdirectory(Dependencies/glfw)
+find_package(Qt5 REQUIRED Core Gui Widgets)
 
-find_package(OpenGL REQUIRED)
-
-find_package(Qt5 COMPONENTS Core Quick REQUIRED)
-
- 
-#Bring the headers into the project
-include_directories(include Dependencies/glfw/include)
- 
-#Can manually add the sources using the set command as follows:
-#set(SOURCES src/mainapp.cpp src/Student.cpp)
- 
-#However, the file(GLOB...) allows for wildcard additions:
+#set(GLOB SOURCES "*.cpp")
+#set(GLOB HEADERS "*.h")
 file(GLOB SOURCES "src/*.cpp")
- 
-add_executable(hourGlass ${SOURCES})
+#set(HEADERS mainwindow.h)
+file(GLOB HEADERS "include/*.h")
+set(UI "mainwindow.ui")
 
-#(GL_LIB "glfw")
-#target_link_libraries(hourGlass "${GL_LIB}")
-target_link_libraries(hourGlass glfw)
-target_include_directories(hourGlass PUBLIC ${OPENGL_INCLUDE_DIR})
-target_link_libraries(hourGlass ${OPENGL_gl_LIBRARY})
+add_subdirectory("Dependencies/glfw")
+include_directories("include" "Dependencies/glfw/include")
 
+
+#add_library(${GUI}  SHARED  mainwindow.h  mainwindow.cpp)
+
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${UI}) # are the headers needed?
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} /usr/include/x86_64-linux-gnu/qt5/  ${OPENGL_INCLUDE_DIR}) # headers
+#set_target_properties(${PROJECT_NAME} PROPERTIES  RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set_target_properties(${PROJECT_NAME} PROPERTIES AUTOMOC TRUE)
+
+#qt5_use_modules(${PROJECT_NAME} Core Gui Widgets)
+target_link_libraries( ${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets ${Qt5Core_QTMAIN_LIBRARIES}  glfw GL) # ${OPENGL_gl_LIBRARY}
+#message(STATUS "OPENGL_gl_LIBRARY=${OPENGL_gl_LIBRARY}")
+
+#[[
+get_cmake_property(_variableNames VARIABLES)
+list (SORT _variableNames)
+foreach (_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")
+endforeach()
+]]
+message(STATUS "SOURCES=${SOURCES}")
+message(STATUS "HEADERS=${HEADERS}")
+message(STATUS "UI=${UI}")
+
+set(_variableNames Qt5Widgets_VERSION Qt5Widgets_LIBRARIES Qt5Widgets_INCLUDE_DIRS Qt5Widgets_DEFINITIONS Qt5Widgets_COMPILE_DEFINITIONS Qt5Widgets_FOUND Qt5Widgets_EXECUTABLE_COMPILE_FLAGS QT_VISIBILITY_AVAILABLE QT_LIBINFIX)
+list (SORT _variableNames)
+foreach (_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")
+endforeach()
