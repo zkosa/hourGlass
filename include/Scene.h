@@ -5,6 +5,8 @@
 #include "Particle.h"
 #include "Boundary.h"
 #include "BoundingBox.h"
+#include "Boundary_planar.h"
+#include "Boundary_axis_symmetric.h"
 #include "Cell.h"
 
 class Scene {
@@ -19,6 +21,7 @@ class Scene {
 
 public:
 	void init(int number_of_particles=500, double radius=0.01);
+	void resolve_constraints_on_init(int sweeps=20);
 	void draw();
 	void advance();
 	void collide_boundaries();

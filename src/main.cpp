@@ -1,9 +1,7 @@
-#include "Particle.h"
-#include "Boundary_planar.h"
-#include "Boundary_axis_symmetric.h"
 #include "Scene.h"
 #include <omp.h>
 #include "Timer.h"
+#include "GUI.h"
 
 //GLFWwindow* window;
 int main(){
@@ -26,40 +24,13 @@ int main(){
     glfwMakeContextCurrent(window);
 
     Scene scene;
-    //scene.init(5000, 0.005);
-    scene.init(500, 0.01);
+    scene.init(2000, 0.005);
+    //scene.init(500, 0.01);
     scene.createCells(10, 10, 1);
     scene.drawCells();
     scene.draw(); glfwSwapBuffers(window);
-    int sweeps = 1; // 25
-    for (int sweep=0; sweep < sweeps; ++sweep) {
-    	std::cout << sweep << " " << std::flush;
-		for (auto& p1 : scene.getParticles()) {
-			for (auto& p2 : scene.getParticles()) {
-				if ( p1.distance(p2) < p1.getR() + p2.getR() ) {
-					if ( &p1 != &p2 ) { // do not collide with itself
-						p1.collide_particle(p2);
-					}
-				}
-				for (auto& b : scene.getBoundariesPlanar()) {
-					if ( b.distance(p1) < p1.getR() ) {
-						p1.collide_wall(b);
-					}
-					if ( b.distance(p2) < p2.getR() ) {
-						p2.collide_wall(b);
-					}
-				}
-				for (auto& b : scene.getBoundariesAxiSym()) {
-					if ( b.distance(p1) < p1.getR() ) {
-						p1.collide_wall(b);
-					}
-					if ( b.distance(p2) < p2.getR() ) {
-						p2.collide_wall(b);
-					}
-				}
-			}
-		}
-    }
+    scene.resolve_constraints_on_init(2);
+
     std::cout << std::endl;
     scene.populateCells();
     scene.draw(); glfwSwapBuffers(window);
