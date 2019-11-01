@@ -82,6 +82,32 @@ void Scene::resolve_constraints_on_init(int sweeps) {
     beep();
 }
 
+
+void Scene::resolve_constraints_on_init_cells(int sweeps) {
+	for (int sweep=0; sweep < sweeps; ++sweep) {
+		std::cout << sweep << " " << std::flush;
+
+		for (auto& c : cells) {
+			for (int p1ID : c.getParticleIDs()) {
+				auto& p1 = particles[p1ID];
+				for (int p2ID : c.getParticleIDs()) {
+					auto& p2 = particles[p2ID];
+					if ( p1.distance(p2) < p1.getR() + p2.getR() ) {
+						if ( p1ID != p2ID ) { // do not collide with itself
+							p1.collide_particle(p2);
+						}
+					}
+				}
+			}
+		}
+		this->populateCells();
+
+		// redraw the scene after each sweeps:
+		//this->draw(); // glfwSwapBuffers is not available here!
+	}
+	beep();
+}
+
 void Scene::draw() {
 	for (auto& b : boundaries_pl) {
 		b.draw2D();
@@ -132,8 +158,11 @@ void Scene::collide_particles() {
 }
 
 void Scene::collide_cells() {
-//#pragma omp parallel for
-	for (auto& c : cells) {
+
+	for (auto& c : cells) { // when no omp (: loops are not suported)
+//	#pragma omp parallel for
+//	for (uint i = 0; i < cells.size(); ++i) {
+//		Cell& c = cells[i]; // with omp,
 		for (int p1ID : c.getParticleIDs()) {
 			auto& p1 = particles[p1ID];
 			for (int p2ID : c.getParticleIDs()) {
@@ -154,8 +183,12 @@ void Scene::createCells(const int Nx, const int Ny, const int Nz) {
 	double dy = boundingBox.diagonal().y/Ny;
 	double dz = boundingBox.diagonal().z/Nz;
 
+	// add extra cell layer on top for the particles which go beyond y=1
+	// during e.g. the initial geometric constraint resolution
+	int extra_layers_on_top = 1;
+
 	for (int i=0; i < Nx; ++i) {
-		for (int j=0; j < Ny; ++j) {
+		for (int j=0; j < Ny + extra_layers_on_top; ++j) {
 			for (int k=0; k < Nz; ++k) {
 				cells.emplace_back(
 					Cell(   (boundingBox.getCorner1()*Vec3d::i)*Vec3d::i + dx*(i+0.5)*Vec3d::i +
@@ -189,3 +222,4 @@ void Scene::clearCells() {
 		c.clear();
 	}
 }
+

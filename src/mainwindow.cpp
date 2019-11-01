@@ -6,6 +6,8 @@
 #include <GLFW/glfw3.h>
 #include "Scene.h"
 
+//#include "CustomOpenGLWidget.h"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -20,6 +22,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
 /*  connect(ui->Particle_number_slider, SIGNAL(valueChanged(int)),
     		ui->Particle_number_value, SLOT(setNum(int))     ); */
+
+    ui->openGLWidget->initializeGL(); // it is promoted in the GUI to my custom CustomOpenGLWidget
+    //ui->CustompenGLWidget->initializeGL();
+    //ui->openGLWidget->initializeGL();
+    //ui->openGLWidget->paintGL();
+    //ui->openGLWidget->render();
+
+
 
 }
 
@@ -55,7 +65,7 @@ void MainWindow::on_startButton_clicked() {
     scene.createCells(Nx, Ny, Nz);
     scene.drawCells();
     scene.draw(); glfwSwapBuffers(window);
-    scene.resolve_constraints_on_init(2);
+    scene.resolve_constraints_on_init_cells(5);
 
     std::cout << std::endl;
     scene.populateCells();
