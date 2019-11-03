@@ -18,6 +18,8 @@ class Scene {
 	std::vector<Boundary_axis_symmetric> boundaries_ax;
 	std::vector<Cell> cells;
 
+	bool running = false;
+
 public:
 	void init(int number_of_particles=500, double radius=0.01);
 	void resolve_constraints_on_init(int sweeps=20);
@@ -42,6 +44,10 @@ public:
 	double energy();
 	Vec3d impulse();
 	double impulse_magnitude() { return abs(impulse()); }
+
+	bool isRunning() { return running; }
+	void setRunning();
+	void setStopping();
 
 };
 

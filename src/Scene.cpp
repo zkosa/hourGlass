@@ -243,3 +243,12 @@ Vec3d Scene::impulse() {
 	}
 	return impulse;
 }
+
+void Scene::setRunning() {
+	running = true;
+	std::cout << "Starting..." << std::endl;
+}
+void Scene::setStopping() {
+	running = false;
+	std::cout << "Stopping..." << std::endl;
+}

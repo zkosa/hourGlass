@@ -161,56 +161,17 @@ void MainWindow::run_simulation_glfw() {
 }
 
 void MainWindow::run_simulation() {
-    scene.resolve_constraints_on_init_cells(5);
 
-    scene.populateCells();
-    //ui->openGLWidget->initializeGL();
-    //ui->openGLWidget->makeCurrent();
-    //ui->openGLWidget->paintGL(); //  scene.draw(); glfwSwapBuffers(window);
-    //ui->openGLWidget->update();
-
-    int counter = 0;
-    double duration = 0.;
-    Timer timer_all, timer;
-    timer_all.start();
-
-    for(counter=0; counter < 5000; counter++) //while (true) // !glfwWindowShouldClose(window) && counter < 1000
-    {
-    	//++counter;
-    	std::cout << counter << std::endl;
-
-        // Render here
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        //scene.draw();
-        timer.start();
-
-        scene.advance();
-        for (int i=0; i < 1; i++) { // smoothing iterations
-			scene.collide_boundaries();
-			//scene.collide_particles();
-			scene.populateCells();
-			scene.collide_cells();
-        }
-
-        timer.stop();
-        duration += timer.milliSeconds();
-        std::cout << timer.milliSeconds() << " ms" << std::endl;
-
-
-        //ui->openGLWidget->paintGL(); //scene.draw();
-        ui->openGLWidget->update(); // forces redraw only after the loop has ended?
-
-        // Swap front and back buffers
-        //glfwSwapBuffers(window);
-
-        // Poll for and process events
-        //glfwPollEvents();
-    }
-    timer_all.stop();
-    std::cout << "Total: " << timer_all.seconds() << " s" << std::endl;
-    std::cout << "Total per time step: " << timer_all.milliSeconds()/double(counter) << " ms/timestep" << std::endl;
-    std::cout << "Steps per time step: " << duration/double(counter) << " ms/timestep" << std::endl;
+	if (!scene.isRunning()) {
+		scene.setRunning();
+		ui->startButton->setText(QString("Pause"));
+		scene.resolve_constraints_on_init_cells(5);
+		scene.populateCells();
+	}
+	else {
+		scene.setStopping();
+		ui->startButton->setText(QString("Start"));
+	}
 
 }
 
@@ -221,13 +182,13 @@ void MainWindow::updateGUIcontrols() {
 	ui->cells_Ny_SpinBox->setValue( Cell::getNy() );
 	ui->cells_Nz_SpinBox->setValue( Cell::getNz() );
 
-	// for sliders both the slider positions and the corresponding display labesl:
+	// for sliders both the slider positions and the corresponding display labels:
 	ui->Drag_coefficient_value->setText( QString::number(Particle::getCd()) );
 	ui->Drag_coefficient_slider->setValue( int(Particle::getCd()*100.) ); // double internal value is transformed to int on the slider
 
 }
 
-void MainWindow::updateLogs() {
+void MainWindow::updateLogs(){
 	ui->Energy_value->setText( QString::number(scene.energy()) );
 	ui->Impulse_value->setText( QString::number(scene.impulse_magnitude()) );
 }
