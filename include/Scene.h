@@ -18,6 +18,8 @@ class Scene {
 	std::vector<Boundary_axis_symmetric> boundaries_ax;
 	std::vector<Cell> cells;
 
+	double x = 0.2;
+
 
 public:
 	void init(int number_of_particles=500, double radius=0.01);
@@ -39,6 +41,8 @@ public:
 	void drawCells();
 	void populateCells();
 	void clearCells();
+
+	double energy();
 
 };
 

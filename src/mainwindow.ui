@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1149</width>
-    <height>810</height>
+    <width>1027</width>
+    <height>692</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -349,10 +349,10 @@
    <widget class="CustomOpenGLWidget" name="openGLWidget">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>0</y>
-      <width>711</width>
-      <height>571</height>
+      <x>380</x>
+      <y>-10</y>
+      <width>640</width>
+      <height>640</height>
      </rect>
     </property>
    </widget>
@@ -362,7 +362,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1149</width>
+     <width>1027</width>
      <height>25</height>
     </rect>
    </property>

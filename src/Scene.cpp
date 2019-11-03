@@ -106,6 +106,7 @@ void Scene::resolve_constraints_on_init_cells(int sweeps) {
 		//this->draw(); // glfwSwapBuffers is not available here!
 	}
 	beep();
+    std::cout << std::endl;
 }
 
 void Scene::draw() {
@@ -223,3 +224,10 @@ void Scene::clearCells() {
 	}
 }
 
+double Scene::energy() {
+	double energy = 0;
+	for (auto& p :particles) {
+		energy += p.energy();
+	}
+	return energy;
+}

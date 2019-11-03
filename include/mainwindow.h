@@ -3,6 +3,7 @@
 
 #include <string>
 #include <QMainWindow>
+#include "Scene.h"
 
 namespace Ui {
 class MainWindow;
@@ -28,6 +29,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
+    Scene scene;
     enum Geometry {hourglass=0, box=1};
     std::string  geometry_names[2] = {"hourglass", "box"};
     Geometry geometry;
@@ -35,6 +37,9 @@ private:
     int number_of_particles;
     double radius;
     double drag_coefficient;
+
+    void run_simulation_glfw(); // separate glfw window
+    void run_simulation(); // integrated CustomOpenGLWindow
 };
 
 #endif // MAINWINDOW_H
