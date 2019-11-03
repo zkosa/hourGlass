@@ -26,8 +26,8 @@ private:
 	Vec3d acc = gravity;
 	GLFWwindow* window =0;
 
-	static constexpr double restitution_coeff = 0.5; // now used only between walls and particles 0.9
-	static constexpr double Cd = 5;
+	static constexpr double restitution_coeff = 0.5; // now used only between walls and particles
+	static double Cd; // non-const can not be initialized in the declaration
 	static constexpr double density = 2700; // kg/m3
 	static constexpr double density_medium = 1; // air kg/m3
 	double radius = 0.05;
@@ -69,6 +69,8 @@ public:
 	void setV(Vec3d _v) {vel = _v;}
 	void setWindow(GLFWwindow* _window) {window = _window;}
 
+	static void setCd(const double _Cd) {Cd = _Cd;}
+
 	int getID() const {return ID;}
 	double getX() const {return pos.x;}
 	double getY() const {return pos.y;}
@@ -77,6 +79,11 @@ public:
 	double getM() const {return mass();}
 	Vec3d getV() const {return vel;}
 	Vec3d getPos() const {return pos;}
+
+	// static getters can not be qualified as const according to the standard
+	// (they do not modify any instance of the class)
+	static double getCd() {return Cd;}
+	static double energy_of_all_particles_combined();
 
 	void debug() const;
 };

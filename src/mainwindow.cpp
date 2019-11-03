@@ -6,36 +6,31 @@
 #include <GLFW/glfw3.h>
 //#include <QOpenGLContext>
 
-//#include "CustomOpenGLWidget.h"
+#include "CustomOpenGLWidget.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
 	geometry(box),
-	Nx(10), Ny(10), Nz(1),
 	number_of_particles(500*5),
-	radius(0.005),
-	drag_coefficient(1.0)
+	radius(0.005)
 
 {
 
 	scene.init(number_of_particles, radius);
-    scene.createCells(Nx, Ny, Nz);
-    //scene.drawCells();
-    //scene.draw();
-
+    scene.createCells();
 
     ui->setupUi(this);
 
-/*  connect(ui->Particle_number_slider, SIGNAL(valueChanged(int)),
-    		ui->Particle_number_value, SLOT(setNum(int))     ); */
     // connecting the simulation scene to the window:
     Scene* scene_ptr = &scene;
     ui->openGLWidget->connectScene(scene_ptr);
+    ui->openGLWidget->connectMainWindow(this);
+
     //ui->openGLWidget->initializeGL(); // it is promoted in the GUI to the custom CustomOpenGLWidget
     //ui->openGLWidget->paintGL();
 
-
+    updateGUIcontrols();
 
 }
 
@@ -67,17 +62,26 @@ void MainWindow::on_Particle_diameter_slider_valueChanged(int particle_diameter_
 
 void MainWindow::on_cells_Nx_SpinBox_valueChanged(int Nx_)
 {
-	Nx = Nx_;
+	Cell::setNx(Nx_);
+	updateGUIcontrols();
 }
 
 void MainWindow::on_cells_Ny_SpinBox_valueChanged(int Ny_)
 {
-	Ny = Ny_;
+	Cell::setNy(Ny_);
+	updateGUIcontrols();
 }
 
 void MainWindow::on_cells_Nz_SpinBox_valueChanged(int Nz_)
 {
-	Nz = Nz_;
+	Cell::setNz(Nz_);
+	updateGUIcontrols();
+}
+
+void MainWindow::on_Drag_coefficient_slider_valueChanged(int drag100) {
+	double Cd = drag100/100.; // value of integer slider is converted to double
+	Particle::setCd(Cd); // setting static data member
+	updateGUIcontrols();
 }
 
 void MainWindow::run_simulation_glfw() {
@@ -103,7 +107,7 @@ void MainWindow::run_simulation_glfw() {
     //Scene scene;
     //scene.init(number_of_particles, radius);
     //scene.init(500, 0.01);
-    scene.createCells(Nx, Ny, Nz);
+    scene.createCells();
     scene.drawCells();
     scene.draw(); glfwSwapBuffers(window);
     scene.resolve_constraints_on_init_cells(5);
@@ -194,7 +198,7 @@ void MainWindow::run_simulation() {
         std::cout << timer.milliSeconds() << " ms" << std::endl;
 
 
-        ui->openGLWidget->paintGL(); //scene.draw();
+        //ui->openGLWidget->paintGL(); //scene.draw();
         ui->openGLWidget->update(); // forces redraw only after the loop has ended?
 
         // Swap front and back buffers
@@ -208,4 +212,22 @@ void MainWindow::run_simulation() {
     std::cout << "Total per time step: " << timer_all.milliSeconds()/double(counter) << " ms/timestep" << std::endl;
     std::cout << "Steps per time step: " << duration/double(counter) << " ms/timestep" << std::endl;
 
+}
+
+void MainWindow::updateGUIcontrols() {
+
+	// for SpinBoxes only the values have to be changed:
+	ui->cells_Nx_SpinBox->setValue( Cell::getNx() );
+	ui->cells_Ny_SpinBox->setValue( Cell::getNy() );
+	ui->cells_Nz_SpinBox->setValue( Cell::getNz() );
+
+	// for sliders both the slider positions and the corresponding display labesl:
+	ui->Drag_coefficient_value->setText( QString::number(Particle::getCd()) );
+	ui->Drag_coefficient_slider->setValue( int(Particle::getCd()*100.) ); // double internal value is transformed to int on the slider
+
+}
+
+void MainWindow::updateLogs() {
+	ui->Energy_value->setText( QString::number(scene.energy()) );
+	ui->Impulse_value->setText( QString::number(scene.impulse_magnitude()) );
 }

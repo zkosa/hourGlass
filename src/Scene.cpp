@@ -178,7 +178,11 @@ void Scene::collide_cells() {
 	}
 }
 
-void Scene::createCells(const int Nx, const int Ny, const int Nz) {
+void Scene::createCells() {
+
+	int Nx = Cell::getNx();
+	int Ny = Cell::getNy();
+	int Nz = Cell::getNz();
 
 	double dx = boundingBox.diagonal().x/Nx;
 	double dy = boundingBox.diagonal().y/Ny;
@@ -230,4 +234,12 @@ double Scene::energy() {
 		energy += p.energy();
 	}
 	return energy;
+}
+
+Vec3d Scene::impulse() {
+	Vec3d impulse{ 0,0,0 };
+	for (auto& p :particles) {
+		impulse = impulse + p.impulse();
+	}
+	return impulse;
 }

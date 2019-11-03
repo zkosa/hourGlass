@@ -5,6 +5,12 @@
 #include "Scene.h"
 #include <omp.h>
 
+int Cell::Nx = 10;
+
+int Cell::Ny = Cell::Nx;
+
+int Cell::Nz = 1; // 2D
+
 Cell::Cell(const Vec3d& center, const Vec3d& dX)
 {
 	bounds.x = (center - dX/2)*Vec3d::i;

@@ -18,9 +18,6 @@ class Scene {
 	std::vector<Boundary_axis_symmetric> boundaries_ax;
 	std::vector<Cell> cells;
 
-	double x = 0.2;
-
-
 public:
 	void init(int number_of_particles=500, double radius=0.01);
 	void resolve_constraints_on_init(int sweeps=20);
@@ -37,12 +34,14 @@ public:
 
 	BoundingBox boundingBox = BoundingBox(*this);
 
-	void createCells(const int Nx=10, const int Ny=10, const int Nz=1);
+	void createCells();
 	void drawCells();
 	void populateCells();
 	void clearCells();
 
 	double energy();
+	Vec3d impulse();
+	double impulse_magnitude() { return abs(impulse()); }
 
 };
 

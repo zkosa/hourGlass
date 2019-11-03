@@ -20,6 +20,8 @@ struct Bounds {
 
 class Cell {
 
+	static int Nx, Ny, Nz;
+
 	Bounds bounds;
 
 	Vec3d center_ = {0.5*(bounds.x+bounds.X), 0.5*(bounds.y+bounds.Y), 0.5*(bounds.z+bounds.Z)};
@@ -56,6 +58,14 @@ public:
 	const Vec3d& getCenter() const {return center_;}
 
 	const std::vector<int>& getParticleIDs() const {return particle_IDs;}
+
+	static int getNx() {return Nx;}
+	static int getNy() {return Ny;}
+	static int getNz() {return Nz;}
+	static void setNx(int _nx) {Nx = _nx;}
+	static void setNy(int _ny) {Ny = _ny;}
+	static void setNz(int _nz) {Nz = _nz;}
+
 };
 
 

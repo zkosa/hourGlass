@@ -7,6 +7,8 @@ Particle::Particle(){};
 
 Particle::~Particle(){};
 
+double Particle::Cd = 0.5; // non-constexpr static members must be initialized in the definition
+
 void Particle::advance(double dt) {
 	// velocity Verlet integration
 
