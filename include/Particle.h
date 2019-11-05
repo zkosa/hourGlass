@@ -26,11 +26,12 @@ private:
 	Vec3d acc = gravity;
 	GLFWwindow* window =0;
 
-	static constexpr double restitution_coeff = 0.5; // now used only between walls and particles
-	static double Cd; // non-const can not be initialized in the declaration
 	static constexpr double density = 2700; // kg/m3
 	static constexpr double density_medium = 1; // air kg/m3
-	double radius = 0.05;
+	static constexpr double restitution_coeff = 0.5; // now used only between walls and particles
+	static double Cd; // non-const can not be initialized in the declaration
+	static double uniform_radius;
+	double radius = uniform_radius;
 	double volume() const {return radius*radius*radius * pi * 4.0 / 3.0;}
 	double mass() const {return volume()*density;}
 	double A() const {return radius*radius * pi;}
@@ -70,6 +71,7 @@ public:
 	void setWindow(GLFWwindow* _window) {window = _window;}
 
 	static void setCd(const double _Cd) {Cd = _Cd;}
+	static void setUniformRadius(double _uniform_radius) {uniform_radius = _uniform_radius;}
 
 	int getID() const {return ID;}
 	double getX() const {return pos.x;}
@@ -84,6 +86,7 @@ public:
 	// (they do not modify any instance of the class)
 	static double getCd() {return Cd;}
 	static double energy_of_all_particles_combined();
+	static double getUniformRadius() {return uniform_radius;}
 
 	void debug() const;
 };

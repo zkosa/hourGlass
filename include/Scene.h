@@ -40,6 +40,11 @@ public:
 	void drawCells();
 	void populateCells();
 	void clearCells();
+	void deleteCells();
+
+	void clearParticles();
+	void addParticles(int N, double y=1.0, double r=Particle::getUniformRadius(), bool randomize_y=true);
+
 
 	double energy();
 	Vec3d impulse();

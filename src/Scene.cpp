@@ -25,28 +25,7 @@ void Scene::init(int number_of_particles, double radius) {
     //boundaries.push_back(side_wall2);
     boundaries_ax.push_back(glass);
 
-    //int number_of_particles = 500; //500
-
-    int number_of_distinct_random = 500;
-    std::random_device rd; // obtain a random number from hardware
-    std::mt19937 eng(rd()); // seed the generator
-    std::uniform_int_distribution<> distr(-number_of_distinct_random, number_of_distinct_random); // define the range
-
-
-    double x;
-    double y = 1; //0.95;
-    double r = radius; //0.01
-    double random1, random2;
-    for (int i=0; i < number_of_particles; i++) {
-		//particle[i].setWindow(window);
-		//x = double(distr(eng))  / number_of_distinct_random;
-		x = -corner*0.99 + i*(2*corner*0.99)/number_of_particles;
-		random1 = 0; //double(distr(eng))  / number_of_distinct_random;
-		random2 = double(distr(eng))  / number_of_distinct_random;
-		r *= (1 + random1/2.);
-
-		particles.emplace_back(  Vec3d(x, y*(1+random2/200.), 0), Vec3d(0, 0, 0), i , r );  // no need to type the constructor!!!
-    }
+    addParticles(number_of_particles);
 }
 
 void Scene::resolve_constraints_on_init(int sweeps) {
@@ -84,6 +63,7 @@ void Scene::resolve_constraints_on_init(int sweeps) {
 
 
 void Scene::resolve_constraints_on_init_cells(int sweeps) {
+	this->populateCells();
 	for (int sweep=0; sweep < sweeps; ++sweep) {
 		std::cout << sweep << " " << std::flush;
 
@@ -180,6 +160,8 @@ void Scene::collide_cells() {
 
 void Scene::createCells() {
 
+	deleteCells();
+
 	int Nx = Cell::getNx();
 	int Ny = Cell::getNy();
 	int Nz = Cell::getNz();
@@ -228,6 +210,35 @@ void Scene::clearCells() {
 	}
 }
 
+void Scene::deleteCells() {
+	cells.clear();
+}
+
+void Scene::clearParticles(){
+	particles.clear();
+}
+
+void Scene::addParticles(int N, double y, double r, bool randomize_y) {
+
+	int number_of_distinct_random = 500;
+	std::random_device rd; // obtain a random number from hardware
+	std::mt19937 eng(rd()); // seed the generator
+	std::uniform_int_distribution<> distr(-number_of_distinct_random, number_of_distinct_random); // define the range
+
+	float corner = 0.999;
+	double x;
+	double random1, random2;
+	double radius;
+	for (int i=0; i < N; i++) {
+		x = -corner*0.99 + i*(2*corner*0.99)/N;
+		random1 = 0; //double(distr(eng))  / number_of_distinct_random;
+		random2 = double(distr(eng))  / number_of_distinct_random;
+		radius = r*(1 + random1/2.);
+
+		particles.emplace_back(  Vec3d(x, y*(1+random2/200.), 0), Vec3d(0, 0, 0), i , radius );  // no need to type the constructor!!!
+	}
+}
+
 double Scene::energy() {
 	double energy = 0;
 	for (auto& p :particles) {
@@ -248,6 +259,7 @@ void Scene::setRunning() {
 	running = true;
 	std::cout << "Starting..." << std::endl;
 }
+
 void Scene::setStopping() {
 	running = false;
 	std::cout << "Stopping..." << std::endl;

@@ -4,17 +4,14 @@
 
 #include "Timer.h"
 #include <GLFW/glfw3.h>
-//#include <QOpenGLContext>
 
 #include "CustomOpenGLWidget.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-	geometry(box),
-	number_of_particles(500*5),
-	radius(0.005)
-
+	geometry(hourglass),
+	number_of_particles(500*5)
 {
 
 	scene.init(number_of_particles, radius);
@@ -26,6 +23,9 @@ MainWindow::MainWindow(QWidget *parent) :
     Scene* scene_ptr = &scene;
     ui->openGLWidget->connectScene(scene_ptr);
     ui->openGLWidget->connectMainWindow(this);
+
+    ui->cells_Nz_Label->setEnabled(false); // 2D
+    ui->cells_Nz_SpinBox->setEnabled(false); // 2D
 
     //ui->openGLWidget->initializeGL(); // it is promoted in the GUI to the custom CustomOpenGLWidget
     //ui->openGLWidget->paintGL();
@@ -51,31 +51,50 @@ void MainWindow::on_geometryComboBox_currentIndexChanged(int geo) {
 }
 
 void MainWindow::on_Particle_number_slider_valueChanged(int particle_number_) {
-	ui->Particle_number_value->setNum(particle_number_);
 	number_of_particles = particle_number_;
+	ui->Particle_number_value->setNum(number_of_particles);
+
+	scene.clearParticles();
+	scene.addParticles(number_of_particles);
+	scene.populateCells();  // scene.resolve_constraints_on_init_cells(5);
+
 }
 
-void MainWindow::on_Particle_diameter_slider_valueChanged(int particle_diameter_) {
-	ui->Particle_diameter_value->setNum(particle_diameter_);
-	radius = particle_diameter_/1000./2.; // int [mm] --> double [m], diamter --> radius
+void MainWindow::on_Particle_diameter_slider_valueChanged(int particle_diameter_mm) {
+	ui->Particle_diameter_value->setNum(particle_diameter_mm);
+	double r = particle_diameter_mm/1000./2.; // int [mm] --> double [m], diamter --> radius
+	Particle::setUniformRadius(r);
+
+	for (auto& p : scene.getParticles()) {
+		p.setR(r);
+	}
+
+	scene.populateCells(); // e.g. an increased particle may touch other cells too
+	//scene.resolve_constraints_on_init(3); // it makes it slow, it should be performed only for the last value
 }
 
 void MainWindow::on_cells_Nx_SpinBox_valueChanged(int Nx_)
 {
-	Cell::setNx(Nx_);
-	updateGUIcontrols();
+		Cell::setNx(Nx_);
+		updateGUIcontrols();
+		scene.createCells();
+		scene.populateCells();
 }
 
 void MainWindow::on_cells_Ny_SpinBox_valueChanged(int Ny_)
 {
-	Cell::setNy(Ny_);
-	updateGUIcontrols();
+		Cell::setNy(Ny_);
+		updateGUIcontrols();
+		scene.createCells();
+		scene.populateCells();
 }
 
 void MainWindow::on_cells_Nz_SpinBox_valueChanged(int Nz_)
 {
-	Cell::setNz(Nz_);
-	updateGUIcontrols();
+		Cell::setNz(Nz_);
+		updateGUIcontrols();
+		scene.createCells();
+		scene.populateCells();
 }
 
 void MainWindow::on_Drag_coefficient_slider_valueChanged(int drag100) {
@@ -162,20 +181,35 @@ void MainWindow::run_simulation_glfw() {
 
 void MainWindow::run_simulation() {
 
-	if (!scene.isRunning()) {
+	if (!scene.isRunning()) { // starting
 		scene.setRunning();
+
 		ui->startButton->setText(QString("Pause"));
+
+		ui->geometryComboBox->setEnabled(false);
+		ui->cells_Nx_SpinBox->setEnabled(false);
+		ui->cells_Ny_SpinBox->setEnabled(false);
+		ui->Particle_number_slider->setEnabled(false);
+
 		scene.resolve_constraints_on_init_cells(5);
 		scene.populateCells();
 	}
-	else {
+	else { // stopping
 		scene.setStopping();
-		ui->startButton->setText(QString("Start"));
+
+		ui->startButton->setText(QString("Continue"));
+
+		ui->geometryComboBox->setEnabled(false);
+		ui->cells_Nx_SpinBox->setEnabled(true);
+		ui->cells_Ny_SpinBox->setEnabled(true);
+		ui->Particle_number_slider->setEnabled(false);
 	}
 
 }
 
 void MainWindow::updateGUIcontrols() {
+
+	ui->geometryComboBox->setCurrentIndex( geometry);
 
 	// for SpinBoxes only the values have to be changed:
 	ui->cells_Nx_SpinBox->setValue( Cell::getNx() );
@@ -183,12 +217,17 @@ void MainWindow::updateGUIcontrols() {
 	ui->cells_Nz_SpinBox->setValue( Cell::getNz() );
 
 	// for sliders both the slider positions and the corresponding display labels:
+	ui->Particle_number_slider->setValue(number_of_particles);
+	ui->Particle_number_value->setText( QString::number(number_of_particles) );
+
+	ui->Particle_diameter_slider->setValue( Particle::getUniformRadius()* 2. * 1000.);
+	ui->Particle_diameter_value->setText( QString::number(Particle::getUniformRadius() * 2. * 1000.) + " mm" );
+
 	ui->Drag_coefficient_value->setText( QString::number(Particle::getCd()) );
 	ui->Drag_coefficient_slider->setValue( int(Particle::getCd()*100.) ); // double internal value is transformed to int on the slider
-
 }
 
 void MainWindow::updateLogs(){
-	ui->Energy_value->setText( QString::number(scene.energy()) );
-	ui->Impulse_value->setText( QString::number(scene.impulse_magnitude()) );
+	ui->Energy_value->setText( QString::number(scene.energy()) + " J");
+	ui->Impulse_value->setText( QString::number(scene.impulse_magnitude()) + " kg*m/s");
 }
