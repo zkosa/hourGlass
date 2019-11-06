@@ -34,9 +34,6 @@ private:
     Ui::MainWindow *ui;
 
     Scene scene;
-    enum Geometry {hourglass=0, box=1};
-    std::string  geometry_names[2] = {"hourglass", "box"};
-    Geometry geometry;
     int number_of_particles;
     double radius;
 

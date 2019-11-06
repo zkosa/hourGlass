@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="startButton">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>290</y>
+      <x>140</x>
+      <y>250</y>
       <width>99</width>
       <height>27</height>
      </rect>
@@ -109,7 +109,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>3</y>
+      <y>50</y>
       <width>381</width>
       <height>187</height>
      </rect>
@@ -420,4 +420,7 @@
  </tabstops>
  <resources/>
  <connections/>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+ </buttongroups>
 </ui>

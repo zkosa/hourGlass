@@ -28,6 +28,37 @@ void Scene::init(int number_of_particles, double radius) {
     addParticles(number_of_particles);
 }
 
+void Scene::createGeometry(int geo) {
+
+	createGeometry(static_cast<Geometry>(geo));
+
+}
+
+void Scene::createGeometry(Geometry geometry) {
+
+	boundaries_pl.clear();
+	boundaries_ax.clear();
+
+	float corner = 0.999;
+
+	if (geometry == hourglass) {
+	    Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, -corner, 0), Vec3d(-1, -corner, 1));
+	    Boundary_axis_symmetric glass;
+
+	    boundaries_pl.push_back(ground);
+	    boundaries_ax.push_back(glass);
+	}
+	else if (geometry == box) {
+	    Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, 0, 0), Vec3d(-1, -corner, 1));
+	    Boundary_planar side_wall(Vec3d(1, -corner, 0), Vec3d(1, corner, 0), Vec3d(1, 0, 1));
+	    Boundary_planar side_wall2(Vec3d(-corner, -corner, 0), Vec3d(-corner, corner, 0), Vec3d(-corner, 0, 1));
+
+	    boundaries_pl.push_back(ground);
+	    boundaries_pl.push_back(side_wall);
+	    boundaries_pl.push_back(side_wall2);
+	}
+}
+
 void Scene::resolve_constraints_on_init(int sweeps) {
 
     for (int sweep=0; sweep < sweeps; ++sweep) {

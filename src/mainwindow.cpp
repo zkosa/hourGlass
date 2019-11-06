@@ -10,11 +10,13 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-	geometry(hourglass),
 	number_of_particles(500*5)
 {
 
-	scene.init(number_of_particles, radius);
+	//scene.init(number_of_particles, radius);
+	scene.createGeometry(scene.getGeometry());
+	scene.addParticles(number_of_particles);
+
     scene.createCells();
 
     ui->setupUi(this);
@@ -46,8 +48,9 @@ void MainWindow::on_startButton_clicked() {
 }
 
 void MainWindow::on_geometryComboBox_currentIndexChanged(int geo) {
-	geometry = Geometry(geo);
-	std::cout << "Geometry -- " << geometry_names[geometry] << " -- is activated." << std::endl;
+	scene.setGeometry(geo);
+	scene.createGeometry(geo);
+	std::cout << "Geometry -- " << scene.getGeometryName() << " -- is activated." << std::endl;
 }
 
 void MainWindow::on_Particle_number_slider_valueChanged(int particle_number_) {
@@ -209,7 +212,7 @@ void MainWindow::run_simulation() {
 
 void MainWindow::updateGUIcontrols() {
 
-	ui->geometryComboBox->setCurrentIndex( geometry);
+	ui->geometryComboBox->setCurrentIndex( scene.getGeometry());
 
 	// for SpinBoxes only the values have to be changed:
 	ui->cells_Nx_SpinBox->setValue( Cell::getNx() );

@@ -18,6 +18,10 @@ class Scene {
 	std::vector<Boundary_axis_symmetric> boundaries_ax;
 	std::vector<Cell> cells;
 
+    enum Geometry {hourglass=0, box=1};
+    Geometry geometry = hourglass;
+    std::string  geometry_names[2] = {"hourglass", "box"};
+
 	bool running = false;
 
 public:
@@ -33,9 +37,13 @@ public:
 	std::vector<Particle>& getParticles() { return particles; }
 	std::vector<Boundary_planar>& getBoundariesPlanar() { return boundaries_pl; }
 	std::vector<Boundary_axis_symmetric>& getBoundariesAxiSym() { return boundaries_ax; }
+	Geometry& getGeometry() { return geometry; }
+	std::string  getGeometryName() { return geometry_names[geometry]; }
 
 	BoundingBox boundingBox = BoundingBox(*this);
 
+	void createGeometry(int);
+	void createGeometry(Geometry);
 	void createCells();
 	void drawCells();
 	void populateCells();
@@ -53,6 +61,8 @@ public:
 	bool isRunning() { return running; }
 	void setRunning();
 	void setStopping();
+	void setGeometry(int _geo) { geometry = static_cast<Geometry>(_geo); };
+	void setGeometry(Geometry _geo) { geometry = _geo; };
 
 };
 
