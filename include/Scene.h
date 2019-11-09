@@ -8,6 +8,7 @@
 #include "Boundary_planar.h"
 #include "Boundary_axis_symmetric.h"
 #include "Cell.h"
+#include "Timer.h"
 
 class MainWindow;
 
@@ -21,18 +22,34 @@ class Scene {
 	std::vector<Boundary_axis_symmetric> boundaries_ax;
 	std::vector<Cell> cells;
 
-    enum Geometry {hourglass=0, box=1};
-    Geometry geometry = hourglass;
-    std::string  geometry_names[2] = {"hourglass", "box"};
+	enum Geometry {hourglass=0, box=1};
+	Geometry geometry = hourglass;
+	std::string  geometry_names[2] = {"hourglass", "box"};
 
-    bool started = false;
+	bool started = false;
 	bool running = false;
 	bool finished = false;
 	bool benchmark_mode = false;
 
-	double benchmark_simulation_time = 1./10; // [s]
+	double benchmark_simulation_time = 1; // [s]
+
+	int loop_counter = 0;
+	double duration = 0.;
+
+	struct Defaults {
+		double time_step = 0.001;
+		int Nx=10, Ny=Nx, Nz=1;
+		Geometry geometry = hourglass;
+		int number_of_particles = 5000;
+		double particle_diameter = 0.005; // [m]
+		double Cd = 0.5;
+	};
+
+	Defaults defaults;
 
 public:
+	Timer timer_all, timer;
+
 	void connectViewer(MainWindow* _mainwindow) { viewer = _mainwindow; }
 	void init(int number_of_particles=500, double radius=0.01);
 	void resolve_constraints_on_init(int sweeps=20);
@@ -77,8 +94,19 @@ public:
 	void setGeometry(int _geo) { geometry = static_cast<Geometry>(_geo); };
 	void setGeometry(Geometry _geo) { geometry = _geo; };
 	void setBenchmarkMode(bool b) { benchmark_mode = b; }
+	void setTimestep(double dt) { time_step = dt; }
+	void resetCounter() { loop_counter = 0; };
+
+	double getDuration() { return duration; }
+	void setDuration(double _duration) { duration = _duration; }
+	void addToDuration(double _duration) { duration += _duration; }
 
 	void reset();
+
+	void advanceCounter() { loop_counter+=1; };
+	int getCounter() { return loop_counter; }
+
+	void applyDefaults();
 
 };
 

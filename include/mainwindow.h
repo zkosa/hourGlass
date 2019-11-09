@@ -20,6 +20,7 @@ public:
     void updateGUIcontrols();
     void updateLogs();
     int getNumberOfParticles() { return number_of_particles; };
+    void setNumberOfParticles(double _N) { number_of_particles = _N; };
 
 signals:
 	void sendFinishedSignal();

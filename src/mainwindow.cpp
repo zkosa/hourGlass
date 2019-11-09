@@ -12,33 +12,27 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
 	number_of_particles(500*5)
 {
+	ui->setupUi(this);
+	// connecting the window to the simulation scene:
+	scene.connectViewer(this);
 
-	//scene.init(number_of_particles, radius);
+	scene.applyDefaults();
 	scene.createGeometry(scene.getGeometry());
 	scene.addParticles(number_of_particles);
+	scene.createCells();
 
-    scene.createCells();
+	// connecting the simulation scene to the window:
+	Scene* scene_ptr = &scene;
+	ui->openGLWidget->connectScene(scene_ptr);
+	ui->openGLWidget->connectMainWindow(this);
 
-    ui->setupUi(this);
+	ui->cells_Nz_Label->setEnabled(false); // 2D
+	ui->cells_Nz_SpinBox->setEnabled(false); // 2D
 
-    // connecting the window to the simulation scene:
-    scene.connectViewer(this);
+	// refreshing when simulation has ended (end time is reached, not the stop button is pressed):
+	QApplication::connect(this, SIGNAL( sendFinishedSignal() ), this, SLOT( handleFinish() ) );
 
-    // connecting the simulation scene to the window:
-    Scene* scene_ptr = &scene;
-    ui->openGLWidget->connectScene(scene_ptr);
-    ui->openGLWidget->connectMainWindow(this);
-
-    ui->cells_Nz_Label->setEnabled(false); // 2D
-    ui->cells_Nz_SpinBox->setEnabled(false); // 2D
-
-    //ui->openGLWidget->initializeGL(); // it is promoted in the GUI to the custom CustomOpenGLWidget
-    //ui->openGLWidget->paintGL();
-
-    // refreshing when simulation has ended (end time is reached, not the stop button is pressed):
-    QApplication::connect(this, SIGNAL( sendFinishedSignal() ), this, SLOT( handleFinish() ) );
-
-    updateGUIcontrols();
+	updateGUIcontrols();
 
 }
 
@@ -293,9 +287,6 @@ void MainWindow::handleFinish() {
 	// for updating the buttons according to the new state, which was changed not from the GUI, but from the the scene
 	std::cout << "sendFinishedSignal() is successfully received." << std::endl;
 	updateGUIcontrols();
-	std::cout << "Started: " << scene.isStarted() << std::endl;
-	std::cout << "Running: " << scene.isRunning() << std::endl;
-	std::cout << "Finished: " << scene.isFinished() << std::endl;
 }
 
 void MainWindow::run() { // start, continue
@@ -353,4 +344,6 @@ void MainWindow::reset() {
 	ui->cells_Nx_SpinBox->setEnabled(true);
 	ui->cells_Ny_SpinBox->setEnabled(true);
 	ui->Particle_number_slider->setEnabled(true);
+
+	updateGUIcontrols();
 }

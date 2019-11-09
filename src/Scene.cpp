@@ -140,6 +140,7 @@ void Scene::advance() {
 			p.advance(time_step);
 		}
 	}
+	advanceCounter();
 	//std::cout << "Time: " << time << " s" << std::endl << std::flush;
 }
 
@@ -304,6 +305,9 @@ void Scene::setFinished() {
 	finished = true;
 	std::cout << "Finishing..." << std::endl;
 	viewer->sendFinishedSignal();
+
+	std::cout << "Execution time of physics loop: " <<  duration << std::endl;
+	std::cout << "Execution time of physics loop / loop: " <<  duration/getCounter() << std::endl;
 }
 
 void Scene::reset() {
@@ -312,14 +316,29 @@ void Scene::reset() {
 	finished = false;
 	std::cout << "Resetting..." << std::endl;
 
+	time = 0;
+
 	boundaries_ax.clear();
 	boundaries_pl.clear();
 	particles.clear();
 	cells.clear();
+
+	applyDefaults();
 
 	createGeometry(geometry);
 	addParticles(viewer->getNumberOfParticles());
 	createCells();
 	populateCells();
 
+}
+
+void Scene::applyDefaults() {
+	setTimestep(defaults.time_step);
+	setGeometry(defaults.geometry);
+	Cell::setNx(defaults.Nx);
+	Cell::setNy(defaults.Ny);
+	Cell::setNz(defaults.Nz);
+	viewer->setNumberOfParticles(defaults.number_of_particles);
+	Particle::setUniformRadius(0.5*defaults.particle_diameter);
+	Particle::setCd(defaults.Cd);
 }
