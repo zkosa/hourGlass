@@ -21,6 +21,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
 
+    // connecting the window to the simulation scene:
+    scene.connectViewer(this);
+
     // connecting the simulation scene to the window:
     Scene* scene_ptr = &scene;
     ui->openGLWidget->connectScene(scene_ptr);
@@ -32,6 +35,9 @@ MainWindow::MainWindow(QWidget *parent) :
     //ui->openGLWidget->initializeGL(); // it is promoted in the GUI to the custom CustomOpenGLWidget
     //ui->openGLWidget->paintGL();
 
+    // refreshing when simulation has ended (end time is reached, not the stop button is pressed):
+    QApplication::connect(this, SIGNAL( sendFinishedSignal() ), this, SLOT( handleFinish() ) );
+
     updateGUIcontrols();
 
 }
@@ -41,10 +47,38 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::on_checkBox_benchmarkMode_stateChanged(int benchmark_checked) {
+	if (benchmark_checked) {
+		scene.setBenchmarkMode(true);
+
+		ui->geometryComboBox->setEnabled(false);
+		ui->cells_Nx_SpinBox->setEnabled(false);
+		ui->cells_Ny_SpinBox->setEnabled(false);
+		ui->cells_Nz_SpinBox->setEnabled(false);
+		ui->Particle_number_slider->setEnabled(false);
+		ui->Particle_diameter_slider->setEnabled(false);
+		ui->Drag_coefficient_slider->setEnabled(false);
+	}
+	else { // unchecked
+		scene.setBenchmarkMode(false);
+
+		ui->geometryComboBox->setEnabled(true);
+		ui->cells_Nx_SpinBox->setEnabled(true);
+		ui->cells_Ny_SpinBox->setEnabled(true);
+		ui->cells_Nz_SpinBox->setEnabled(true);
+		ui->Particle_number_slider->setEnabled(true);
+		ui->Particle_diameter_slider->setEnabled(true);
+		ui->Drag_coefficient_slider->setEnabled(true);
+	}
+	updateGUIcontrols();
+}
+
 void MainWindow::on_startButton_clicked() {
 	run_simulation();
 	//run_simulation_glfw();
-
+}
+void MainWindow::on_stopButton_clicked() {
+	finish();
 }
 
 void MainWindow::on_geometryComboBox_currentIndexChanged(int geo) {
@@ -60,13 +94,13 @@ void MainWindow::on_Particle_number_slider_valueChanged(int particle_number_) {
 	scene.clearParticles();
 	scene.addParticles(number_of_particles);
 	scene.populateCells();  // scene.resolve_constraints_on_init_cells(5);
-
 }
 
 void MainWindow::on_Particle_diameter_slider_valueChanged(int particle_diameter_mm) {
-	ui->Particle_diameter_value->setNum(particle_diameter_mm);
+	//ui->Particle_diameter_value->setNum(particle_diameter_mm);
 	double r = particle_diameter_mm/1000./2.; // int [mm] --> double [m], diamter --> radius
 	Particle::setUniformRadius(r);
+	updateGUIcontrols();
 
 	for (auto& p : scene.getParticles()) {
 		p.setR(r);
@@ -184,35 +218,55 @@ void MainWindow::run_simulation_glfw() {
 
 void MainWindow::run_simulation() {
 
-	if (!scene.isRunning()) { // starting
-		scene.setRunning();
-
-		ui->startButton->setText(QString("Pause"));
-
-		ui->geometryComboBox->setEnabled(false);
-		ui->cells_Nx_SpinBox->setEnabled(false);
-		ui->cells_Ny_SpinBox->setEnabled(false);
-		ui->Particle_number_slider->setEnabled(false);
-
-		scene.resolve_constraints_on_init_cells(5);
-		scene.populateCells();
+	if (ui->startButton->text() == start_text  ||
+		ui->startButton->text() == continue_text)
+	{
+		run();  // starting, continuing
 	}
-	else { // stopping
-		scene.setStopping();
-
-		ui->startButton->setText(QString("Continue"));
-
-		ui->geometryComboBox->setEnabled(false);
-		ui->cells_Nx_SpinBox->setEnabled(true);
-		ui->cells_Ny_SpinBox->setEnabled(true);
-		ui->Particle_number_slider->setEnabled(false);
+	else if (ui->startButton->text() == reset_text)
+	{
+		reset();
+	}
+	else if (ui->startButton->text() == pause_text)
+	{
+		pause();
+	}
+	else {
+		std::cout << "Unexpected state in startButton" << std::endl;
+		std::cout << "Started: " << scene.isStarted() << std::endl;
+		std::cout << "Running: " << scene.isRunning() << std::endl;
+		std::cout << "Finished: " << scene.isFinished() << std::endl;
+		std::cout << "ui->startButton->text(): " << ui->startButton->text().toStdString() << std::endl;
 	}
 
 }
 
 void MainWindow::updateGUIcontrols() {
 
-	ui->geometryComboBox->setCurrentIndex( scene.getGeometry());
+	if ( scene.benchmarkMode() ) {
+		ui->checkBox_benchmarkMode->setChecked(true);
+	}
+	else {
+		ui->checkBox_benchmarkMode->setChecked(false);
+	}
+
+	if ( !scene.isStarted() && !scene.isRunning() && !scene.isFinished() ) {
+		ui->startButton->setText(start_text);
+		ui->stopButton->setText(stop_text); ui->stopButton->setEnabled(false);
+	}
+	else if ( scene.isStarted() && scene.isRunning() && !scene.isFinished() ) {
+		ui->startButton->setText(pause_text);
+		ui->stopButton->setText(stop_text); ui->stopButton->setEnabled(true);
+	}
+	else if ( scene.isStarted() && !scene.isRunning() && scene.isFinished() ) {
+		ui->startButton->setText(reset_text);
+		ui->stopButton->setText(stop_text); ui->stopButton->setEnabled(false);
+	}
+	else {
+		std::cout << "State not handled by MainWindow::updateGUIcontrols()" << std::endl;
+	}
+
+	ui->geometryComboBox->setCurrentIndex( scene.getGeometry() );
 
 	// for SpinBoxes only the values have to be changed:
 	ui->cells_Nx_SpinBox->setValue( Cell::getNx() );
@@ -233,4 +287,70 @@ void MainWindow::updateGUIcontrols() {
 void MainWindow::updateLogs(){
 	ui->Energy_value->setText( QString::number(scene.energy()) + " J");
 	ui->Impulse_value->setText( QString::number(scene.impulse_magnitude()) + " kg*m/s");
+}
+
+void MainWindow::handleFinish() {
+	// for updating the buttons according to the new state, which was changed not from the GUI, but from the the scene
+	std::cout << "sendFinishedSignal() is successfully received." << std::endl;
+	updateGUIcontrols();
+	std::cout << "Started: " << scene.isStarted() << std::endl;
+	std::cout << "Running: " << scene.isRunning() << std::endl;
+	std::cout << "Finished: " << scene.isFinished() << std::endl;
+}
+
+void MainWindow::run() { // start, continue
+	scene.setRunning();
+
+	QString start_or_continue_text = ui->startButton->text();
+
+	ui->startButton->setText(pause_text);
+	ui->stopButton->setEnabled(true);
+	ui->checkBox_benchmarkMode->setEnabled(false); // disable mode change during run
+
+	ui->geometryComboBox->setEnabled(false);
+	ui->cells_Nx_SpinBox->setEnabled(false);
+	ui->cells_Ny_SpinBox->setEnabled(false);
+	ui->Particle_number_slider->setEnabled(false);
+
+	if (start_or_continue_text == start_text) {
+		scene.resolve_constraints_on_init_cells(5);
+		scene.populateCells();
+	}
+}
+
+void MainWindow::pause() {
+	scene.setStopping();
+
+	ui->startButton->setText(continue_text);
+
+	ui->geometryComboBox->setEnabled(false);
+	ui->cells_Nx_SpinBox->setEnabled(true);
+	ui->cells_Ny_SpinBox->setEnabled(true);
+	ui->Particle_number_slider->setEnabled(false);
+}
+
+void MainWindow::finish() {
+	scene.setFinished();
+
+	ui->startButton->setText(reset_text);
+	ui->stopButton->setEnabled(false);
+
+	ui->geometryComboBox->setEnabled(true);
+	ui->cells_Nx_SpinBox->setEnabled(true);
+	ui->cells_Ny_SpinBox->setEnabled(true);
+	ui->Particle_number_slider->setEnabled(true);
+}
+
+void MainWindow::reset() {
+	scene.reset();
+
+	ui->startButton->setText(start_text);
+	ui->stopButton->setEnabled(false);
+	ui->checkBox_benchmarkMode->setEnabled(true);
+	ui->checkBox_benchmarkMode->setChecked(false);
+
+	ui->geometryComboBox->setEnabled(true);
+	ui->cells_Nx_SpinBox->setEnabled(true);
+	ui->cells_Ny_SpinBox->setEnabled(true);
+	ui->Particle_number_slider->setEnabled(true);
 }

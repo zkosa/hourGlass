@@ -3,10 +3,8 @@
 #include "Boundary_axis_symmetric.h"
 #include <random>
 #include <omp.h>
+#include "mainwindow.h"
 
-void beep() {
-	std::cout << '\a';
-}
 
 void Scene::init(int number_of_particles, double radius) {
 
@@ -89,7 +87,6 @@ void Scene::resolve_constraints_on_init(int sweeps) {
 			}
 		}
     }
-    beep();
 }
 
 
@@ -116,7 +113,6 @@ void Scene::resolve_constraints_on_init_cells(int sweeps) {
 		// redraw the scene after each sweeps:
 		//this->draw(); // glfwSwapBuffers is not available here!
 	}
-	beep();
     std::cout << std::endl;
 }
 
@@ -127,16 +123,22 @@ void Scene::draw() {
 	for (auto& b : boundaries_ax) {
 		b.draw2D();
 	}
-
 	for (auto& p : particles) {
 		p.draw2D();
 	}
 }
 
 void Scene::advance() {
-	time += time_step;
-	for (auto& p : particles) {
-		p.advance(time_step);
+	if (benchmark_mode && time >= benchmark_simulation_time) { // in benchmark mode the simulation time is fixed
+		//setStopping();
+		setFinished();
+		std::cout << "The benchmark has been finished." << std::endl;
+	}
+	else {
+		time += time_step;
+		for (auto& p : particles) {
+			p.advance(time_step);
+		}
 	}
 	//std::cout << "Time: " << time << " s" << std::endl << std::flush;
 }
@@ -288,10 +290,36 @@ Vec3d Scene::impulse() {
 
 void Scene::setRunning() {
 	running = true;
+	started = true;
 	std::cout << "Starting..." << std::endl;
 }
 
 void Scene::setStopping() {
 	running = false;
 	std::cout << "Stopping..." << std::endl;
+}
+
+void Scene::setFinished() {
+	running = false;
+	finished = true;
+	std::cout << "Finishing..." << std::endl;
+	viewer->sendFinishedSignal();
+}
+
+void Scene::reset() {
+	started = false;
+	running = false;
+	finished = false;
+	std::cout << "Resetting..." << std::endl;
+
+	boundaries_ax.clear();
+	boundaries_pl.clear();
+	particles.clear();
+	cells.clear();
+
+	createGeometry(geometry);
+	addParticles(viewer->getNumberOfParticles());
+	createCells();
+	populateCells();
+
 }
