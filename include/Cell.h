@@ -24,14 +24,18 @@ class Cell {
 
 	Bounds bounds;
 
-	Vec3d center_ = {0.5*(bounds.x+bounds.X), 0.5*(bounds.y+bounds.Y), 0.5*(bounds.z+bounds.Z)};
+	Vec3d center_ = {0,0,0};
 
 	std::vector<int> particle_IDs; // TODO reserve expected size
 	std::vector<int> boundary_IDs_planar;
 	std::vector<int> boundary_IDs_axis_symmetric;
 
+	double r = 0; // center to corner distance
+
+	bool cell_with_boundary = false;
+
 public:
-	Cell() {};
+	//Cell() {};
 	Cell(const Vec3d& center, const Vec3d& dX);
 
 	void init(const Scene&);
@@ -41,6 +45,7 @@ public:
 	void clear();
 	void populate(std::vector<Particle>& particles);
 	bool contains(const Particle&);
+	bool contains(const Boundary&);
 	void addParticle(const Particle&);
 	void addBoundaryPlanar(const Boundary_planar&);
 	void addBoundaryAxiSym(const Boundary_axis_symmetric&);
@@ -58,6 +63,11 @@ public:
 	const Vec3d& getCenter() const {return center_;}
 
 	const std::vector<int>& getParticleIDs() const {return particle_IDs;}
+
+	bool hasBoundary() {return cell_with_boundary;}
+
+	void setCellWithBoundary() {cell_with_boundary = true;}
+	void setCellWithoutBoundary() {cell_with_boundary = false;}
 
 	static int getNx() {return Nx;}
 	static int getNy() {return Ny;}

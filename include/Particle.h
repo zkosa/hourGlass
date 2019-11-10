@@ -24,7 +24,7 @@ private:
 	std::string last_collision = "";
 
 	Vec3d acc = gravity;
-	GLFWwindow* window =0;
+	GLFWwindow* window = nullptr;
 
 	static constexpr double density = 2700; // kg/m3
 	static constexpr double density_medium = 1; // air kg/m3
@@ -37,6 +37,8 @@ private:
 	double A() const {return radius*radius * pi;}
 	double CdA() const {return Cd * A();}
 	double CoR() const {return restitution_coeff;}
+	// particle is in a cell which contains a boundary, therefore it must be considered for collision to boundary
+	bool check_boundary = true;
 
 	Vec3d apply_forces();
 
@@ -69,6 +71,7 @@ public:
 	void setR(double _r) {radius = _r;}
 	void setV(Vec3d _v) {vel = _v;}
 	void setWindow(GLFWwindow* _window) {window = _window;}
+	void setCheckBoundary(bool is_near) {check_boundary = is_near;};
 
 	static void setCd(const double _Cd) {Cd = _Cd;}
 	static void setUniformRadius(double _uniform_radius) {uniform_radius = _uniform_radius;}

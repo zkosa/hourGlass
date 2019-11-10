@@ -47,14 +47,15 @@ void Scene::createGeometry(Geometry geometry) {
 	    boundaries_ax.push_back(glass);
 	}
 	else if (geometry == box) {
-	    Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, 0, 0), Vec3d(-1, -corner, 1));
+	    Boundary_planar slope(Vec3d(-1, -corner, 0), Vec3d(1, 0, 0), Vec3d(-1, -corner, 1));
 	    Boundary_planar side_wall(Vec3d(1, -corner, 0), Vec3d(1, corner, 0), Vec3d(1, 0, 1));
 	    Boundary_planar side_wall2(Vec3d(-corner, -corner, 0), Vec3d(-corner, corner, 0), Vec3d(-corner, 0, 1));
 
-	    boundaries_pl.push_back(ground);
-	    boundaries_pl.push_back(side_wall);
+	    boundaries_pl.push_back(slope);
 	    boundaries_pl.push_back(side_wall2);
+	    boundaries_pl.push_back(side_wall);
 	}
+	markBoundaryCells();
 }
 
 void Scene::resolve_constraints_on_init(int sweeps) {
@@ -222,6 +223,23 @@ void Scene::createCells() {
 		}
 	}
 
+	markBoundaryCells();
+}
+
+void Scene::markBoundaryCells() {
+	for (auto& c : cells) {
+		c.setCellWithoutBoundary(); // clear values before update
+		for (auto& b : boundaries_pl) {
+			if (c.contains(b)) {
+				c.setCellWithBoundary();
+			}
+		}
+		for (auto& b : boundaries_ax) {
+			if (c.contains(b)) {
+				c.setCellWithBoundary();
+			}
+		}
+	}
 }
 
 void Scene::drawCells() {

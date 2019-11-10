@@ -20,6 +20,10 @@ Cell::Cell(const Vec3d& center, const Vec3d& dX)
 	bounds.X = (center + dX/2)*Vec3d::i;
 	bounds.Y = (center + dX/2)*Vec3d::j;
 	bounds.Z = (center + dX/2)*Vec3d::k;
+
+	r = abs(0.5*dX);
+
+	center_ = center;
 }
 
 void Cell::init(const Scene& scene) {
@@ -53,6 +57,15 @@ bool Cell::contains(const Particle& p) {
 			( pos.z + r > bounds.z && pos.z - r < bounds.Z );
 }
 
+bool Cell::contains(const Boundary& b){
+	if (b.distance(center_) <= r) { // + Particle::getUniformRadius()
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 void Cell::addParticle(const Particle& p) {
 	particle_IDs.emplace_back(p.getID());
 }
@@ -65,12 +78,18 @@ void Cell::addBoundaryAxiSym(const Boundary_axis_symmetric& b) {
 
 void Cell::draw2D() {
 	glBegin(GL_LINE_LOOP);
-/*	glEnable( GL_BLEND );
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glColor4f(.23,.78,.32,0.95);
-*/	glVertex2f(float(bounds.x), float(bounds.y));
+//	glEnable( GL_BLEND ); // alpha seems to have no effect
+//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	if (hasBoundary()) {
+		glColor4f(1,0,0, 1);
+	}
+	else {
+		glColor4f(0,1,0, 0.1);
+	}
+	glVertex2f(float(bounds.x), float(bounds.y));
 	glVertex2f(float(bounds.X), float(bounds.y));
 	glVertex2f(float(bounds.X), float(bounds.Y));
 	glVertex2f(float(bounds.x), float(bounds.Y));
+	glColor4f(1, 1, 1, 1);
 	glEnd();
 }

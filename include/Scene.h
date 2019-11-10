@@ -75,6 +75,7 @@ public:
 	void createGeometry(int);
 	void createGeometry(Geometry);
 	void createCells();
+	void markBoundaryCells();
 	void drawCells();
 	void populateCells();
 	void clearCells();

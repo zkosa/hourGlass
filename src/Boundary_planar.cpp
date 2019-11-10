@@ -1,7 +1,11 @@
 #include "Boundary_planar.h"
 
+double Boundary_planar::distance(const Vec3d & point) const {
+	return abs((point - plane_point) * normal);
+}
+
 double Boundary_planar::distance(const Particle & particle) const {
-	return abs((particle.getPos() - point) * normal);
+	return abs((particle.getPos() - plane_point) * normal);
 }
 
 void Boundary_planar::draw2D() {
