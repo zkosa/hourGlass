@@ -161,6 +161,27 @@ void Scene::collide_boundaries() {
 	}
 }
 
+void Scene::collide_boundaries_cells() {
+
+	for (auto& c : cells) {
+		if (c.hasBoundary()) {
+			for (int pID : c.getParticleIDs()) {
+				auto& p = particles[pID];
+				for (auto& b : boundaries_pl) {
+					if ( b.distance(p) < p.getR() ) {
+						p.collide_wall(b);
+					}
+				}
+				for (auto& b : boundaries_ax) {
+					if ( b.distance(p) < p.getR() ) {
+						p.collide_wall(b);
+					}
+				}
+			}
+		}
+	}
+}
+
 void Scene::collide_particles() {
 	for (auto& p1 : particles) {
 		for (auto& p2 : particles) {

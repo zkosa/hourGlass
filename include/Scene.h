@@ -57,6 +57,7 @@ public:
 	void draw();
 	void advance();
 	void collide_boundaries();
+	void collide_boundaries_cells();
 	void collide_particles();
 	void collide_cells();
 
