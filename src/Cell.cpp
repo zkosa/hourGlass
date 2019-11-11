@@ -21,6 +21,15 @@ Cell::Cell(const Vec3d& center, const Vec3d& dX)
 	bounds.Y = (center + dX/2)*Vec3d::j;
 	bounds.Z = (center + dX/2)*Vec3d::k;
 
+	double factor = 0.93;
+	bounds_display.x = (center - factor*dX/2)*Vec3d::i;
+	bounds_display.y = (center - factor*dX/2)*Vec3d::j;
+	bounds_display.z = (center - factor*dX/2)*Vec3d::k;
+
+	bounds_display.X = (center + factor*dX/2)*Vec3d::i;
+	bounds_display.Y = (center + factor*dX/2)*Vec3d::j;
+	bounds_display.Z = (center + factor*dX/2)*Vec3d::k;
+
 	r = abs(0.5*dX);
 
 	center_ = center;
@@ -86,10 +95,10 @@ void Cell::draw2D() {
 	else {
 		glColor4f(0,1,0, 0.1);
 	}
-	glVertex2f(float(bounds.x), float(bounds.y));
-	glVertex2f(float(bounds.X), float(bounds.y));
-	glVertex2f(float(bounds.X), float(bounds.Y));
-	glVertex2f(float(bounds.x), float(bounds.Y));
+	glVertex2f(float(bounds_display.x), float(bounds_display.y));
+	glVertex2f(float(bounds_display.X), float(bounds_display.y));
+	glVertex2f(float(bounds_display.X), float(bounds_display.Y));
+	glVertex2f(float(bounds_display.x), float(bounds_display.Y));
 	glColor4f(1, 1, 1, 1);
 	glEnd();
 }

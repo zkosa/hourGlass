@@ -90,7 +90,6 @@ void Scene::resolve_constraints_on_init(int sweeps) {
     }
 }
 
-
 void Scene::resolve_constraints_on_init_cells(int sweeps) {
 	this->populateCells();
 	for (int sweep=0; sweep < sweeps; ++sweep) {

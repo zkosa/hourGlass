@@ -23,6 +23,7 @@ class Cell {
 	static int Nx, Ny, Nz;
 
 	Bounds bounds;
+	Bounds bounds_display; // scaled for avoiding overlap of edges during display
 
 	Vec3d center_ = {0,0,0};
 
