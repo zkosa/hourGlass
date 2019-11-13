@@ -18,11 +18,12 @@ public:
 	{ };
 
 	double distance(const Vec3d & point) const;
-	double distance(const Particle & particle) const;
+	double distance(const Particle & particle) const override;
 
-	void draw2D();
+	void draw2D() override;
 
-	Vec3d getNormal() { return normal; }
+	Vec3d getNormal() const { return normal; }
+	Vec3d getNormal(const Particle & particle) const override { return normal; } // argument is not used, only to conform virtual function
 
 };
 

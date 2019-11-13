@@ -18,6 +18,7 @@ class Scene {
 	double time_step = 0.001; // [s]
 	double time = 0;
 	std::vector<Particle> particles;
+	//std::vector<Boundary> boundaries;
 	std::vector<Boundary_planar> boundaries_pl;
 	std::vector<Boundary_axis_symmetric> boundaries_ax;
 	std::vector<Cell> cells;
@@ -62,6 +63,7 @@ public:
 	void collide_cells();
 
 	std::vector<Particle>& getParticles() { return particles; }
+	//std::vector<Boundary>& getBoundaries() { return boundaries; }
 	std::vector<Boundary_planar>& getBoundariesPlanar() { return boundaries_pl; }
 	std::vector<Boundary_axis_symmetric>& getBoundariesAxiSym() { return boundaries_ax; }
 	Geometry& getGeometry() { return geometry; }

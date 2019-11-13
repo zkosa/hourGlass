@@ -19,8 +19,8 @@ void Scene::init(int number_of_particles, double radius) {
     Boundary_axis_symmetric glass;
 
     boundaries_pl.push_back(ground);
-    //boundaries.push_back(side_wall);
-    //boundaries.push_back(side_wall2);
+    //boundaries_pl.push_back(side_wall);
+    //boundaries_pl.push_back(side_wall2);
     boundaries_ax.push_back(glass);
 
     addParticles(number_of_particles);
@@ -367,7 +367,6 @@ void Scene::reset() {
 	addParticles(viewer->getNumberOfParticles());
 	createCells();
 	populateCells();
-
 }
 
 void Scene::applyDefaults() {

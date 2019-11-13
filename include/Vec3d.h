@@ -5,8 +5,6 @@
 #include <iostream>
 #include "Constants.h"
 
-struct Vec3d;
-
 struct Vec3d {
 
 	double x;

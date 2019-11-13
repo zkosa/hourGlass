@@ -10,6 +10,7 @@
 class Boundary;
 class Boundary_planar;
 class Boundary_axis_symmetric;
+class Scene;
 
 class Particle {
 private:
@@ -23,8 +24,9 @@ private:
 
 	std::string last_collision = "";
 
-	Vec3d acc = gravity;
-	GLFWwindow* window = nullptr;
+	static Vec3d acc;
+	static GLFWwindow* window;
+	static Scene* scene;
 
 	static constexpr double density = 2700; // kg/m3
 	static constexpr double density_medium = 1; // air kg/m3
@@ -59,18 +61,25 @@ public:
 	void draw2D();
 	void drawNow2D();
 
-	double distance(class Particle& other);
+	double distance(Particle& other);
 
-	void collide_wall(class Boundary_planar& wall);
-	void collide_wall(class Boundary_axis_symmetric& wall);
-	void collide_particle(class Particle& other);
-	Vec3d findPlace(class Particle& other);
+	void collide_wall(Boundary& wall);
+	//void collide_wall(Boundary_planar& wall);
+	//void collide_wall(Boundary_axis_symmetric& wall);
+	void collide_particle(Particle& other);
+	void collide_particle(Particle& other, Boundary_planar& b_pl, Boundary_axis_symmetric& b_ax);
+	bool overlap_wall(const Boundary& wall);
+	bool overlap_walls();
+	Vec3d overlapVect_wall(const Boundary& wall);
+
+	Vec3d findPlace(Particle& other);
 
 	void setX(double _x) {pos.x = _x;}
 	void setPos(Vec3d _pos) {pos = _pos;}
 	void setR(double _r) {radius = _r;}
 	void setV(Vec3d _v) {vel = _v;}
 	void setWindow(GLFWwindow* _window) {window = _window;}
+	void connectScene(Scene* _scene) {scene = _scene;}
 	void setCheckBoundary(bool is_near) {check_boundary = is_near;};
 
 	static void setCd(const double _Cd) {Cd = _Cd;}

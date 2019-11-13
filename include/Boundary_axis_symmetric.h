@@ -39,11 +39,11 @@ class Boundary_axis_symmetric : public Boundary {
 
 	//std::function<double(double)> shape = hour_glass_shape(1.);
 public:
-	double distance(const Particle & particle) const;
+	double distance(const Particle & particle) const override;
 
-	void draw2D();
+	void draw2D() override;
 
-	Vec3d getNormal(const Particle & particle) const;
+	Vec3d getNormal(const Particle & particle) const override;
 
 	std::function<double(const double)> getContourFun() const {return contour;}
 	std::function<double(double, double, double)> getDistance2Fun() const {return distance2_fun;}
