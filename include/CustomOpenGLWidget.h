@@ -10,8 +10,8 @@ class MainWindow;
 
 class CustomOpenGLWidget : public QOpenGLWidget
 {
-	Scene* m_scene;
-	MainWindow* m_mainWindow;
+	Scene* scene;
+	MainWindow* window;
 	int x = 0;
 
 public:
@@ -24,7 +24,7 @@ public:
     void resizeGL(int w, int h) override;
 
     void connectScene(Scene* scene);
-    void connectMainWindow(MainWindow* mainWindow); // TODO: find a more straightforward solution
+    void connectMainWindow(MainWindow* mainWindow);
 
 };
 

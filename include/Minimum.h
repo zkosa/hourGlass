@@ -13,23 +13,23 @@ class Minimum {
 	double X0;
 	double R0;
 
-	double Xmin=0; // result
-	double Rmin=0; // result
+	double Xmin=0; // result axial coordinate
+	double Rmin=0; // result radial coordinate
 	double distance=0; // result
 
 public:
 
-	Minimum(std::function<double(double, double, double)> function_, double X0_, double R0_) :
-		function(function_),
-		X0(X0_),
-		R0(R0_)
+	Minimum(std::function<double(double, double, double)> _function, double _X0, double _R0) :
+		function(_function),
+		X0(_X0),
+		R0(_R0)
 		{};
 
-	Minimum(const Boundary_axis_symmetric& wall, double X0_, double R0_) :
+	Minimum(const Boundary_axis_symmetric& wall, double _X0, double _R0) :
 		function(wall.getDistance2Fun()),
 		contour(wall.getContourFun()),
-		X0(X0_),
-		R0(R0_)
+		X0(_X0),
+		R0(_R0)
 		{};
 
 	void search(double starting_value=0);

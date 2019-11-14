@@ -6,14 +6,13 @@
 
 CustomOpenGLWidget::CustomOpenGLWidget(QWidget* parent) :
 QOpenGLWidget(parent) {
-	m_scene = nullptr;
-	m_mainWindow = nullptr;
+	scene = nullptr;
+	window = nullptr;
 }
 
 void CustomOpenGLWidget::initializeGL() {
 	std::cout << "Initializing OpenGL..." << std::endl;
 	glClearColor(0, 0, 0, 1);
-	//m_scene->draw();
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHT0);
 	glEnable(GL_LIGHTING);
@@ -24,31 +23,26 @@ void CustomOpenGLWidget::initializeGL() {
 void CustomOpenGLWidget::paintGL() {
 
 	//m_scene->resolve_constraints_on_init_cells(5);
-	if (m_scene->isRunning()) {
-		m_scene->timer.start();
-		m_scene->populateCells();
-		m_scene->advance();
+	if (scene->isRunning()) {
+		scene->timer.start();
+		scene->populateCells();
+		scene->advance();
 
 		//m_scene->collide_boundaries();
-		m_scene->collide_boundaries_cells();
-		m_scene->populateCells();
-		m_scene->collide_cells();
-		m_scene->timer.stop();
-		m_scene->addToDuration(m_scene->timer.milliSeconds());
-		std::cout << m_scene->timer.milliSeconds() << "ms" << std::endl << std::flush;
+		scene->collide_boundaries_cells();
+		scene->populateCells();
+		scene->collide_cells();
+		scene->timer.stop();
+		scene->addToDuration(scene->timer.milliSeconds());
+		std::cout << scene->timer.milliSeconds() << "ms" << std::endl << std::flush;
 	}
 	else {
-		m_scene->drawCells();
+		scene->drawCells();
 	}
 
-	m_mainWindow->updateLogs();
-	m_scene->draw();
+	window->updateLogs();
+	scene->draw();
 	update();
-/*
-	QPainter p(this);
-	p.setPen(Qt::red);
-	p.drawLine(rect().topLeft(), rect().bottomRight());
-*/
 }
 
 void CustomOpenGLWidget::resizeGL(int w, int h) {
@@ -56,9 +50,9 @@ void CustomOpenGLWidget::resizeGL(int w, int h) {
 }
 
 void CustomOpenGLWidget::connectScene(Scene* scene) {
-	m_scene = scene;
+	this->scene = scene;
 }
 
 void CustomOpenGLWidget::connectMainWindow(MainWindow* mainWindow) {
-	m_mainWindow = mainWindow;
+	window = mainWindow;
 }

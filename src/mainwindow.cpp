@@ -3,8 +3,6 @@
 #include <iostream>
 
 #include "Timer.h"
-#include <GLFW/glfw3.h>
-
 #include "CustomOpenGLWidget.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -69,8 +67,8 @@ void MainWindow::on_checkBox_benchmarkMode_stateChanged(int benchmark_checked) {
 
 void MainWindow::on_startButton_clicked() {
 	run_simulation();
-	//run_simulation_glfw();
 }
+
 void MainWindow::on_stopButton_clicked() {
 	finish();
 }
@@ -132,82 +130,6 @@ void MainWindow::on_Drag_coefficient_slider_valueChanged(int drag100) {
 	double Cd = drag100/100.; // value of integer slider is converted to double
 	Particle::setCd(Cd); // setting static data member
 	updateGUIcontrols();
-}
-
-void MainWindow::run_simulation_glfw() {
-	GLFWwindow* window;
-
-    // Initialize the library
-    if (!glfwInit()){
-        //return -1;
-    }
-
-    // Create a windowed mode window and its OpenGL context
-    window = glfwCreateWindow(640, 640, "Simulation Window", NULL, NULL);
-    if (!window)
-    {
-        glfwTerminate();
-        //return -1;
-    }
-
-    // Make the window's context current
-    glfwMakeContextCurrent(window);
-
-
-    //Scene scene;
-    //scene.init(number_of_particles, radius);
-    //scene.init(500, 0.01);
-    scene.createCells();
-    scene.drawCells();
-    scene.draw(); glfwSwapBuffers(window);
-    scene.resolve_constraints_on_init_cells(5);
-
-    scene.populateCells();
-    scene.draw(); glfwSwapBuffers(window);
-
-    int counter = 0;
-    double duration = 0.;
-    Timer timer_all, timer;
-    timer_all.start();
-    // Loop until the user closes the window
-    while (!glfwWindowShouldClose(window) && counter < 1000)
-    {
-    	++counter;
-    	std::cout << counter << std::endl;
-
-        // Render here
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        //scene.draw();
-        timer.start();
-
-        scene.advance();
-        for (int i=0; i < 1; i++) { // smoothing iterations
-			scene.collide_boundaries();
-			//scene.collide_particles();
-			scene.populateCells();
-			scene.collide_cells();
-        }
-
-        timer.stop();
-        duration += timer.milliSeconds();
-        std::cout << timer.milliSeconds() << " ms" << std::endl;
-
-        scene.draw();
-
-        // Swap front and back buffers
-        glfwSwapBuffers(window);
-
-        // Poll for and process events
-        glfwPollEvents();
-    }
-    timer_all.stop();
-    std::cout << "Total: " << timer_all.seconds() << " s" << std::endl;
-    std::cout << "Total per time step: " << timer_all.milliSeconds()/double(counter) << " ms/timestep" << std::endl;
-    std::cout << "Steps per time step: " << duration/double(counter) << " ms/timestep" << std::endl;
-
-    glfwTerminate();
-
 }
 
 void MainWindow::run_simulation() {

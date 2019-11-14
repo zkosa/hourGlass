@@ -10,12 +10,14 @@ class Boundary_planar;
 class Boundary_axis_symmetric;
 
 struct Bounds {
-	double x = 0; // lower bound coordinate
-	double y = 0;
-	double z = 0;
-	double X = 0; // upper bound coordinate
-	double Y = 0;
-	double Z = 0;
+	// lower bound coordinates:
+	double x1 = 0;
+	double y1 = 0;
+	double z1 = 0;
+	// upper bound coordinates:
+	double x2 = 0;
+	double y2 = 0;
+	double z2 = 0;
 };
 
 class Cell {
@@ -25,7 +27,7 @@ class Cell {
 	Bounds bounds;
 	Bounds bounds_display; // scaled for avoiding overlap of edges during display
 
-	Vec3d center_ = {0,0,0};
+	Vec3d center = {0,0,0};
 
 	std::vector<int> particle_IDs; // TODO reserve expected size
 	std::vector<int> boundary_IDs_planar;
@@ -53,16 +55,10 @@ public:
 
 	void draw2D();
 
-	const Vec3d center() const {return center_;}
-
 	const std::vector<int>& getBoundaryIDsAxisSymmetric() const { return boundary_IDs_axis_symmetric; }
-
 	const std::vector<int>& getBoundaryIDsPlanar() const {return boundary_IDs_planar;}
-
 	const Bounds& getBounds() const {return bounds;}
-
-	const Vec3d& getCenter() const {return center_;}
-
+	const Vec3d& getCenter() const {return center;}
 	const std::vector<int>& getParticleIDs() const {return particle_IDs;}
 
 	bool hasBoundary() {return cell_with_boundary;}
@@ -73,12 +69,10 @@ public:
 	static int getNx() {return Nx;}
 	static int getNy() {return Ny;}
 	static int getNz() {return Nz;}
-	static void setNx(int _nx) {Nx = _nx;}
-	static void setNy(int _ny) {Ny = _ny;}
-	static void setNz(int _nz) {Nz = _nz;}
+	static void setNx(int Nx) {Cell::Nx = Nx;}
+	static void setNy(int Ny) {Cell::Ny = Ny;}
+	static void setNz(int Ny) {Cell::Nz = Ny;}
 
 };
-
-
 
 #endif /* CELL_H_ */

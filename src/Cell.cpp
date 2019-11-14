@@ -13,26 +13,26 @@ int Cell::Nz = 1; // 2D
 
 Cell::Cell(const Vec3d& center, const Vec3d& dX)
 {
-	bounds.x = (center - dX/2)*Vec3d::i;
-	bounds.y = (center - dX/2)*Vec3d::j;
-	bounds.z = (center - dX/2)*Vec3d::k;
+	bounds.x1 = (center - dX/2)*Vec3d::i;
+	bounds.y1 = (center - dX/2)*Vec3d::j;
+	bounds.z1 = (center - dX/2)*Vec3d::k;
 
-	bounds.X = (center + dX/2)*Vec3d::i;
-	bounds.Y = (center + dX/2)*Vec3d::j;
-	bounds.Z = (center + dX/2)*Vec3d::k;
+	bounds.x2 = (center + dX/2)*Vec3d::i;
+	bounds.y2 = (center + dX/2)*Vec3d::j;
+	bounds.z2 = (center + dX/2)*Vec3d::k;
 
 	double factor = 0.93;
-	bounds_display.x = (center - factor*dX/2)*Vec3d::i;
-	bounds_display.y = (center - factor*dX/2)*Vec3d::j;
-	bounds_display.z = (center - factor*dX/2)*Vec3d::k;
+	bounds_display.x1 = (center - factor*dX/2)*Vec3d::i;
+	bounds_display.y1 = (center - factor*dX/2)*Vec3d::j;
+	bounds_display.z1 = (center - factor*dX/2)*Vec3d::k;
 
-	bounds_display.X = (center + factor*dX/2)*Vec3d::i;
-	bounds_display.Y = (center + factor*dX/2)*Vec3d::j;
-	bounds_display.Z = (center + factor*dX/2)*Vec3d::k;
+	bounds_display.x2 = (center + factor*dX/2)*Vec3d::i;
+	bounds_display.y2 = (center + factor*dX/2)*Vec3d::j;
+	bounds_display.z2 = (center + factor*dX/2)*Vec3d::k;
 
 	r = abs(0.5*dX);
 
-	center_ = center;
+	this->center = center;
 }
 
 void Cell::init(const Scene& scene) {
@@ -61,13 +61,13 @@ bool Cell::contains(const Particle& p) {
 	Vec3d pos = p.getPos(); // TODO implement getX, ...
 	double r = p.getR();
 
-	return ( pos.x + r > bounds.x && pos.x - r < bounds.X ) &&
-			( pos.y + r > bounds.y && pos.y - r < bounds.Y ) &&
-			( pos.z + r > bounds.z && pos.z - r < bounds.Z );
+	return ( pos.x + r > bounds.x1 && pos.x - r < bounds.x2 ) &&
+			( pos.y + r > bounds.y1 && pos.y - r < bounds.y2 ) &&
+			( pos.z + r > bounds.z1 && pos.z - r < bounds.z2 );
 }
 
 bool Cell::contains(const Boundary& b){
-	if (b.distance(center_) <= r) { // + Particle::getUniformRadius()
+	if (b.distance(center) <= r) { // + Particle::getUniformRadius()
 		return true;
 	}
 	else {
@@ -95,10 +95,10 @@ void Cell::draw2D() {
 	else {
 		glColor4f(0,1,0, 0.1);
 	}
-	glVertex2f(float(bounds_display.x), float(bounds_display.y));
-	glVertex2f(float(bounds_display.X), float(bounds_display.y));
-	glVertex2f(float(bounds_display.X), float(bounds_display.Y));
-	glVertex2f(float(bounds_display.x), float(bounds_display.Y));
+	glVertex2f(float(bounds_display.x1), float(bounds_display.y1));
+	glVertex2f(float(bounds_display.x2), float(bounds_display.y1));
+	glVertex2f(float(bounds_display.x2), float(bounds_display.y2));
+	glVertex2f(float(bounds_display.x1), float(bounds_display.y2));
 	glColor4f(1, 1, 1, 1);
 	glEnd();
 }

@@ -18,13 +18,9 @@ public:
 
 	//void extend(); // TODO add it for particles and boundaries?
 
-	const Vec3d& getCorner1() const {
-		return corner1;
-	}
+	const Vec3d& getCorner1() const {return corner1;}
+	const Vec3d& getCorner2() const {return corner2;}
 
-	const Vec3d& getCorner2() const {
-		return corner2;
-	}
 };
 
 

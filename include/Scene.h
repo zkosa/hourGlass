@@ -18,7 +18,6 @@ class Scene {
 	double time_step = 0.001; // [s]
 	double time = 0;
 	std::vector<Particle> particles;
-	//std::vector<Boundary> boundaries;
 	std::vector<Boundary_planar> boundaries_pl;
 	std::vector<Boundary_axis_symmetric> boundaries_ax;
 	std::vector<Cell> cells;
@@ -62,12 +61,11 @@ public:
 	void collide_particles();
 	void collide_cells();
 
-	std::vector<Particle>& getParticles() { return particles; }
-	//std::vector<Boundary>& getBoundaries() { return boundaries; }
-	std::vector<Boundary_planar>& getBoundariesPlanar() { return boundaries_pl; }
-	std::vector<Boundary_axis_symmetric>& getBoundariesAxiSym() { return boundaries_ax; }
+	std::vector<Particle> getParticles() { return particles; }
+	std::vector<Boundary_planar> getBoundariesPlanar() { return boundaries_pl; }
+	std::vector<Boundary_axis_symmetric> getBoundariesAxiSym() { return boundaries_ax; }
 	Geometry& getGeometry() { return geometry; }
-	std::string  getGeometryName() { return geometry_names[geometry]; }
+	std::string getGeometryName() { return geometry_names[geometry]; }
 	bool benchmarkMode() { return benchmark_mode; }
 	bool isStarted() { return started; }
 	bool isRunning() { return running; }
@@ -95,15 +93,15 @@ public:
 	void setRunning();
 	void setStopping();
 	void setFinished();
-	void setGeometry(int _geo) { geometry = static_cast<Geometry>(_geo); };
-	void setGeometry(Geometry _geo) { geometry = _geo; };
-	void setBenchmarkMode(bool b) { benchmark_mode = b; }
-	void setTimestep(double dt) { time_step = dt; }
+	void setGeometry(int geo) { this->geometry = static_cast<Geometry>(geo); };
+	void setGeometry(Geometry geometry) { this->geometry = geometry; };
+	void setBenchmarkMode(bool benchmark_mode) { this->benchmark_mode = benchmark_mode; }
+	void setTimestep(double time_step) { this->time_step = time_step; }
 	void resetCounter() { loop_counter = 0; };
 
 	double getDuration() { return duration; }
-	void setDuration(double _duration) { duration = _duration; }
-	void addToDuration(double _duration) { duration += _duration; }
+	void setDuration(double duration) { this->duration = duration; }
+	void addToDuration(double duration) { this->duration += duration; }
 
 	void reset();
 

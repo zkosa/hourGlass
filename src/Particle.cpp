@@ -10,8 +10,6 @@ Particle::~Particle(){};
 
 Vec3d Particle::acc = gravity;
 
-GLFWwindow* Particle::window = nullptr;
-
 Scene* Particle::scene = nullptr;
 
 double Particle::Cd = 0.5; // non-constexpr static members must be initialized in the definition
@@ -19,8 +17,7 @@ double Particle::Cd = 0.5; // non-constexpr static members must be initialized i
 double Particle::uniform_radius = 0.005;
 
 void Particle::advance(double dt) {
-	// velocity Verlet integration
-
+	// velocity Verlet integration:
     Vec3d new_pos = pos + vel*dt + acc*(dt*dt*0.5);
     Vec3d new_acc = apply_forces();
     Vec3d new_vel = vel + (acc+new_acc)*(dt*0.5);
@@ -28,7 +25,6 @@ void Particle::advance(double dt) {
     pos = new_pos;
     vel = new_vel;
     acc = new_acc;
-
 }
 
 double Particle::kinetic_energy() {
@@ -49,12 +45,10 @@ Vec3d Particle::impulse() {
 }
 
 Vec3d Particle::apply_forces(){
-
-    Vec3d grav_acc = gravity;
     Vec3d drag_force = 0.5 * density_medium * CdA() * (vel * abs(vel)); // D = 0.5 * (rho * C * Area * vel^2)
     Vec3d drag_acc = drag_force / mass(); // a = F/m
 
-    return grav_acc - drag_acc;
+    return gravity - drag_acc;
 }
 
 void Particle::info() {
@@ -82,12 +76,7 @@ void Particle::draw2D() {
 	glEnd();
 }
 
-void Particle::drawNow2D() {
-	Particle::draw2D();
-	glfwSwapBuffers(window);
-}
-
-double Particle::distance(Particle& other) {
+double Particle::distance(const Particle& other) const {
 	return abs(pos - other.pos);
 }
 
@@ -96,8 +85,9 @@ void Particle::collide_wall(Boundary& wall) {
 	Vec3d n = wall.getNormal(*this);
 
 	Vec3d pos_corr {0,0,0};
-	if ( abs(n*vel) > SMALL) // not parallel, and moving
+	if ( abs(n*vel) > SMALL) { // not parallel, and moving
 		pos_corr = (radius - wall.distance(*this)) / abs(n*vel) * vel *(-1); // move along the OLD! velocity vector
+	}
 	else {
 		pos_corr = (radius - wall.distance(*this)) * n; // move in surface normal direction
 	}
@@ -117,62 +107,6 @@ void Particle::collide_wall(Boundary& wall) {
 	vel = vel - (1 + this->CoR())*(vel*n)*n;
 }
 
-/*
-void Particle::collide_wall(Boundary_planar& wall) {
-	old_pos = pos;
-	old_vel = vel;
-
-	Vec3d n = wall.getNormal();
-
-	Vec3d pos_corr {0,0,0};
-	if ( abs(n*vel) > SMALL) // not parallel, and moving
-		pos_corr = (radius - wall.distance(*this)) / abs(n*vel) * vel *(-1); // move along the OLD! velocity vector
-	else {
-		pos_corr = (radius - wall.distance(*this)) * n; // move in surface normal direction
-	}
-
-	// move back to the position when it touched the boundary:
-	pos = pos + pos_corr;
-
-	// correct the velocity to conserve energy (dissipation work is not considered!)
-	if (vel*vel + 2*gravity*pos_corr >= 0.0) {
-		vel = std::sqrt(vel*vel + 2*gravity*pos_corr)  * norm(vel);
-	}
-	else {
-		vel = -std::sqrt(-1*(vel*vel + 2*gravity*pos_corr) )  * norm(vel);
-	}
-
-	// revert the wall normal velocity component
-	vel = vel - (1 + this->CoR())*(vel*n)*n;
-
-}
-
-void Particle::collide_wall(Boundary_axis_symmetric& wall) {
-
-	Vec3d n = wall.getNormal(*this);
-
-	Vec3d pos_corr {0,0,0};
-	if ( abs(n*vel) > SMALL) // not parallel, and moving
-		pos_corr = (radius - wall.distance(*this)) / abs(n*vel) * vel *(-1); // move along the OLD! velocity vector
-	else {
-		pos_corr = (radius - wall.distance(*this)) * n; // move in surface normal direction
-	}
-
-	// move back to the position when it touched the boundary:
-	pos = pos + pos_corr;
-
-	// correct the velocity to conserve energy (dissipation work is not considered!)
-	if (vel*vel + 2*gravity*pos_corr >= 0.0) {
-		vel = std::sqrt(vel*vel + 2*gravity*pos_corr)  * norm(vel);
-	}
-	else {
-		vel = -std::sqrt(-1*(vel*vel + 2*gravity*pos_corr) )  * norm(vel);
-	}
-
-	// revert the wall normal velocity component
-	vel = vel - (1 + this->CoR())*(vel*n)*n;
-}
-*/
 void Particle::collide_particle(Particle& other) {
 	old_pos = pos;
 	old_vel = vel;
@@ -193,7 +127,7 @@ void Particle::collide_particle(Particle& other) {
 
 
 	// correct the velocity to conserve energy (dissipation work is not considered!)
-	if (vel*vel + 2*gravity*pos_corr >= 0.0){
+	if (vel*vel + 2*gravity*pos_corr >= 0.0) {
 		vel = std::sqrt(vel*vel + 2*gravity*pos_corr)  * norm(vel);
 	}
 	else {
@@ -244,7 +178,7 @@ void Particle::collide_particle(Particle& other, Boundary_planar& b_pl, Boundary
 	}
 
 	// correct the velocity to conserve energy (dissipation work is not considered!)
-	if (vel*vel + 2*gravity*pos_corr >= 0.0){
+	if (vel*vel + 2*gravity*pos_corr >= 0.0) {
 		vel = std::sqrt(vel*vel + 2*gravity*pos_corr)  * norm(vel);
 	}
 	else {
@@ -276,9 +210,12 @@ bool Particle::overlap_wall(const Boundary& wall) {
 
 bool Particle::overlap_walls() {
 	// TODO return references to the actually overlapped walls?
+	/*
 	for (auto& b : scene->getBoundariesPlanar()) {
 
 	}
+	*/
+	return true;
 }
 
 Vec3d Particle::overlapVect_wall(const Boundary& wall) {
@@ -289,13 +226,4 @@ Vec3d Particle::findPlace(Particle& other) {
 	// gives a direction in case of null vectors (coinciding particles!)
 	// TODO: choose later from available place (scene must be known!)
 	return Vec3d {1,0,0};
-}
-
-void Particle::debug() const{
-	if (pos.large()) {
-		std::cout << "WARNING: large pos: ";  pos.print(); // place breakpoint here
-	}
-	if (vel.large()) {
-		std::cout << "WARNING: large vel: ";  vel.print(); // place breakpoint here
-	}
 }

@@ -48,7 +48,6 @@ public:
 	std::function<double(const double)> getContourFun() const {return contour;}
 	std::function<double(double, double, double)> getDistance2Fun() const {return distance2_fun;}
 
-
 };
 
 #endif /* BOUNDARY_AXIS_SYMMETRIC_H_ */

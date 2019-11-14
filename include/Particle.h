@@ -25,7 +25,6 @@ private:
 	std::string last_collision = "";
 
 	static Vec3d acc;
-	static GLFWwindow* window;
 	static Scene* scene;
 
 	static constexpr double density = 2700; // kg/m3
@@ -46,9 +45,9 @@ private:
 
 public:
 	Particle();
-	Particle(Vec3d pos_, double r_=0.05) : pos(pos_), radius(r_) {};
-	Particle(Vec3d pos_, Vec3d vel_, double r_=0.05) : pos(pos_), vel(vel_), radius(r_) {};
-	Particle(Vec3d pos_, Vec3d vel_, int ID_, double r_=0.05) : pos(pos_), vel(vel_), ID(ID_), radius(r_) {};
+	Particle(Vec3d _pos, double _r=Particle::uniform_radius) : pos(_pos), radius(_r) {};
+	Particle(Vec3d _pos, Vec3d _vel, double _r=Particle::uniform_radius) : pos(_pos), vel(_vel), radius(_r) {};
+	Particle(Vec3d _pos, Vec3d _vel, int _ID, double _r=Particle::uniform_radius) : pos(_pos), vel(_vel), ID(_ID), radius(_r) {};
 	~Particle();
 
 	void advance(double dt);
@@ -61,11 +60,9 @@ public:
 	void draw2D();
 	void drawNow2D();
 
-	double distance(Particle& other);
+	double distance(const Particle& other) const;
 
 	void collide_wall(Boundary& wall);
-	//void collide_wall(Boundary_planar& wall);
-	//void collide_wall(Boundary_axis_symmetric& wall);
 	void collide_particle(Particle& other);
 	void collide_particle(Particle& other, Boundary_planar& b_pl, Boundary_axis_symmetric& b_ax);
 	bool overlap_wall(const Boundary& wall);
@@ -74,12 +71,11 @@ public:
 
 	Vec3d findPlace(Particle& other);
 
-	void setX(double _x) {pos.x = _x;}
-	void setPos(Vec3d _pos) {pos = _pos;}
-	void setR(double _r) {radius = _r;}
-	void setV(Vec3d _v) {vel = _v;}
-	void setWindow(GLFWwindow* _window) {window = _window;}
-	void connectScene(Scene* _scene) {scene = _scene;}
+	void setX(double x) {this->pos.x = x;}
+	void setPos(Vec3d pos) {this->pos = pos;}
+	void setR(double r) {this->radius = r;}
+	void setV(Vec3d v) {this->vel = v;}
+	void connectScene(Scene* scene) {this->scene = scene;}
 	void setCheckBoundary(bool is_near) {check_boundary = is_near;};
 
 	static void setCd(const double _Cd) {Cd = _Cd;}
@@ -100,7 +96,6 @@ public:
 	static double energy_of_all_particles_combined();
 	static double getUniformRadius() {return uniform_radius;}
 
-	void debug() const;
 };
 
 #endif /* PARTICLE_H_ */

@@ -1,7 +1,6 @@
 #include "Boundary_axis_symmetric.h"
 #include "Minimum.h"
 
-
 double Boundary_axis_symmetric::distance(const Particle & particle) const {
 
 	const Vec3d& pos = particle.getPos();
@@ -24,7 +23,6 @@ double Boundary_axis_symmetric::distance(const Particle & particle) const {
 	//Minimum minimum( f, X0, R0 );  // (0, X0, R0)
 	Minimum minimum(*this, X0, R0);
 	minimum.search(start_X);
-
 
 	return minimum.getDistance();
 }
@@ -71,4 +69,3 @@ void Boundary_axis_symmetric::draw2D() {
 	glEnd();
 
 }
-

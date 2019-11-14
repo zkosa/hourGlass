@@ -1,7 +1,6 @@
 #include "Minimum.h"
-#include <iostream> // debug
 #include <cmath>
-#include <GLFW/glfw3.h>
+
 
 void Minimum::search(double starting_value) {
 	double X = starting_value;

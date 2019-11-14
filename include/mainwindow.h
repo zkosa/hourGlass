@@ -20,7 +20,7 @@ public:
     void updateGUIcontrols();
     void updateLogs();
     int getNumberOfParticles() { return number_of_particles; };
-    void setNumberOfParticles(double _N) { number_of_particles = _N; };
+    void setNumberOfParticles(double N) { number_of_particles = N; };
 
 signals:
 	void sendFinishedSignal();
@@ -52,10 +52,9 @@ private:
     QString reset_text = QString("Reset");
     QString stop_text = QString("Stop");
 
-    void run_simulation_glfw(); // separate glfw window
-    void run_simulation(); // integrated CustomOpenGLWindow
+    void run_simulation(); // inside integrated CustomOpenGLWindow
 
-    void run(); // start and continue
+    void run(); // start and continue modes
     void pause();
     void finish();
     void reset();
