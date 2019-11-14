@@ -8,23 +8,22 @@
 class Scene;
 class MainWindow;
 
-class CustomOpenGLWidget : public QOpenGLWidget
-{
-	Scene* scene;
-	MainWindow* window;
+class CustomOpenGLWidget: public QOpenGLWidget {
+	Scene *scene;
+	MainWindow *window;
 	int x = 0;
 
 public:
-    CustomOpenGLWidget(QWidget* parent);
+	CustomOpenGLWidget(QWidget *parent);
 
-    void initializeGL() override;
+	void initializeGL() override;
 
-    void paintGL() override; // it is called implicitly by initalizeGL()
+	void paintGL() override; // it is called implicitly by initalizeGL()
 
-    void resizeGL(int w, int h) override;
+	void resizeGL(int w, int h) override;
 
-    void connectScene(Scene* scene);
-    void connectMainWindow(MainWindow* mainWindow);
+	void connectScene(Scene *scene);
+	void connectMainWindow(MainWindow *mainWindow);
 
 };
 

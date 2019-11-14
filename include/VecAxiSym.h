@@ -7,8 +7,9 @@ struct VecAxiSym {
 	double X;
 	double R;
 
-	VecAxiSym(double X_, double R_) : X(X_), R(R_ ) {}
+	VecAxiSym(double X_, double R_) :
+			X(X_), R(R_) {
+	}
 };
-
 
 #endif /* VECAXISYM_H_ */

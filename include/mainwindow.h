@@ -9,20 +9,23 @@ namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
-{
-    Q_OBJECT
+class MainWindow: public QMainWindow {
+	Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+	explicit MainWindow(QWidget *parent = nullptr);
+	~MainWindow();
 
-    void updateGUIcontrols();
-    void updateLogs();
-    int getNumberOfParticles() { return number_of_particles; };
-    void setNumberOfParticles(double N) { number_of_particles = N; };
+	void updateGUIcontrols();
+	void updateLogs();
+	int getNumberOfParticles() {
+		return number_of_particles;
+	}
+	void setNumberOfParticles(double N) {
+		number_of_particles = N;
+	}
 
-signals:
+	signals:
 	void sendFinishedSignal();
 
 private slots:
@@ -39,25 +42,25 @@ private slots:
 	void handleFinish();
 
 private:
-    Ui::MainWindow *ui;
+	Ui::MainWindow *ui;
 
-    Scene scene;
-    int number_of_particles;
-    double radius;
+	Scene scene;
+	int number_of_particles;
+	double radius;
 
-    // button texts:
-    QString start_text = QString("Start");
-    QString pause_text = QString("Pause");
-    QString continue_text = QString("Continue");
-    QString reset_text = QString("Reset");
-    QString stop_text = QString("Stop");
+	// button texts:
+	QString start_text = QString("Start");
+	QString pause_text = QString("Pause");
+	QString continue_text = QString("Continue");
+	QString reset_text = QString("Reset");
+	QString stop_text = QString("Stop");
 
-    void run_simulation(); // inside integrated CustomOpenGLWindow
+	void run_simulation(); // inside integrated CustomOpenGLWindow
 
-    void run(); // start and continue modes
-    void pause();
-    void finish();
-    void reset();
+	void run(); // start and continue modes
+	void pause();
+	void finish();
+	void reset();
 
 };
 

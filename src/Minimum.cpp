@@ -1,7 +1,6 @@
 #include "Minimum.h"
 #include <cmath>
 
-
 void Minimum::search(double starting_value) {
 	double X = starting_value;
 	double X_new = X;
@@ -15,12 +14,15 @@ void Minimum::search(double starting_value) {
 		counter++;
 		X = X_new;
 
-		dist2_prime =  (function(X+delta, X0, R0) - function(X-delta, X0, R0)) / (2*delta);
-		dist2_prime_prime = (function(X+2*delta, X0, R0) - 2*function(X, X0, R0) + function(X-2*delta, X0, R0)) / (4*delta*delta);
+		dist2_prime =
+				(function(X + delta, X0, R0) - function(X - delta, X0, R0))
+						/ (2 * delta);
+		dist2_prime_prime = (function(X + 2 * delta, X0, R0)
+				- 2 * function(X, X0, R0) + function(X - 2 * delta, X0, R0))
+				/ (4 * delta * delta);
 
 		X_new = X - dist2_prime / dist2_prime_prime;
-	}
-	while (std::abs(X_new-X) >= epsilon && counter < max_iter);
+	} while (std::abs(X_new - X) >= epsilon && counter < max_iter);
 
 	Xmin = X_new;
 	Rmin = contour(Xmin);
@@ -30,5 +32,5 @@ void Minimum::search(double starting_value) {
 
 VecAxiSym Minimum::getContactPointInRadialCoord() {
 	this->search(X0);
-	return VecAxiSym {Xmin, Rmin};
+	return VecAxiSym { Xmin, Rmin };
 }

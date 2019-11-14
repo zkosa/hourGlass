@@ -4,8 +4,8 @@
 #include "mainwindow.h"
 #include "Timer.h"
 
-CustomOpenGLWidget::CustomOpenGLWidget(QWidget* parent) :
-QOpenGLWidget(parent) {
+CustomOpenGLWidget::CustomOpenGLWidget(QWidget *parent) :
+		QOpenGLWidget(parent) {
 	scene = nullptr;
 	window = nullptr;
 }
@@ -34,9 +34,9 @@ void CustomOpenGLWidget::paintGL() {
 		scene->collide_cells();
 		scene->timer.stop();
 		scene->addToDuration(scene->timer.milliSeconds());
-		std::cout << scene->timer.milliSeconds() << "ms" << std::endl << std::flush;
-	}
-	else {
+		std::cout << scene->timer.milliSeconds() << "ms" << std::endl
+				<< std::flush;
+	} else {
 		scene->drawCells();
 	}
 
@@ -49,10 +49,10 @@ void CustomOpenGLWidget::resizeGL(int w, int h) {
 	glViewport(0, 0, w, h);
 }
 
-void CustomOpenGLWidget::connectScene(Scene* scene) {
+void CustomOpenGLWidget::connectScene(Scene *scene) {
 	this->scene = scene;
 }
 
-void CustomOpenGLWidget::connectMainWindow(MainWindow* mainWindow) {
+void CustomOpenGLWidget::connectMainWindow(MainWindow *mainWindow) {
 	window = mainWindow;
 }

@@ -3,27 +3,29 @@
 
 #include "Boundary.h"
 
-
-class Boundary_planar : public Boundary {
+class Boundary_planar: public Boundary {
 	Vec3d plane_point;
 	Vec3d normal;
 	Vec3d p1, p2; // temporary, for display
 
 public:
 	Boundary_planar(Vec3d p1, Vec3d p2, Vec3d p3) :
-		plane_point(p1),
-		normal( norm(crossProduct(p3-p1, p2-p1)) ),
-		p1(p1),
-		p2(p2)
-	{ };
+			plane_point(p1), normal(norm(crossProduct(p3 - p1, p2 - p1))), p1(
+					p1), p2(p2) {
+	}
+	;
 
-	double distance(const Vec3d & point) const;
-	double distance(const Particle & particle) const override;
+	double distance(const Vec3d &point) const;
+	double distance(const Particle &particle) const override;
 
 	void draw2D() override;
 
-	Vec3d getNormal() const { return normal; }
-	Vec3d getNormal(const Particle & particle) const override { return normal; } // argument is not used, only to conform virtual function
+	Vec3d getNormal() const {
+		return normal;
+	}
+	Vec3d getNormal(const Particle &particle) const override {
+		return normal;
+	} // argument is not used, only to conform virtual function
 
 };
 

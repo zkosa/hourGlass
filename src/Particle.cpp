@@ -3,14 +3,15 @@
 #include "Boundary_axis_symmetric.h"
 #include "Scene.h"
 
+Particle::Particle() {
+}
 
-Particle::Particle(){};
-
-Particle::~Particle(){};
+Particle::~Particle() {
+}
 
 Vec3d Particle::acc = gravity;
 
-Scene* Particle::scene = nullptr;
+Scene *Particle::scene = nullptr;
 
 double Particle::Cd = 0.5; // non-constexpr static members must be initialized in the definition
 
@@ -18,17 +19,17 @@ double Particle::uniform_radius = 0.005;
 
 void Particle::advance(double dt) {
 	// velocity Verlet integration:
-    Vec3d new_pos = pos + vel*dt + acc*(dt*dt*0.5);
-    Vec3d new_acc = apply_forces();
-    Vec3d new_vel = vel + (acc+new_acc)*(dt*0.5);
+	Vec3d new_pos = pos + vel * dt + acc * (dt * dt * 0.5);
+	Vec3d new_acc = apply_forces();
+	Vec3d new_vel = vel + (acc + new_acc) * (dt * 0.5);
 
-    pos = new_pos;
-    vel = new_vel;
-    acc = new_acc;
+	pos = new_pos;
+	vel = new_vel;
+	acc = new_acc;
 }
 
 double Particle::kinetic_energy() {
-	return vel * vel * (mass()/2);
+	return vel * vel * (mass() / 2);
 }
 
 double Particle::potential_energy() {
@@ -41,22 +42,26 @@ double Particle::energy() {
 }
 
 Vec3d Particle::impulse() {
-	return mass()*vel;
+	return mass() * vel;
 }
 
-Vec3d Particle::apply_forces(){
-    Vec3d drag_force = 0.5 * density_medium * CdA() * (vel * abs(vel)); // D = 0.5 * (rho * C * Area * vel^2)
-    Vec3d drag_acc = drag_force / mass(); // a = F/m
+Vec3d Particle::apply_forces() {
+	Vec3d drag_force = 0.5 * density_medium * CdA() * (vel * abs(vel)); // D = 0.5 * (rho * C * Area * vel^2)
+	Vec3d drag_acc = drag_force / mass(); // a = F/m
 
-    return gravity - drag_acc;
+	return gravity - drag_acc;
 }
 
 void Particle::info() {
 	std::cout << "---------------------------" << std::endl;
-	std::cout << "pos: " << pos.x << ", " << pos.y << ", " << pos.z << std::endl;
-	std::cout << "vel: " << vel.x << ", " << vel.y << ", " << vel.z << std::endl;
-	std::cout << "acc: " << acc.x << ", " << acc.y << ", " << acc.z << std::endl;
-	std::cout << "energy: " << energy() << "\t= "<< potential_energy() << "\t+ " << kinetic_energy() << std::endl;
+	std::cout << "pos: " << pos.x << ", " << pos.y << ", " << pos.z
+			<< std::endl;
+	std::cout << "vel: " << vel.x << ", " << vel.y << ", " << vel.z
+			<< std::endl;
+	std::cout << "acc: " << acc.x << ", " << acc.y << ", " << acc.z
+			<< std::endl;
+	std::cout << "energy: " << energy() << "\t= " << potential_energy()
+			<< "\t+ " << kinetic_energy() << std::endl;
 }
 
 void Particle::draw2D() {
@@ -67,28 +72,25 @@ void Particle::draw2D() {
 
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex2f(pos.x, pos.y); // center of circle
-	for(int i = 0; i <= triangleAmount; i++) {
-		glVertex2f(
-				pos.x + (display_radius * cos(i *  twicePi / triangleAmount)),
-				pos.y + (display_radius * sin(i * twicePi / triangleAmount))
-		);
+	for (int i = 0; i <= triangleAmount; i++) {
+		glVertex2f(pos.x + (display_radius * cos(i * twicePi / triangleAmount)),
+				pos.y + (display_radius * sin(i * twicePi / triangleAmount)));
 	}
 	glEnd();
 }
 
-double Particle::distance(const Particle& other) const {
+double Particle::distance(const Particle &other) const {
 	return abs(pos - other.pos);
 }
 
-void Particle::collide_wall(Boundary& wall) {
+void Particle::collide_wall(const Boundary &wall) {
 
 	Vec3d n = wall.getNormal(*this);
 
-	Vec3d pos_corr {0,0,0};
-	if ( abs(n*vel) > SMALL) { // not parallel, and moving
-		pos_corr = (radius - wall.distance(*this)) / abs(n*vel) * vel *(-1); // move along the OLD! velocity vector
-	}
-	else {
+	Vec3d pos_corr { 0, 0, 0 };
+	if (abs(n * vel) > SMALL) { // not parallel, and moving
+		pos_corr = (radius - wall.distance(*this)) / abs(n * vel) * vel * (-1); // move along the OLD! velocity vector
+	} else {
 		pos_corr = (radius - wall.distance(*this)) * n; // move in surface normal direction
 	}
 
@@ -96,18 +98,17 @@ void Particle::collide_wall(Boundary& wall) {
 	pos = pos + pos_corr;
 
 	// correct the velocity to conserve energy (dissipation work is not considered!)
-	if (vel*vel + 2*gravity*pos_corr >= 0.0) {
-		vel = std::sqrt(vel*vel + 2*gravity*pos_corr)  * norm(vel);
-	}
-	else {
-		vel = -std::sqrt(-1*(vel*vel + 2*gravity*pos_corr) )  * norm(vel);
+	if (vel * vel + 2 * gravity * pos_corr >= 0.0) {
+		vel = std::sqrt(vel * vel + 2 * gravity * pos_corr) * norm(vel);
+	} else {
+		vel = -std::sqrt(-1 * (vel * vel + 2 * gravity * pos_corr)) * norm(vel);
 	}
 
 	// revert the wall normal velocity component
-	vel = vel - (1 + this->CoR())*(vel*n)*n;
+	vel = vel - (1 + this->CoR()) * (vel * n) * n;
 }
 
-void Particle::collide_particle(Particle& other) {
+void Particle::collide_particle(Particle &other) {
 	old_pos = pos;
 	old_vel = vel;
 	other.old_pos = other.pos;
@@ -125,30 +126,43 @@ void Particle::collide_particle(Particle& other) {
 
 	other.setPos(other.getPos() - pos_corr);
 
-
 	// correct the velocity to conserve energy (dissipation work is not considered!)
-	if (vel*vel + 2*gravity*pos_corr >= 0.0) {
-		vel = std::sqrt(vel*vel + 2*gravity*pos_corr)  * norm(vel);
-	}
-	else {
-		vel = -std::sqrt( -1*(vel*vel + 2*gravity*pos_corr) )  * norm(vel);
+	if (vel * vel + 2 * gravity * pos_corr >= 0.0) {
+		vel = std::sqrt(vel * vel + 2 * gravity * pos_corr) * norm(vel);
+	} else {
+		vel = -std::sqrt(-1 * (vel * vel + 2 * gravity * pos_corr)) * norm(vel);
 	}
 
-	if (other.getV()*other.getV() + 2*gravity*pos_corr >= 0.0) {
-		other.setV(std::sqrt(other.getV()*other.getV() + 2*gravity*pos_corr) * norm(other.getV())) ;
-	}
-	else {
-		other.setV(-std::sqrt( -1*(other.getV()*other.getV() + 2*gravity*pos_corr) ) * norm(other.getV())) ;
+	if (other.getV() * other.getV() + 2 * gravity * pos_corr >= 0.0) {
+		other.setV(
+				std::sqrt(other.getV() * other.getV() + 2 * gravity * pos_corr)
+						* norm(other.getV()));
+	} else {
+		other.setV(
+				-std::sqrt(
+						-1
+								* (other.getV() * other.getV()
+										+ 2 * gravity * pos_corr))
+						* norm(other.getV()));
 	}
 
 	// impulse exchange
 	Vec3d vel_old = vel;
-	vel = vel_old - n*(n*vel_old) + (mass()-other.mass())/(mass() + other.mass())*n*(vel_old*n) + 2*other.mass()/(mass()+other.mass())*n*(other.getV()*n);
+	vel = vel_old - n * (n * vel_old)
+			+ (mass() - other.mass()) / (mass() + other.mass()) * n
+					* (vel_old * n)
+			+ 2 * other.mass() / (mass() + other.mass()) * n
+					* (other.getV() * n);
 
-	other.setV(  other.getV() - n*(other.getV()*n)  +  2*mass()/(other.getM()+mass())*n*(vel_old*n) + (other.mass()-mass())/(other.mass()+mass())*n*(other.getV()*n) );
+	other.setV(
+			other.getV() - n * (other.getV() * n)
+					+ 2 * mass() / (other.getM() + mass()) * n * (vel_old * n)
+					+ (other.mass() - mass()) / (other.mass() + mass()) * n
+							* (other.getV() * n));
 }
 
-void Particle::collide_particle(Particle& other, Boundary_planar& b_pl, Boundary_axis_symmetric& b_ax) {
+void Particle::collide_particle(Particle &other, Boundary_planar &b_pl,
+		Boundary_axis_symmetric &b_ax) {
 	old_pos = pos;
 	old_vel = vel;
 	other.old_pos = other.pos;
@@ -172,38 +186,49 @@ void Particle::collide_particle(Particle& other, Boundary_planar& b_pl, Boundary
 		// move back to the position when it touched the other:
 		pos = pos + pos_corr;
 		other.setPos(other.getPos() - pos_corr);
-	}
-	else {
+	} else {
 		// TODO: implement correction
 	}
 
 	// correct the velocity to conserve energy (dissipation work is not considered!)
-	if (vel*vel + 2*gravity*pos_corr >= 0.0) {
-		vel = std::sqrt(vel*vel + 2*gravity*pos_corr)  * norm(vel);
-	}
-	else {
-		vel = -std::sqrt( -1*(vel*vel + 2*gravity*pos_corr) )  * norm(vel);
+	if (vel * vel + 2 * gravity * pos_corr >= 0.0) {
+		vel = std::sqrt(vel * vel + 2 * gravity * pos_corr) * norm(vel);
+	} else {
+		vel = -std::sqrt(-1 * (vel * vel + 2 * gravity * pos_corr)) * norm(vel);
 	}
 
-	if (other.getV()*other.getV() + 2*gravity*pos_corr >= 0.0) {
-		other.setV(std::sqrt(other.getV()*other.getV() + 2*gravity*pos_corr) * norm(other.getV())) ;
-	}
-	else {
-		other.setV(-std::sqrt( -1*(other.getV()*other.getV() + 2*gravity*pos_corr) ) * norm(other.getV())) ;
+	if (other.getV() * other.getV() + 2 * gravity * pos_corr >= 0.0) {
+		other.setV(
+				std::sqrt(other.getV() * other.getV() + 2 * gravity * pos_corr)
+						* norm(other.getV()));
+	} else {
+		other.setV(
+				-std::sqrt(
+						-1
+								* (other.getV() * other.getV()
+										+ 2 * gravity * pos_corr))
+						* norm(other.getV()));
 	}
 
 	// impulse exchange
 	Vec3d vel_old = vel;
-	vel = vel_old - n*(n*vel_old) + (mass()-other.mass())/(mass() + other.mass())*n*(vel_old*n) + 2*other.mass()/(mass()+other.mass())*n*(other.getV()*n);
+	vel = vel_old - n * (n * vel_old)
+			+ (mass() - other.mass()) / (mass() + other.mass()) * n
+					* (vel_old * n)
+			+ 2 * other.mass() / (mass() + other.mass()) * n
+					* (other.getV() * n);
 
-	other.setV(  other.getV() - n*(other.getV()*n)  +  2*mass()/(other.getM()+mass())*n*(vel_old*n) + (other.mass()-mass())/(other.mass()+mass())*n*(other.getV()*n) );
+	other.setV(
+			other.getV() - n * (other.getV() * n)
+					+ 2 * mass() / (other.getM() + mass()) * n * (vel_old * n)
+					+ (other.mass() - mass()) / (other.mass() + mass()) * n
+							* (other.getV() * n));
 }
 
-bool Particle::overlap_wall(const Boundary& wall) {
+bool Particle::overlap_wall(const Boundary &wall) {
 	if (wall.distance(*this) - radius < 0) {
 		return true;
-	}
-	else {
+	} else {
 		return false;
 	}
 }
@@ -211,19 +236,19 @@ bool Particle::overlap_wall(const Boundary& wall) {
 bool Particle::overlap_walls() {
 	// TODO return references to the actually overlapped walls?
 	/*
-	for (auto& b : scene->getBoundariesPlanar()) {
+	 for (auto& b : scene->getBoundariesPlanar()) {
 
-	}
-	*/
+	 }
+	 */
 	return true;
 }
 
-Vec3d Particle::overlapVect_wall(const Boundary& wall) {
+Vec3d Particle::overlapVect_wall(const Boundary &wall) {
 	return (wall.distance(*this) - radius) * wall.getNormal(*this);
 }
 
-Vec3d Particle::findPlace(Particle& other) {
+Vec3d Particle::findPlace(Particle &other) {
 	// gives a direction in case of null vectors (coinciding particles!)
 	// TODO: choose later from available place (scene must be known!)
-	return Vec3d {1,0,0};
+	return Vec3d { 1, 0, 0 };
 }

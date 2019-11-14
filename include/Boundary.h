@@ -12,8 +12,8 @@ public:
 
 	virtual void draw2D() = 0;
 	//virtual void draw3D() = 0;
-	virtual double distance(const Particle & particle) const = 0;
-	virtual Vec3d getNormal(const Particle & particle) const = 0;
+	virtual double distance(const Particle &particle) const = 0;
+	virtual Vec3d getNormal(const Particle &particle) const = 0;
 
 };
 

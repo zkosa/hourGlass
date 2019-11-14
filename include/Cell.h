@@ -27,9 +27,9 @@ class Cell {
 	Bounds bounds;
 	Bounds bounds_display; // scaled for avoiding overlap of edges during display
 
-	Vec3d center = {0,0,0};
+	Vec3d center = { 0, 0, 0 };
 
-	std::vector<int> particle_IDs; // TODO reserve expected size
+	std::vector<int> particle_IDs; // TODO reserve the expected size
 	std::vector<int> boundary_IDs_planar;
 	std::vector<int> boundary_IDs_axis_symmetric;
 
@@ -39,14 +39,14 @@ class Cell {
 
 public:
 	//Cell() {};
-	Cell(const Vec3d& center, const Vec3d& dX);
+	Cell(const Vec3d &center, const Vec3d &dX);
 
 	void init(const Scene&);
 	void shrink();
 	void update();
 
 	void clear();
-	void populate(std::vector<Particle>& particles);
+	void populate(std::vector<Particle> &particles);
 	bool contains(const Particle&);
 	bool contains(const Boundary&);
 	void addParticle(const Particle&);
@@ -55,23 +55,51 @@ public:
 
 	void draw2D();
 
-	const std::vector<int>& getBoundaryIDsAxisSymmetric() const { return boundary_IDs_axis_symmetric; }
-	const std::vector<int>& getBoundaryIDsPlanar() const {return boundary_IDs_planar;}
-	const Bounds& getBounds() const {return bounds;}
-	const Vec3d& getCenter() const {return center;}
-	const std::vector<int>& getParticleIDs() const {return particle_IDs;}
+	const std::vector<int>& getBoundaryIDsAxisSymmetric() const {
+		return boundary_IDs_axis_symmetric;
+	}
+	const std::vector<int>& getBoundaryIDsPlanar() const {
+		return boundary_IDs_planar;
+	}
+	const Bounds& getBounds() const {
+		return bounds;
+	}
+	const Vec3d& getCenter() const {
+		return center;
+	}
+	const std::vector<int>& getParticleIDs() const {
+		return particle_IDs;
+	}
 
-	bool hasBoundary() {return cell_with_boundary;}
+	bool hasBoundary() {
+		return cell_with_boundary;
+	}
 
-	void setCellWithBoundary() {cell_with_boundary = true;}
-	void setCellWithoutBoundary() {cell_with_boundary = false;}
+	void setCellWithBoundary() {
+		cell_with_boundary = true;
+	}
+	void setCellWithoutBoundary() {
+		cell_with_boundary = false;
+	}
 
-	static int getNx() {return Nx;}
-	static int getNy() {return Ny;}
-	static int getNz() {return Nz;}
-	static void setNx(int Nx) {Cell::Nx = Nx;}
-	static void setNy(int Ny) {Cell::Ny = Ny;}
-	static void setNz(int Ny) {Cell::Nz = Ny;}
+	static int getNx() {
+		return Nx;
+	}
+	static int getNy() {
+		return Ny;
+	}
+	static int getNz() {
+		return Nz;
+	}
+	static void setNx(int Nx) {
+		Cell::Nx = Nx;
+	}
+	static void setNy(int Ny) {
+		Cell::Ny = Ny;
+	}
+	static void setNz(int Ny) {
+		Cell::Nz = Ny;
+	}
 
 };
 

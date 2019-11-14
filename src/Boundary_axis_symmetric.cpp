@@ -1,9 +1,9 @@
 #include "Boundary_axis_symmetric.h"
 #include "Minimum.h"
 
-double Boundary_axis_symmetric::distance(const Particle & particle) const {
+double Boundary_axis_symmetric::distance(const Particle &particle) const {
 
-	const Vec3d& pos = particle.getPos();
+	const Vec3d &pos = particle.getPos();
 	double X0 = pos * axis; // axial coordinate
 	Vec3d Radial = pos - (pos * axis) * axis; // radial vector
 	double R0 = abs(Radial); // radial coordinate
@@ -27,9 +27,9 @@ double Boundary_axis_symmetric::distance(const Particle & particle) const {
 	return minimum.getDistance();
 }
 
-Vec3d Boundary_axis_symmetric::getNormal(const Particle & particle) const {
+Vec3d Boundary_axis_symmetric::getNormal(const Particle &particle) const {
 
-	const Vec3d& pos = particle.getPos();
+	const Vec3d &pos = particle.getPos();
 	double X0 = pos * axis; // axial coordinate
 	Vec3d Radial = pos - (pos * axis) * axis; // radial vector
 	double R0 = abs(Radial); // radial coordinate
@@ -39,9 +39,11 @@ Vec3d Boundary_axis_symmetric::getNormal(const Particle & particle) const {
 	// Newton iteration for minimum
 	//Minimum minimum( f, X0, R0 );  // (0, X0, R0)
 	Minimum minimum(*this, X0, R0);
-	VecAxiSym contactPointInRadialCoord = minimum.getContactPointInRadialCoord();
+	VecAxiSym contactPointInRadialCoord =
+			minimum.getContactPointInRadialCoord();
 
-	Vec3d contactPoint = axis * contactPointInRadialCoord.X + norm(Radial) *contactPointInRadialCoord.R;
+	Vec3d contactPoint = axis * contactPointInRadialCoord.X
+			+ norm(Radial) * contactPointInRadialCoord.R;
 
 	Vec3d n = norm(particle.getPos() - contactPoint);
 
@@ -55,15 +57,15 @@ void Boundary_axis_symmetric::draw2D() {
 	float X;
 	int resolution = 20;
 	glBegin(GL_LINE_LOOP);
-	for (int i=0; i<=resolution; ++i) {
-		X = Vec3d( p1_axis + (p2_axis - p1_axis)*(i/double(resolution)) ).y;
+	for (int i = 0; i <= resolution; ++i) {
+		X = Vec3d(p1_axis + (p2_axis - p1_axis) * (i / double(resolution))).y;
 		glVertex2f(float(contour(X)), X);
 	}
 	glEnd();
 
 	glBegin(GL_LINE_LOOP);
-	for (int i=0; i<=resolution; ++i) {
-		X = Vec3d( p1_axis + (p2_axis - p1_axis)*(i/double(resolution)) ).y;
+	for (int i = 0; i <= resolution; ++i) {
+		X = Vec3d(p1_axis + (p2_axis - p1_axis) * (i / double(resolution))).y;
 		glVertex2f(-float(contour(X)), X);
 	}
 	glEnd();
