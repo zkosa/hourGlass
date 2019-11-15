@@ -41,24 +41,47 @@ inline Vec3d Divide(const Vec3d &a, const double m) {
 	return Vec3d(a.x / m, a.y / m, a.z / m);
 }
 
-Vec3d operator+(const Vec3d &a, const Vec3d &b);
+inline Vec3d operator+(const Vec3d &a, const Vec3d &b) {
+	return Add(a, b);
+}
 
-Vec3d operator-(const Vec3d &a, const Vec3d &b);
+inline Vec3d operator-(const Vec3d &a, const Vec3d &b) {
+	return Substract(a, b);
+}
 
-Vec3d operator*(const double m, const Vec3d &a);
+inline Vec3d operator*(const double m, const Vec3d &a) {
+	return Multiply(a, m);
+}
 
-Vec3d operator*(const Vec3d &a, const double m);
+inline Vec3d operator*(const Vec3d &a, const double m) {
+	return Multiply(a, m);
+}
 
-double operator*(const Vec3d &a, const Vec3d &b);
+inline double operator*(const Vec3d &a, const Vec3d &b) {
+	return a.x * b.x + a.y * b.y + a.z * b.z;
+}
 
-Vec3d crossProduct(const Vec3d &a, const Vec3d &b);
+inline Vec3d crossProduct(const Vec3d &a, const Vec3d &b) {
+	return Vec3d(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z,
+			a.x * b.y - a.y * b.x);
+}
 
-Vec3d operator/(const Vec3d &a, const double m);
+inline Vec3d operator/(const Vec3d &a, const double m) {
+	return Divide(a, m);
+}
+
 
 inline double abs(const Vec3d &a) {
 	return std::sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
 }
 
-Vec3d norm(const Vec3d &a);
+inline Vec3d norm(const Vec3d &a) {
+	double length = abs(a);
+	if (length > SMALL) {
+		return a / length;
+	} else {
+		return Vec3d(0, 0, 0);
+	}
+}
 
 #endif /* VEC3D_H_ */
