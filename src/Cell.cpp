@@ -57,12 +57,11 @@ void Cell::populate(std::vector<Particle> &particles) {
 }
 
 bool Cell::contains(const Particle &p) {
-	Vec3d pos = p.getPos(); // TODO implement getX, ...
 	double r = p.getR();
 
-	return (pos.x + r > bounds.x1 && pos.x - r < bounds.x2)
-			&& (pos.y + r > bounds.y1 && pos.y - r < bounds.y2)
-			&& (pos.z + r > bounds.z1 && pos.z - r < bounds.z2);
+	return (p.getX() + r > bounds.x1 && p.getX() - r < bounds.x2)
+			&& (p.getY() + r > bounds.y1 && p.getY() - r < bounds.y2)
+			&& (p.getZ() + r > bounds.z1 && p.getZ() - r < bounds.z2);
 }
 
 bool Cell::contains(const Boundary &b) {
@@ -75,12 +74,6 @@ bool Cell::contains(const Boundary &b) {
 
 void Cell::addParticle(const Particle &p) {
 	particle_IDs.emplace_back(p.getID());
-}
-
-void Cell::addBoundaryPlanar(const Boundary_planar &b) {
-}
-
-void Cell::addBoundaryAxiSym(const Boundary_axis_symmetric &b) {
 }
 
 void Cell::draw2D() {

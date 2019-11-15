@@ -33,7 +33,7 @@ class Cell {
 	std::vector<int> boundary_IDs_planar;
 	std::vector<int> boundary_IDs_axis_symmetric;
 
-	double r = 0; // center to corner distance
+	double r; // center to corner distance
 
 	bool cell_with_boundary = false;
 
@@ -50,8 +50,6 @@ public:
 	bool contains(const Particle&);
 	bool contains(const Boundary&);
 	void addParticle(const Particle&);
-	void addBoundaryPlanar(const Boundary_planar&);
-	void addBoundaryAxiSym(const Boundary_axis_symmetric&);
 
 	void draw2D();
 
