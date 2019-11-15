@@ -197,17 +197,28 @@ void Scene::collide_particles() {
 
 void Scene::collide_cells() {
 
-	for (auto &c : cells) { // when no omp (: loops are not suported)
-//	#pragma omp parallel for
-//	for (uint i = 0; i < cells.size(); ++i) {
-//		Cell& c = cells[i]; // with omp,
-		for (int p1ID : c.getParticleIDs()) {
-			auto &p1 = particles[p1ID];
-			for (int p2ID : c.getParticleIDs()) {
-				auto &p2 = particles[p2ID];
-				if (p1.distance(p2) < p1.getR() + p2.getR()) {
-					if (p1ID != p2ID) { // do not collide with itself
-						p1.collide_particle(p2);
+	for (auto &c : cells) { // when no omp (: loops are not supported)
+		if (c.hasBoundary()) {
+			for (int p1ID : c.getParticleIDs()) {
+				auto &p1 = particles[p1ID];
+				for (int p2ID : c.getParticleIDs()) {
+					auto &p2 = particles[p2ID];
+					if (p1.distance(p2) < p1.getR() + p2.getR()) {
+						if (p1ID != p2ID) { // do not collide with itself
+							p1.collide_particle_check_boundary(p2);
+						}
+					}
+				}
+			}
+		} else {
+			for (int p1ID : c.getParticleIDs()) {
+				auto &p1 = particles[p1ID];
+				for (int p2ID : c.getParticleIDs()) {
+					auto &p2 = particles[p2ID];
+					if (p1.distance(p2) < p1.getR() + p2.getR()) {
+						if (p1ID != p2ID) { // do not collide with itself
+							p1.collide_particle(p2);
+						}
 					}
 				}
 			}

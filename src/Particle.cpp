@@ -46,10 +46,10 @@ Vec3d Particle::impulse() {
 }
 
 Vec3d Particle::apply_forces() {
-	Vec3d drag_force = 0.5 * density_medium * CdA() * (vel * abs(vel)); // D = 0.5 * (rho * C * Area * vel^2)
+	Vec3d drag_force = -0.5 * density_medium * CdA() * (vel * abs(vel));
 	Vec3d drag_acc = drag_force / mass(); // a = F/m
 
-	return gravity - drag_acc;
+	return gravity + drag_acc;
 }
 
 void Particle::info() {
@@ -161,8 +161,8 @@ void Particle::collide_particle(Particle &other) {
 							* (other.getV() * n));
 }
 
-void Particle::collide_particle(Particle &other, Boundary_planar &b_pl,
-		Boundary_axis_symmetric &b_ax) {
+void Particle::collide_particle_check_boundary(Particle &other) {
+
 	old_pos = pos;
 	old_vel = vel;
 	other.old_pos = other.pos;
@@ -177,17 +177,24 @@ void Particle::collide_particle(Particle &other, Boundary_planar &b_pl,
 	Vec3d pos_corr = -0.5 * n * (this->getR() + other.getR() - distance);
 
 	// create temporary particles for overlap checking
-	Particle tmp_particle = *this;
+	Particle tmp_particle (*this);
 	tmp_particle.setPos(pos + pos_corr);
-	Particle tmp_other_particle = other;
+	Particle tmp_other_particle(other);
 	tmp_other_particle.setPos(other.getPos() - pos_corr);
 
+	// TODO: store overlapping properties (free/bounded by wall)
 	if (!tmp_particle.overlap_walls() && !tmp_other_particle.overlap_walls()) {
 		// move back to the position when it touched the other:
 		pos = pos + pos_corr;
 		other.setPos(other.getPos() - pos_corr);
-	} else {
+	} else if (tmp_particle.overlap_walls() && !tmp_other_particle.overlap_walls()){
+		other.setPos(other.getPos() - 2*pos_corr); // correct where there is no wall
+	} else if (tmp_other_particle.overlap_walls() && !tmp_particle.overlap_walls()) {
+		pos = pos + 2*pos_corr;// correct where there is no wall
+	} else { // both particles overlap with walls
 		// TODO: implement correction
+		// skip now, to check if quality is improved
+		return; // do not collide the particles, because they would overlap with walls after collision
 	}
 
 	// correct the velocity to conserve energy (dissipation work is not considered!)
@@ -223,9 +230,10 @@ void Particle::collide_particle(Particle &other, Boundary_planar &b_pl,
 					+ 2 * mass() / (other.getM() + mass()) * n * (vel_old * n)
 					+ (other.mass() - mass()) / (other.mass() + mass()) * n
 							* (other.getV() * n));
+
 }
 
-bool Particle::overlap_wall(const Boundary &wall) {
+bool Particle::overlap_wall(const Boundary &wall) const {
 	if (wall.distance(*this) - radius < 0) {
 		return true;
 	} else {
@@ -233,14 +241,19 @@ bool Particle::overlap_wall(const Boundary &wall) {
 	}
 }
 
-bool Particle::overlap_walls() {
-	// TODO return references to the actually overlapped walls?
-	/*
-	 for (auto& b : scene->getBoundariesPlanar()) {
-
+bool Particle::overlap_walls() const {
+	// TODO return pointers to the actually overlapped walls?
+	 for (const auto &b : scene->getBoundariesPlanar()) {
+		 if (overlap_wall(b)) {
+			 return true;
+		 }
 	 }
-	 */
-	return true;
+	 for (const auto &b : scene->getBoundariesAxiSym()) {
+		 if (overlap_wall(b)) {
+			 return true;
+		 }
+	 }
+	return false;
 }
 
 Vec3d Particle::overlapVect_wall(const Boundary &wall) {

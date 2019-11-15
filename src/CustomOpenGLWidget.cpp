@@ -54,5 +54,5 @@ void CustomOpenGLWidget::connectScene(Scene *scene) {
 }
 
 void CustomOpenGLWidget::connectMainWindow(MainWindow *mainWindow) {
-	window = mainWindow;
+	this->window = mainWindow;
 }

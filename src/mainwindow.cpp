@@ -18,7 +18,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	scene.createCells();
 
 	// connecting the simulation scene to the window:
-	Scene *scene_ptr = &scene;
+	Scene *scene_ptr = &scene; // TODO: check with Tamas
+	Particle::connectScene(scene_ptr);
 	ui->openGLWidget->connectScene(scene_ptr);
 	ui->openGLWidget->connectMainWindow(this);
 
@@ -89,7 +90,7 @@ void MainWindow::on_Particle_number_slider_valueChanged(int particle_number_) {
 void MainWindow::on_Particle_diameter_slider_valueChanged(
 		int particle_diameter_mm) {
 	//ui->Particle_diameter_value->setNum(particle_diameter_mm);
-	double r = particle_diameter_mm / 1000. / 2.; // int [mm] --> double [m], diamter --> radius
+	double r = particle_diameter_mm / 1000. / 2.; // int [mm] --> double [m], diameter --> radius
 	Particle::setUniformRadius(r);
 	updateGUIcontrols();
 

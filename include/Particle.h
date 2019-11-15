@@ -81,10 +81,9 @@ public:
 
 	void collide_wall(const Boundary &wall);
 	void collide_particle(Particle &other);
-	void collide_particle(Particle &other, Boundary_planar &b_pl,
-			Boundary_axis_symmetric &b_ax);
-	bool overlap_wall(const Boundary &wall);
-	bool overlap_walls();
+	void collide_particle_check_boundary(Particle &other);
+	bool overlap_wall(const Boundary &wall) const;
+	bool overlap_walls() const;
 	Vec3d overlapVect_wall(const Boundary &wall);
 
 	Vec3d findPlace(Particle &other);
@@ -101,8 +100,8 @@ public:
 	void setV(Vec3d v) {
 		this->vel = v;
 	}
-	void connectScene(Scene *scene) {
-		this->scene = scene;
+	static void connectScene(Scene *scene) {
+		Particle::scene = scene;
 	}
 	void setCheckBoundary(bool is_near) {
 		check_boundary = is_near;

@@ -65,7 +65,7 @@ public:
 	void collide_particles();
 	void collide_cells();
 
-	std::vector<Particle> getParticles() {
+	std::vector<Particle>& getParticles() {
 		return particles;
 	}
 	std::vector<Boundary_planar> getBoundariesPlanar() {
