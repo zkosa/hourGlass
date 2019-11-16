@@ -49,6 +49,10 @@ public:
 
 	Vec3d getNormal(const Particle &particle) const override;
 
+	Vec3d getAxis() const {
+		return axis;
+	}
+
 	std::function<double(const double)> getContourFun() const {
 		return contour;
 	}

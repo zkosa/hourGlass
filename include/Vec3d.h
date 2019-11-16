@@ -70,7 +70,6 @@ inline Vec3d operator/(const Vec3d &a, const double m) {
 	return Divide(a, m);
 }
 
-
 inline double abs(const Vec3d &a) {
 	return std::sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
 }

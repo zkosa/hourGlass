@@ -99,6 +99,9 @@ public:
 	void createGeometry(Geometry);
 	void createCells();
 	void markBoundaryCells();
+	void markExternalCells();
+	bool pointIsExternal(const Boundary_axis_symmetric &b, const Vec3d &point);
+	void removeExternalCells();
 	void drawCells();
 	void populateCells();
 	void clearCells();

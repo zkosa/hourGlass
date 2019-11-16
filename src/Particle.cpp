@@ -177,7 +177,7 @@ void Particle::collide_particle_check_boundary(Particle &other) {
 	Vec3d pos_corr = -0.5 * n * (this->getR() + other.getR() - distance);
 
 	// create temporary particles for overlap checking
-	Particle tmp_particle (*this);
+	Particle tmp_particle(*this);
 	tmp_particle.setPos(pos + pos_corr);
 	Particle tmp_other_particle(other);
 	tmp_other_particle.setPos(other.getPos() - pos_corr);
@@ -187,14 +187,16 @@ void Particle::collide_particle_check_boundary(Particle &other) {
 		// move back to the position when it touched the other:
 		pos = pos + pos_corr;
 		other.setPos(other.getPos() - pos_corr);
-	} else if (tmp_particle.overlap_walls() && !tmp_other_particle.overlap_walls()){
-		other.setPos(other.getPos() - 2*pos_corr); // correct where there is no wall
-	} else if (tmp_other_particle.overlap_walls() && !tmp_particle.overlap_walls()) {
-		pos = pos + 2*pos_corr;// correct where there is no wall
+	} else if (tmp_particle.overlap_walls()
+			&& !tmp_other_particle.overlap_walls()) {
+		other.setPos(other.getPos() - 2 * pos_corr); // correct where there is no wall
+	} else if (tmp_other_particle.overlap_walls()
+			&& !tmp_particle.overlap_walls()) {
+		pos = pos + 2 * pos_corr; // correct where there is no wall
 	} else { // both particles overlap with walls
 		// TODO: implement correction
 		// skip now, to check if quality is improved
-		return; // do not collide the particles, because they would overlap with walls after collision
+		return;// do not collide the particles, because they would overlap with walls after collision
 	}
 
 	// correct the velocity to conserve energy (dissipation work is not considered!)
@@ -243,16 +245,16 @@ bool Particle::overlap_wall(const Boundary &wall) const {
 
 bool Particle::overlap_walls() const {
 	// TODO return pointers to the actually overlapped walls?
-	 for (const auto &b : scene->getBoundariesPlanar()) {
-		 if (overlap_wall(b)) {
-			 return true;
-		 }
-	 }
-	 for (const auto &b : scene->getBoundariesAxiSym()) {
-		 if (overlap_wall(b)) {
-			 return true;
-		 }
-	 }
+	for (const auto &b : scene->getBoundariesPlanar()) {
+		if (overlap_wall(b)) {
+			return true;
+		}
+	}
+	for (const auto &b : scene->getBoundariesAxiSym()) {
+		if (overlap_wall(b)) {
+			return true;
+		}
+	}
 	return false;
 }
 

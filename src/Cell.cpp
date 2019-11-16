@@ -11,36 +11,83 @@ int Cell::Ny = Cell::Nx;
 
 int Cell::Nz = 1; // 2D
 
+Scene *Cell::scene = nullptr;
+
 Cell::Cell(const Vec3d &center, const Vec3d &dX) {
-	bounds.x1 = (center - dX / 2) * Vec3d::i;
-	bounds.y1 = (center - dX / 2) * Vec3d::j;
-	bounds.z1 = (center - dX / 2) * Vec3d::k;
+	bounds.x1 = (center - dX / 2.) * Vec3d::i;
+	bounds.y1 = (center - dX / 2.) * Vec3d::j;
+	bounds.z1 = (center - dX / 2.) * Vec3d::k;
 
-	bounds.x2 = (center + dX / 2) * Vec3d::i;
-	bounds.y2 = (center + dX / 2) * Vec3d::j;
-	bounds.z2 = (center + dX / 2) * Vec3d::k;
+	bounds.x2 = (center + dX / 2.) * Vec3d::i;
+	bounds.y2 = (center + dX / 2.) * Vec3d::j;
+	bounds.z2 = (center + dX / 2.) * Vec3d::k;
 
-	double factor = 0.93;
-	bounds_display.x1 = (center - factor * dX / 2) * Vec3d::i;
-	bounds_display.y1 = (center - factor * dX / 2) * Vec3d::j;
-	bounds_display.z1 = (center - factor * dX / 2) * Vec3d::k;
+	double factor = 0.94;
+	bounds_display.x1 = (center - factor * dX / 2.) * Vec3d::i;
+	bounds_display.y1 = (center - factor * dX / 2.) * Vec3d::j;
+	bounds_display.z1 = (center - factor * dX / 2.) * Vec3d::k;
 
-	bounds_display.x2 = (center + factor * dX / 2) * Vec3d::i;
-	bounds_display.y2 = (center + factor * dX / 2) * Vec3d::j;
-	bounds_display.z2 = (center + factor * dX / 2) * Vec3d::k;
+	bounds_display.x2 = (center + factor * dX / 2.) * Vec3d::i;
+	bounds_display.y2 = (center + factor * dX / 2.) * Vec3d::j;
+	bounds_display.z2 = (center + factor * dX / 2.) * Vec3d::k;
 
-	r = abs(0.5 * dX);
+	half_diagonal = abs(0.5 * dX);
 
 	this->center = center;
-}
 
-void Cell::init(const Scene &scene) {
-}
+	corners.push_back(Vec3d { bounds.x1, bounds.y1, bounds.z1 });
+	corners.push_back(Vec3d { bounds.x1, bounds.y1, bounds.z2 });
+	corners.push_back(Vec3d { bounds.x1, bounds.y2, bounds.z1 });
+	corners.push_back(Vec3d { bounds.x1, bounds.y2, bounds.z2 });
+	corners.push_back(Vec3d { bounds.x2, bounds.y1, bounds.z1 });
+	corners.push_back(Vec3d { bounds.x2, bounds.y1, bounds.z2 });
+	corners.push_back(Vec3d { bounds.x2, bounds.y2, bounds.z1 });
+	corners.push_back(Vec3d { bounds.x2, bounds.y2, bounds.z2 });
 
-void Cell::shrink() {
-}
+	faceCenters.push_back(center + dX / 2. * Vec3d::i * Vec3d::i);
+	faceCenters.push_back(center + dX / 2. * Vec3d::j * Vec3d::j);
+	faceCenters.push_back(center + dX / 2. * Vec3d::k * Vec3d::k);
+	faceCenters.push_back(center - dX / 2. * Vec3d::i * Vec3d::i);
+	faceCenters.push_back(center - dX / 2. * Vec3d::j * Vec3d::j);
+	faceCenters.push_back(center - dX / 2. * Vec3d::k * Vec3d::k);
 
-void Cell::update() {
+	edgeCenters.push_back(
+			center + 0.5 * dX * Vec3d::i * Vec3d::i
+					+ 0.5 * dX * Vec3d::j * Vec3d::j);
+	edgeCenters.push_back(
+			center + 0.5 * dX * Vec3d::i * Vec3d::i
+					- 0.5 * dX * Vec3d::j * Vec3d::j);
+	edgeCenters.push_back(
+			center - 0.5 * dX * Vec3d::i * Vec3d::i
+					+ 0.5 * dX * Vec3d::j * Vec3d::j);
+	edgeCenters.push_back(
+			center - 0.5 * dX * Vec3d::i * Vec3d::i
+					- 0.5 * dX * Vec3d::j * Vec3d::j);
+	edgeCenters.push_back(
+			center + 0.5 * dX * Vec3d::i * Vec3d::i
+					+ 0.5 * dX * Vec3d::k * Vec3d::k);
+	edgeCenters.push_back(
+			center + 0.5 * dX * Vec3d::i * Vec3d::i
+					- 0.5 * dX * Vec3d::k * Vec3d::k);
+	edgeCenters.push_back(
+			center - 0.5 * dX * Vec3d::i * Vec3d::i
+					+ 0.5 * dX * Vec3d::k * Vec3d::k);
+	edgeCenters.push_back(
+			center - 0.5 * dX * Vec3d::i * Vec3d::i
+					- 0.5 * dX * Vec3d::k * Vec3d::k);
+	edgeCenters.push_back(
+			center + 0.5 * dX * Vec3d::j * Vec3d::j
+					+ 0.5 * dX * Vec3d::k * Vec3d::k);
+	edgeCenters.push_back(
+			center + 0.5 * dX * Vec3d::j * Vec3d::j
+					- 0.5 * dX * Vec3d::k * Vec3d::k);
+	edgeCenters.push_back(
+			center - 0.5 * dX * Vec3d::j * Vec3d::j
+					+ 0.5 * dX * Vec3d::k * Vec3d::k);
+	edgeCenters.push_back(
+			center - 0.5 * dX * Vec3d::j * Vec3d::j
+					- 0.5 * dX * Vec3d::k * Vec3d::k);
+
 }
 
 void Cell::clear() {
@@ -65,7 +112,7 @@ bool Cell::contains(const Particle &p) {
 }
 
 bool Cell::contains(const Boundary &b) {
-	if (b.distance(center) <= r) { // + Particle::getUniformRadius()
+	if (b.distance(center) <= half_diagonal) { // + Particle::getUniformRadius()
 		return true;
 	} else {
 		return false;
@@ -85,6 +132,12 @@ void Cell::draw2D() {
 	} else {
 		glColor4f(0, 1, 0, 0.1);
 	}
+	/*	if (isExternal()) {
+	 glColor4f(0, 0, 1, 1);
+	 } else {
+	 glColor4f(1, 1, 0, 0.1);
+	 }
+	 */
 	glVertex2f(float(bounds_display.x1), float(bounds_display.y1));
 	glVertex2f(float(bounds_display.x2), float(bounds_display.y1));
 	glVertex2f(float(bounds_display.x2), float(bounds_display.y2));

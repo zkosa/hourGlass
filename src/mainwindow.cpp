@@ -6,8 +6,7 @@
 #include "CustomOpenGLWidget.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-		QMainWindow(parent), ui(new Ui::MainWindow), number_of_particles(
-				5000) {
+		QMainWindow(parent), ui(new Ui::MainWindow), number_of_particles(5000) {
 	ui->setupUi(this);
 	// connecting the window to the simulation scene:
 	scene.connectViewer(this);
@@ -20,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	// connecting the simulation scene to the window:
 	Scene *scene_ptr = &scene; // TODO: check with Tamas
 	Particle::connectScene(scene_ptr);
+	Cell::connectScene(scene_ptr);
 	ui->openGLWidget->connectScene(scene_ptr);
 	ui->openGLWidget->connectMainWindow(this);
 
@@ -43,8 +43,8 @@ void MainWindow::on_checkBox_benchmarkMode_stateChanged(int benchmark_checked) {
 		scene.setBenchmarkMode(true);
 
 		ui->geometryComboBox->setEnabled(false);
-		ui->cells_Nx_SpinBox->setEnabled(false);
-		ui->cells_Ny_SpinBox->setEnabled(false);
+		ui->cells_Nx_SpinBox->setEnabled(true);
+		ui->cells_Ny_SpinBox->setEnabled(true);
 		ui->cells_Nz_SpinBox->setEnabled(false);
 		ui->Particle_number_slider->setEnabled(false);
 		ui->Particle_diameter_slider->setEnabled(false);

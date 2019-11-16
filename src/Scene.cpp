@@ -261,6 +261,8 @@ void Scene::createCells() {
 	}
 
 	markBoundaryCells();
+	markExternalCells();
+	removeExternalCells();
 }
 
 void Scene::markBoundaryCells() {
@@ -277,6 +279,45 @@ void Scene::markBoundaryCells() {
 			}
 		}
 	}
+}
+
+void Scene::markExternalCells() {
+	for (auto &c : cells) {
+		c.setExternal(true);
+		for (auto &b : getBoundariesAxiSym()) {
+			auto points = c.getAllPoints();
+			for (auto &point : points) {
+				if (!pointIsExternal(b, point)) {
+					c.setExternal(false);
+					break;
+				}
+			}
+		}
+	}
+}
+
+bool Scene::pointIsExternal(const Boundary_axis_symmetric &b,
+		const Vec3d &point) {
+	// rough method!
+	auto contour = b.getContourFun();
+	double contour_radius = contour(point * norm(b.getAxis()));
+	double point_radius = abs(
+			point - (point * norm(b.getAxis())) * norm(b.getAxis()));
+	// tuning factor for marking also those cells where all points are external,
+	// but there is still interference with a boundary:
+	point_radius *= 1.0;
+
+	if (point_radius > contour_radius) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+void Scene::removeExternalCells() {
+	cells.erase(std::remove_if(cells.begin(), cells.end(), [](Cell &c) {
+		return c.isExternal();
+	}), cells.end());
 }
 
 void Scene::drawCells() {

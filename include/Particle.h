@@ -139,7 +139,6 @@ public:
 		return pos;
 	}
 
-
 	// static getters can not be qualified as const according to the standard
 	// (they do not modify any instance of the class)
 	static double getCd() {

@@ -9,6 +9,8 @@ class Particle;
 class Boundary_planar;
 class Boundary_axis_symmetric;
 
+typedef std::vector<Vec3d> pointData;
+
 struct Bounds {
 	// lower bound coordinates:
 	double x1 = 0;
@@ -22,28 +24,34 @@ struct Bounds {
 
 class Cell {
 
+	static Scene *scene; // TODO make constant
+
 	static int Nx, Ny, Nz;
 
 	Bounds bounds;
 	Bounds bounds_display; // scaled for avoiding overlap of edges during display
 
 	Vec3d center = { 0, 0, 0 };
+	pointData corners;
+	pointData faceCenters;
+	pointData edgeCenters; // TODO: check if it improves performance when they are not stored
 
 	std::vector<int> particle_IDs; // TODO reserve the expected size
 	std::vector<int> boundary_IDs_planar;
 	std::vector<int> boundary_IDs_axis_symmetric;
 
-	double r; // center to corner distance
+	double half_diagonal; // center to corner distance
 
 	bool cell_with_boundary = false;
+	bool cell_is_external = false;
 
 public:
 	//Cell() {};
 	Cell(const Vec3d &center, const Vec3d &dX);
 
-	void init(const Scene&);
-	void shrink();
-	void update();
+	static void connectScene(Scene *scene) {
+		Cell::scene = scene;
+	}
 
 	void clear();
 	void populate(std::vector<Particle> &particles);
@@ -65,6 +73,26 @@ public:
 	const Vec3d& getCenter() const {
 		return center;
 	}
+	const pointData getCorners() const {
+		return corners;
+	}
+	const pointData getFaceCenters() const {
+		return faceCenters;
+	}
+	const pointData getEdgeCenters() const {
+		return edgeCenters;
+	}
+	const pointData getAllPoints() const {
+		pointData all;
+		all.push_back(center);
+		all.insert(all.end(), corners.begin(), corners.end());
+		all.insert(all.end(), faceCenters.begin(), faceCenters.end());
+		all.insert(all.end(), edgeCenters.begin(), edgeCenters.end());
+		return all;
+	}
+	const double getHalfDiagonal() const {
+		return half_diagonal;
+	}
 	const std::vector<int>& getParticleIDs() const {
 		return particle_IDs;
 	}
@@ -73,11 +101,19 @@ public:
 		return cell_with_boundary;
 	}
 
+	inline bool isExternal() {
+		return cell_is_external;
+	}
+
 	void setCellWithBoundary() {
 		cell_with_boundary = true;
 	}
 	void setCellWithoutBoundary() {
 		cell_with_boundary = false;
+	}
+
+	void setExternal(bool external) {
+		cell_is_external = external;
 	}
 
 	static int getNx() {
