@@ -105,6 +105,10 @@ public:
 		return cell_is_external;
 	}
 
+	inline bool isInternal() {
+		return !cell_is_external;
+	}
+
 	void setCellWithBoundary() {
 		cell_with_boundary = true;
 	}
@@ -112,8 +116,12 @@ public:
 		cell_with_boundary = false;
 	}
 
-	void setExternal(bool external) {
-		cell_is_external = external;
+	void setExternal() {
+		cell_is_external = true;
+	}
+
+	void setInternal() {
+		cell_is_external = false;
 	}
 
 	static int getNx() {

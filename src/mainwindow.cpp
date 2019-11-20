@@ -73,9 +73,9 @@ void MainWindow::on_stopButton_clicked() {
 
 void MainWindow::on_geometryComboBox_currentIndexChanged(int geo) {
 	scene.setGeometry(geo);
+	std::cout << "Activating geometry: " << scene.getGeometryName()
+			<< std::endl;
 	scene.createGeometry(geo);
-	std::cout << "Geometry -- " << scene.getGeometryName()
-			<< " -- is activated." << std::endl;
 }
 
 void MainWindow::on_Particle_number_slider_valueChanged(int particle_number_) {

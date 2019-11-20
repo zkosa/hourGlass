@@ -99,8 +99,16 @@ public:
 	void createGeometry(Geometry);
 	void createCells();
 	void markBoundaryCells();
-	void markExternalCells();
 	bool pointIsExternal(const Boundary_axis_symmetric &b, const Vec3d &point);
+	bool pointIsExternal(const Boundary_planar &b, const Vec3d &point);
+	bool pointIsInternal(const Boundary_axis_symmetric &b, const Vec3d &point) {
+		return !pointIsExternal(b, point);
+	}
+	bool pointIsInternal(const Boundary_planar &b, const Vec3d &point) {
+		return !pointIsExternal(b, point);
+	}
+	void markExternal(Cell &c);
+	void markExternalCells();
 	void removeExternalCells();
 	void drawCells();
 	void populateCells();

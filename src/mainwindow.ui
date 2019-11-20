@@ -113,6 +113,9 @@
        </item>
        <item>
         <widget class="QComboBox" name="geometryComboBox">
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
          <item>
           <property name="text">
            <string>Hourglass</string>
@@ -389,7 +392,7 @@
      <string>Benchmark mode</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>100</x>

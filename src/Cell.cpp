@@ -132,12 +132,11 @@ void Cell::draw2D() {
 	} else {
 		glColor4f(0, 1, 0, 0.1);
 	}
-	/*	if (isExternal()) {
+	/*	 if (isExternal()) {
 	 glColor4f(0, 0, 1, 1);
 	 } else {
 	 glColor4f(1, 1, 0, 0.1);
-	 }
-	 */
+	 } */
 	glVertex2f(float(bounds_display.x1), float(bounds_display.y1));
 	glVertex2f(float(bounds_display.x2), float(bounds_display.y1));
 	glVertex2f(float(bounds_display.x2), float(bounds_display.y2));

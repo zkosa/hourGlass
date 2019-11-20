@@ -25,7 +25,7 @@ find_package(OpenMP REQUIRED)
 
 file(GLOB SOURCES "src/*.cpp") # new files are read only after modifying this file?
 file(GLOB HEADERS "include/*.h")
-set(UI "src/mainwindow.ui")
+set(UI "src/mainwindow.ui") # ui must be placed alongside the cpp file
 
 add_subdirectory("Dependencies/glfw")
 include_directories("include" "Dependencies/glfw/include")

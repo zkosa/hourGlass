@@ -65,10 +65,19 @@ void Particle::info() {
 }
 
 void Particle::draw2D() {
-	int triangleAmount = 10; //# of triangles used to draw circle
-
 	GLfloat display_radius = radius; //radius
 	GLfloat twicePi = 2.0f * pi;
+
+	int triangleAmount; //# of triangles used to draw circle
+	if (display_radius < 0.002) {
+		triangleAmount = 6;
+	} else if (display_radius < 0.01) {
+		triangleAmount = 10;
+	} else if (display_radius < 0.05) {
+		triangleAmount = 15;
+	} else {
+		triangleAmount = 20;
+	}
 
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex2f(pos.x, pos.y); // center of circle

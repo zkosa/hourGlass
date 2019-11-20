@@ -5,27 +5,6 @@
 #include <omp.h>
 #include "mainwindow.h"
 
-void Scene::init(int number_of_particles, double radius) {
-
-	float corner = 0.999;
-	Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, -corner, 0),
-			Vec3d(-1, -corner, 1));
-	/*
-	 Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, 0, 0), Vec3d(-1, -corner, 1));
-	 Boundary_planar side_wall(Vec3d(1, -corner, 0), Vec3d(1, corner, 0), Vec3d(1, 0, 1));
-	 Boundary_planar side_wall2(Vec3d(-corner, -corner, 0), Vec3d(-corner, corner, 0), Vec3d(-corner, 0, 1));
-	 */
-
-	Boundary_axis_symmetric glass;
-
-	boundaries_pl.push_back(ground);
-	//boundaries_pl.push_back(side_wall);
-	//boundaries_pl.push_back(side_wall2);
-	boundaries_ax.push_back(glass);
-
-	addParticles(number_of_particles);
-}
-
 void Scene::createGeometry(int geo) {
 
 	createGeometry(static_cast<Geometry>(geo));
@@ -47,18 +26,20 @@ void Scene::createGeometry(Geometry geometry) {
 		boundaries_pl.push_back(ground);
 		boundaries_ax.push_back(glass);
 	} else if (geometry == box) {
-		Boundary_planar slope(Vec3d(-1, -corner, 0), Vec3d(1, 0, 0),
-				Vec3d(-1, -corner, 1));
-		Boundary_planar side_wall(Vec3d(1, -corner, 0), Vec3d(1, corner, 0),
-				Vec3d(1, 0, 1));
-		Boundary_planar side_wall2(Vec3d(-corner, -corner, 0),
-				Vec3d(-corner, corner, 0), Vec3d(-corner, 0, 1));
+		corner = 0.7;
+		Boundary_planar slope(Vec3d(-corner, -corner, 0), Vec3d(corner, 0, 0),
+				Vec3d(-corner, -corner, 1));
+		Boundary_planar side_wall_left(Vec3d(-corner, -corner, 0),
+				Vec3d(-corner, corner, 0), Vec3d(-corner, -corner, -1));
+		Boundary_planar side_wall_right(Vec3d(corner, 0, 0),
+				Vec3d(corner, corner, 0), Vec3d(corner, 0, 1));
 
 		boundaries_pl.push_back(slope);
-		boundaries_pl.push_back(side_wall2);
-		boundaries_pl.push_back(side_wall);
+		boundaries_pl.push_back(side_wall_left);
+		boundaries_pl.push_back(side_wall_right);
+
 	}
-	markBoundaryCells();
+	createCells();
 }
 
 void Scene::resolve_constraints_on_init(int sweeps) {
@@ -266,6 +247,8 @@ void Scene::createCells() {
 }
 
 void Scene::markBoundaryCells() {
+	std::cout << "Marking boundary cells..." << std::endl;
+
 	for (auto &c : cells) {
 		c.setCellWithoutBoundary(); // clear values before update
 		for (auto &b : boundaries_pl) {
@@ -276,21 +259,6 @@ void Scene::markBoundaryCells() {
 		for (auto &b : boundaries_ax) {
 			if (c.contains(b)) {
 				c.setCellWithBoundary();
-			}
-		}
-	}
-}
-
-void Scene::markExternalCells() {
-	for (auto &c : cells) {
-		c.setExternal(true);
-		for (auto &b : getBoundariesAxiSym()) {
-			auto points = c.getAllPoints();
-			for (auto &point : points) {
-				if (!pointIsExternal(b, point)) {
-					c.setExternal(false);
-					break;
-				}
 			}
 		}
 	}
@@ -314,10 +282,87 @@ bool Scene::pointIsExternal(const Boundary_axis_symmetric &b,
 	}
 }
 
+bool Scene::pointIsExternal(const Boundary_planar &b, const Vec3d &point) {
+	if (b.distance_signed(point) < 0) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+void Scene::markExternal(Cell &c) {
+
+	std::vector<bool> boundariesCellInternalStatus;
+
+	for (auto &b : boundaries_ax) {
+		std::vector<bool> pointsInternalStatus;
+		for (const auto &point : c.getAllPoints()) {
+			if (pointIsInternal(b, point)) {
+				pointsInternalStatus.push_back(true);
+			} else {
+				pointsInternalStatus.push_back(false);
+			}
+		}
+
+		bool internalToBoundary = false;
+		for (const auto &internal : pointsInternalStatus) {
+			if (internal) {
+				internalToBoundary = true;
+				break;
+			}
+		}
+		boundariesCellInternalStatus.push_back(internalToBoundary);
+	}
+
+	for (auto &b : boundaries_pl) {
+		std::vector<bool> pointsInternalStatus;
+		for (const auto &point : c.getAllPoints()) {
+			if (pointIsInternal(b, point)) {
+				pointsInternalStatus.push_back(true);
+			} else {
+				pointsInternalStatus.push_back(false);
+			}
+		}
+
+		bool internalToBoundary = false;
+		for (const auto &internal : pointsInternalStatus) {
+			if (internal) {
+				internalToBoundary = true;
+				break;
+			}
+		}
+
+		boundariesCellInternalStatus.push_back(internalToBoundary);
+	}
+
+	// if the cell is on the outer side of any boundary, it is external:
+	c.setInternal();
+	for (const auto &internal : boundariesCellInternalStatus) {
+		if (!internal) {
+			c.setExternal();
+		}
+	}
+
+}
+
+void Scene::markExternalCells() {
+	std::cout << "Marking external cells..." << std::endl;
+
+	for (auto &c : cells) {
+		markExternal(c);
+	}
+
+	std::cout << "Number of cells after marking:" << cells.size() << std::endl;
+}
+
 void Scene::removeExternalCells() {
+	std::cout << "Removing external cells..." << std::endl;
+
 	cells.erase(std::remove_if(cells.begin(), cells.end(), [](Cell &c) {
 		return c.isExternal();
 	}), cells.end());
+
+	std::cout << "Number of cells after removal:" << cells.size() << std::endl;
 }
 
 void Scene::drawCells() {
@@ -341,6 +386,7 @@ void Scene::clearCells() {
 }
 
 void Scene::deleteCells() {
+	std::cout << "Deleting all cells..." << std::endl;
 	cells.clear();
 }
 
