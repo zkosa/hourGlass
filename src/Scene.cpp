@@ -292,47 +292,34 @@ bool Scene::pointIsExternal(const Boundary_planar &b, const Vec3d &point) {
 
 void Scene::markExternal(Cell &c) {
 
+	// stores internal/external value for each cell in relation to each boundaries:
 	std::vector<bool> boundariesCellInternalStatus;
+	bool internalStatus;
 
 	for (auto &b : boundaries_ax) {
-		std::vector<bool> pointsInternalStatus;
+		internalStatus = false;
 		for (const auto &point : c.getAllPoints()) {
 			if (pointIsInternal(b, point)) {
-				pointsInternalStatus.push_back(true);
-			} else {
-				pointsInternalStatus.push_back(false);
+				internalStatus = true;
+				boundariesCellInternalStatus.push_back(internalStatus);
+				break; // if at least one point is external, the cell is internal
 			}
 		}
-
-		bool internalToBoundary = false;
-		for (const auto &internal : pointsInternalStatus) {
-			if (internal) {
-				internalToBoundary = true;
-				break;
-			}
-		}
-		boundariesCellInternalStatus.push_back(internalToBoundary);
+		// executes if none of the points was internal:
+		boundariesCellInternalStatus.push_back(internalStatus);
 	}
 
 	for (auto &b : boundaries_pl) {
-		std::vector<bool> pointsInternalStatus;
+		internalStatus = false;
 		for (const auto &point : c.getAllPoints()) {
 			if (pointIsInternal(b, point)) {
-				pointsInternalStatus.push_back(true);
-			} else {
-				pointsInternalStatus.push_back(false);
+				internalStatus = true;
+				boundariesCellInternalStatus.push_back(internalStatus);
+				break; // if at least one point is external, the cell is internal
 			}
 		}
-
-		bool internalToBoundary = false;
-		for (const auto &internal : pointsInternalStatus) {
-			if (internal) {
-				internalToBoundary = true;
-				break;
-			}
-		}
-
-		boundariesCellInternalStatus.push_back(internalToBoundary);
+		// executes if none of the points was internal:
+		boundariesCellInternalStatus.push_back(internalStatus);
 	}
 
 	// if the cell is on the outer side of any boundary, it is external:
@@ -342,7 +329,6 @@ void Scene::markExternal(Cell &c) {
 			c.setExternal();
 		}
 	}
-
 }
 
 void Scene::markExternalCells() {
