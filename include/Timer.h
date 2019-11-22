@@ -23,8 +23,8 @@ public:
 		if (running) {
 			stop();
 		}
-		return std::chrono::duration_cast < std::chrono::microseconds
-				> (end - begin).count() / 1000.;
+		return std::chrono::duration_cast<std::chrono::microseconds>(
+				end - begin).count() / 1000.;
 	}
 	double seconds() {
 		return milliSeconds() / 1000.;

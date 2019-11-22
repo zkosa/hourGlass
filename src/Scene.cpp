@@ -26,7 +26,6 @@ void Scene::createGeometry(Geometry geometry) {
 		boundaries_pl.push_back(ground);
 		boundaries_ax.push_back(glass);
 	} else if (geometry == box) {
-		corner = 0.7;
 		Boundary_planar slope(Vec3d(-corner, -corner, 0), Vec3d(corner, 0, 0),
 				Vec3d(-corner, -corner, 1));
 		Boundary_planar side_wall_left(Vec3d(-corner, -corner, 0),

@@ -26,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->cells_Nz_Label->setEnabled(false); // 2D
 	ui->cells_Nz_SpinBox->setEnabled(false); // 2D
 
+	setupHooverHints();
+
 	// refreshing when simulation has ended (end time is reached, not the stop button is pressed):
 	QApplication::connect(this, SIGNAL(sendFinishedSignal()), this,
 			SLOT(handleFinish()));
@@ -68,7 +70,18 @@ void MainWindow::on_startButton_clicked() {
 }
 
 void MainWindow::on_stopButton_clicked() {
-	finish();
+	if (ui->stopButton->text() == stop_text)
+		finish();
+	else if (ui->stopButton->text() == reset_text) {
+		reset();
+	} else {
+		std::cout << "Unexpected state in stopButton" << std::endl;
+		std::cout << "Started: " << scene.isStarted() << std::endl;
+		std::cout << "Running: " << scene.isRunning() << std::endl;
+		std::cout << "Finished: " << scene.isFinished() << std::endl;
+		std::cout << "ui->stopButton->text(): "
+				<< ui->stopButton->text().toStdString() << std::endl;
+	}
 }
 
 void MainWindow::on_geometryComboBox_currentIndexChanged(int geo) {
@@ -134,8 +147,6 @@ void MainWindow::run_simulation() {
 	if (ui->startButton->text() == start_text
 			|| ui->startButton->text() == continue_text) {
 		run();  // starting, continuing
-	} else if (ui->startButton->text() == reset_text) {
-		reset();
 	} else if (ui->startButton->text() == pause_text) {
 		pause();
 	} else {
@@ -159,16 +170,19 @@ void MainWindow::updateGUIcontrols() {
 
 	if (!scene.isStarted() && !scene.isRunning() && !scene.isFinished()) {
 		ui->startButton->setText(start_text);
+		ui->startButton->setEnabled(true);
 		ui->stopButton->setText(stop_text);
 		ui->stopButton->setEnabled(false);
 	} else if (scene.isStarted() && scene.isRunning() && !scene.isFinished()) {
 		ui->startButton->setText(pause_text);
+		ui->startButton->setEnabled(true);
 		ui->stopButton->setText(stop_text);
 		ui->stopButton->setEnabled(true);
 	} else if (scene.isStarted() && !scene.isRunning() && scene.isFinished()) {
-		ui->startButton->setText(reset_text);
+		ui->startButton->setText(start_text);
+		ui->startButton->setEnabled(false);
 		ui->stopButton->setText(stop_text);
-		ui->stopButton->setEnabled(false);
+		ui->stopButton->setEnabled(true);
 	} else {
 		std::cout << "State not handled by MainWindow::updateGUIcontrols()"
 				<< std::endl;
@@ -215,10 +229,9 @@ void MainWindow::run() { // start, continue
 	ui->stopButton->setEnabled(true);
 	ui->checkBox_benchmarkMode->setEnabled(false); // disable mode change during run
 
-	ui->geometryComboBox->setEnabled(false);
-	ui->cells_Nx_SpinBox->setEnabled(false);
-	ui->cells_Ny_SpinBox->setEnabled(false);
-	ui->Particle_number_slider->setEnabled(false);
+	disableGeometryControl();
+	disableCellControl();
+	disableParticleNumberControl();
 
 	if (start_or_continue_text == start_text) {
 		scene.resolve_constraints_on_init_cells(5);
@@ -231,22 +244,20 @@ void MainWindow::pause() {
 
 	ui->startButton->setText(continue_text);
 
-	ui->geometryComboBox->setEnabled(false);
-	ui->cells_Nx_SpinBox->setEnabled(true);
-	ui->cells_Ny_SpinBox->setEnabled(true);
-	ui->Particle_number_slider->setEnabled(false);
+	disableGeometryControl();
+	enableCellControl();
+	disableParticleDiameterControl();
 }
 
 void MainWindow::finish() {
 	scene.setFinished();
 
-	ui->startButton->setText(reset_text);
-	ui->stopButton->setEnabled(false);
+	ui->startButton->setText(start_text);
+	ui->startButton->setEnabled(false);
+	ui->stopButton->setText(reset_text);
+	ui->stopButton->setEnabled(true);
 
-	ui->geometryComboBox->setEnabled(true);
-	ui->cells_Nx_SpinBox->setEnabled(true);
-	ui->cells_Ny_SpinBox->setEnabled(true);
-	ui->Particle_number_slider->setEnabled(true);
+	disableAllControls();
 }
 
 void MainWindow::reset() {
@@ -257,10 +268,58 @@ void MainWindow::reset() {
 	ui->checkBox_benchmarkMode->setEnabled(true);
 	ui->checkBox_benchmarkMode->setChecked(false);
 
-	ui->geometryComboBox->setEnabled(true);
-	ui->cells_Nx_SpinBox->setEnabled(true);
-	ui->cells_Ny_SpinBox->setEnabled(true);
-	ui->Particle_number_slider->setEnabled(true);
+	enableAllControls();
 
 	updateGUIcontrols();
+}
+
+void MainWindow::enableAllControls(bool active) {
+	enableGeometryControl(active);
+	enableCellControl(active);
+	enableParticleNumberControl(active);
+	enableParticleDiameterControl(active);
+	enableDragControl(active);
+}
+
+void MainWindow::enableGeometryControl(bool active) {
+	ui->geometryLabel->setEnabled(active);
+	ui->geometryComboBox->setEnabled(active);
+}
+
+void MainWindow::enableCellControl(bool active) {
+	ui->cells_title->setEnabled(active);
+	ui->cells_Nx_Label->setEnabled(active);
+	ui->cells_Nx_SpinBox->setEnabled(active);
+	ui->cells_Ny_Label->setEnabled(active);
+	ui->cells_Ny_SpinBox->setEnabled(active);
+	//ui->cells_Nz_Label->setEnabled(active);
+	//ui->cells_Nz_SpinBox->setEnabled(active);
+}
+
+void MainWindow::enableParticleNumberControl(bool active) {
+	ui->Particle_number_title->setEnabled(active);
+	ui->Particle_number_value->setEnabled(active);
+	ui->Particle_number_slider->setEnabled(active);
+}
+
+void MainWindow::enableParticleDiameterControl(bool active) {
+	ui->Particle_diameter_title->setEnabled(active);
+	ui->Particle_diameter_value->setEnabled(active);
+	ui->Particle_diameter_slider->setEnabled(active);
+}
+
+void MainWindow::enableDragControl(bool active) {
+	ui->Drag_coefficient_title->setEnabled(active);
+	ui->Drag_coefficient_value->setEnabled(active);
+	ui->Drag_coefficient_slider->setEnabled(active);
+}
+
+void MainWindow::setupHooverHints() {
+	ui->checkBox_benchmarkMode->setToolTip(
+			QString("Run for fix 1 [s] physical time, and create summary"));
+	ui->geometryLabel->setToolTip(
+			QString("Select from the predefined boundary setups"));
+	ui->cells_title->setToolTip(
+			QString(
+					"Divisions of the numerical grid used to limit collision detection to particles in the same grid cell"));
 }

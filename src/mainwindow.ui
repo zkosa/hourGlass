@@ -19,7 +19,7 @@
      <rect>
       <x>10</x>
       <y>450</y>
-      <width>188</width>
+      <width>282</width>
       <height>46</height>
      </rect>
     </property>
@@ -28,8 +28,20 @@
       <layout class="QHBoxLayout" name="Energy_monitor">
        <item>
         <widget class="QLabel" name="Energy_text">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
-          <string>Energy:</string>
+          <string>Kinetic energy Σ :          </string>
          </property>
         </widget>
        </item>
@@ -61,8 +73,26 @@
       <layout class="QHBoxLayout" name="Impulse_monitor">
        <item>
         <widget class="QLabel" name="Impulse_text">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
-          <string>Impulse:</string>
+          <string>Impulse magnitude Σ :</string>
          </property>
         </widget>
        </item>
@@ -133,7 +163,7 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_cells_N">
        <item>
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="cells_title">
          <property name="text">
           <string>Cells:</string>
          </property>
@@ -243,7 +273,7 @@
            </property>
            <property name="minimumSize">
             <size>
-             <width>45</width>
+             <width>55</width>
              <height>0</height>
             </size>
            </property>
@@ -265,7 +295,7 @@
            </property>
            <property name="minimumSize">
             <size>
-             <width>45</width>
+             <width>55</width>
              <height>0</height>
             </size>
            </property>
@@ -287,7 +317,7 @@
            </property>
            <property name="minimumSize">
             <size>
-             <width>45</width>
+             <width>55</width>
              <height>0</height>
             </size>
            </property>

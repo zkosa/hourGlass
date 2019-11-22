@@ -42,6 +42,35 @@ private slots:
 	void handleFinish();
 
 private:
+	void enableAllControls(bool active = true);
+	void enableGeometryControl(bool active = true);
+	void enableCellControl(bool active = true);
+	void enableParticleNumberControl(bool active = true);
+	void enableParticleDiameterControl(bool active = true);
+	void enableDragControl(bool active = true);
+
+	void disableAllControls() {
+		return enableAllControls(false);
+	}
+	void disableGeometryControl() {
+		return enableGeometryControl(false);
+	}
+	void disableCellControl() {
+		return enableCellControl(false);
+	}
+	void disableParticleNumberControl() {
+		return enableParticleNumberControl(false);
+	}
+	void disableParticleDiameterControl() {
+		return enableParticleDiameterControl(false);
+	}
+	void disableDragControl() {
+		return enableDragControl(false);
+	}
+
+	void setupHooverHints();
+
+private:
 	Ui::MainWindow *ui;
 
 	Scene scene;
