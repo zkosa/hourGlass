@@ -235,6 +235,7 @@ void MainWindow::run() { // start, continue
 
 	if (start_or_continue_text == start_text) {
 		scene.resolve_constraints_on_init_cells(5);
+		//scene.resolve_constraints_cells();
 		scene.populateCells();
 	}
 }

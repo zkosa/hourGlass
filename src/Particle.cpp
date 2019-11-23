@@ -114,15 +114,10 @@ void Particle::collide_wall(const Boundary &wall) {
 	}
 
 	// revert the wall normal velocity component
-	vel = vel - (1 + this->CoR()) * (vel * n) * n;
+	vel = vel - (1 + Particle::restitution_coeff) * (vel * n) * n;
 }
 
 void Particle::collide_particle(Particle &other) {
-	old_pos = pos;
-	old_vel = vel;
-	other.old_pos = other.pos;
-	other.old_vel = other.vel;
-	Particle old_other = other;
 
 	Vec3d n = other.pos - this->pos; // distance vector, pointing towards the other particle
 
@@ -132,51 +127,15 @@ void Particle::collide_particle(Particle &other) {
 	Vec3d pos_corr = -0.5 * n * (this->getR() + other.getR() - distance);
 	// move back to the position when it touched the other:
 	pos = pos + pos_corr;
-
 	other.setPos(other.getPos() - pos_corr);
 
-	// correct the velocity to conserve energy (dissipation work is not considered!)
-	if (vel * vel + 2 * gravity * pos_corr >= 0.0) {
-		vel = std::sqrt(vel * vel + 2 * gravity * pos_corr) * norm(vel);
-	} else {
-		vel = -std::sqrt(-1 * (vel * vel + 2 * gravity * pos_corr)) * norm(vel);
-	}
+	correct_velocity(pos_corr); // TODO: use the actually used one! (0/1/2)
+	other.correct_velocity(-1*pos_corr);
 
-	if (other.getV() * other.getV() + 2 * gravity * pos_corr >= 0.0) {
-		other.setV(
-				std::sqrt(other.getV() * other.getV() + 2 * gravity * pos_corr)
-						* norm(other.getV()));
-	} else {
-		other.setV(
-				-std::sqrt(
-						-1
-								* (other.getV() * other.getV()
-										+ 2 * gravity * pos_corr))
-						* norm(other.getV()));
-	}
-
-	// impulse exchange
-	Vec3d vel_old = vel;
-	vel = vel_old - n * (n * vel_old)
-			+ (mass() - other.mass()) / (mass() + other.mass()) * n
-					* (vel_old * n)
-			+ 2 * other.mass() / (mass() + other.mass()) * n
-					* (other.getV() * n);
-
-	other.setV(
-			other.getV() - n * (other.getV() * n)
-					+ 2 * mass() / (other.getM() + mass()) * n * (vel_old * n)
-					+ (other.mass() - mass()) / (other.mass() + mass()) * n
-							* (other.getV() * n));
+	exchange_impulse(other);
 }
 
 void Particle::collide_particle_check_boundary(Particle &other) {
-
-	old_pos = pos;
-	old_vel = vel;
-	other.old_pos = other.pos;
-	other.old_vel = other.vel;
-	Particle old_other = other;
 
 	Vec3d n = other.pos - this->pos; // distance vector, pointing towards the other particle
 
@@ -204,32 +163,32 @@ void Particle::collide_particle_check_boundary(Particle &other) {
 		pos = pos + 2 * pos_corr; // correct where there is no wall
 	} else { // both particles overlap with walls
 		// TODO: implement correction
-		// skip now, to check if quality is improved
-		return;// do not collide the particles, because they would overlap with walls after collision
+		pos = pos + pos_corr;
+		other.setPos(other.getPos() - pos_corr);
 	}
 
+	correct_velocity(pos_corr); // TODO: use the actually used one! (0/1/2)
+	other.correct_velocity(-1*pos_corr);
+
+	exchange_impulse(other);
+
+}
+
+void Particle::correct_velocity(const Vec3d& pos_corr) {
 	// correct the velocity to conserve energy (dissipation work is not considered!)
 	if (vel * vel + 2 * gravity * pos_corr >= 0.0) {
 		vel = std::sqrt(vel * vel + 2 * gravity * pos_corr) * norm(vel);
 	} else {
 		vel = -std::sqrt(-1 * (vel * vel + 2 * gravity * pos_corr)) * norm(vel);
 	}
+}
 
-	if (other.getV() * other.getV() + 2 * gravity * pos_corr >= 0.0) {
-		other.setV(
-				std::sqrt(other.getV() * other.getV() + 2 * gravity * pos_corr)
-						* norm(other.getV()));
-	} else {
-		other.setV(
-				-std::sqrt(
-						-1
-								* (other.getV() * other.getV()
-										+ 2 * gravity * pos_corr))
-						* norm(other.getV()));
-	}
+void Particle::exchange_impulse(Particle &other) {
 
-	// impulse exchange
-	Vec3d vel_old = vel;
+	Vec3d n = other.pos - this->pos; // distance vector, pointing towards the other particle
+	n = norm(n); // normalize
+
+	Vec3d vel_old = vel; // store it for the other particle
 	vel = vel_old - n * (n * vel_old)
 			+ (mass() - other.mass()) / (mass() + other.mass()) * n
 					* (vel_old * n)
@@ -241,7 +200,6 @@ void Particle::collide_particle_check_boundary(Particle &other) {
 					+ 2 * mass() / (other.getM() + mass()) * n * (vel_old * n)
 					+ (other.mass() - mass()) / (other.mass() + mass()) * n
 							* (other.getV() * n));
-
 }
 
 bool Particle::overlap_wall(const Boundary &wall) const {

@@ -58,6 +58,7 @@ public:
 	void init(int number_of_particles = 500, double radius = 0.01);
 	void resolve_constraints_on_init(int sweeps = 20);
 	void resolve_constraints_on_init_cells(int sweeps = 20); // running the sweeps cell-wise
+	void resolve_constraints_cells(int max_sweeps = 500); // do while there is collision
 	void draw();
 	void advance();
 	void collide_boundaries();

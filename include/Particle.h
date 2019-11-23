@@ -29,7 +29,7 @@ private:
 
 	static constexpr double density = 2700; // kg/m3
 	static constexpr double density_medium = 1; // air kg/m3
-	static constexpr double restitution_coeff = 0.5; // now used only between walls and particles
+	static constexpr double restitution_coeff = 0.5;
 	static double Cd; // non-const can not be initialized in the declaration
 	static double uniform_radius;
 	double radius = uniform_radius;
@@ -82,6 +82,8 @@ public:
 	void collide_wall(const Boundary &wall);
 	void collide_particle(Particle &other);
 	void collide_particle_check_boundary(Particle &other);
+	void correct_velocity(const Vec3d &position_correction);
+	void exchange_impulse(Particle &other);
 	bool overlap_wall(const Boundary &wall) const;
 	bool overlap_walls() const;
 	Vec3d overlapVect_wall(const Boundary &wall);

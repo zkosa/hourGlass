@@ -74,7 +74,7 @@ void Scene::resolve_constraints_on_init(int sweeps) {
 }
 
 void Scene::resolve_constraints_on_init_cells(int sweeps) {
-	this->populateCells();
+	populateCells();
 	for (int sweep = 0; sweep < sweeps; ++sweep) {
 		std::cout << sweep << " " << std::flush;
 
@@ -85,17 +85,49 @@ void Scene::resolve_constraints_on_init_cells(int sweeps) {
 					auto &p2 = particles[p2ID];
 					if (p1.distance(p2) < p1.getR() + p2.getR()) {
 						if (p1ID != p2ID) { // do not collide with itself
-							p1.collide_particle(p2);
+							p1.collide_particle_check_boundary(p2);
 						}
 					}
 				}
 			}
 		}
-		this->populateCells();
+		populateCells();
 
 		// redraw the scene after each sweeps:
 		//this->draw(); // glfwSwapBuffers is not available here!
 	}
+	std::cout << std::endl;
+}
+
+void Scene::resolve_constraints_cells(int max_sweeps) {
+	populateCells();
+	int sweep = 0;
+	int collision_counter;
+	do {
+		std::cout << sweep++ << " " << std::flush;
+		collision_counter = 0;
+
+		for (auto &c : cells) {
+			for (int p1ID : c.getParticleIDs()) {
+				auto &p1 = particles[p1ID];
+				for (int p2ID : c.getParticleIDs()) {
+					auto &p2 = particles[p2ID];
+					if (p1.distance(p2) < p1.getR() + p2.getR()) {
+						if (p1ID != p2ID) { // do not collide with itself
+							p1.collide_particle_check_boundary(p2);
+							collision_counter++;
+						}
+					}
+				}
+			}
+		}
+		std::cout << " (" << collision_counter << ") " << std::flush;
+		if (sweep%10 ==0) {
+			std::cout << "\n" << std::flush;
+		}
+		populateCells();
+
+	} while (collision_counter > 0 && sweep < max_sweeps);
 	std::cout << std::endl;
 }
 

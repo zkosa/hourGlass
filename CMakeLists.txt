@@ -20,7 +20,7 @@ set(CMAKE_AUTOUIC ON)
 #set_target_properties(${GUI} PROPERTIES AUTOMOC TRUE)
 
 find_package(Qt5 REQUIRED Core Gui Widgets)
-find_package(OpenMP REQUIRED)
+#find_package(OpenMP REQUIRED)
 
 
 file(GLOB SOURCES "src/*.cpp") # new files are read only after modifying this file?
@@ -39,7 +39,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} /u
 set_target_properties(${PROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 
 #qt5_use_modules(${PROJECT_NAME} Core Gui Widgets)
-target_link_libraries( ${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets ${Qt5Core_QTMAIN_LIBRARIES}  glfw GL OpenMP::OpenMP_CXX) # ${OPENGL_gl_LIBRARY}PRIVATE 
+target_link_libraries( ${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets ${Qt5Core_QTMAIN_LIBRARIES}  glfw GL) # OpenMP::OpenMP_CXX) # ${OPENGL_gl_LIBRARY}PRIVATE 
 #message(STATUS "OPENGL_gl_LIBRARY=${OPENGL_gl_LIBRARY}")
 
 #[[
