@@ -3,7 +3,6 @@
 
 #include "Vec3d.h"
 #include "Particle.h"
-#include <GLFW/glfw3.h>  // version 3.3 is installed to Dependencies
 
 class Boundary {
 

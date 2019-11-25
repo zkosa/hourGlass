@@ -1,4 +1,5 @@
 #include "Boundary_planar.h"
+#include <QOpenGLWidget>
 
 double Boundary_planar::distance(const Vec3d &point) const {
 	return abs(Boundary_planar::distance_signed(point));

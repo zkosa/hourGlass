@@ -1,5 +1,6 @@
 #include "Boundary_axis_symmetric.h"
 #include "Minimum.h"
+#include <QOpenGLWidget>
 
 double Boundary_axis_symmetric::distance(const Particle &particle) const {
 

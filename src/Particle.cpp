@@ -2,6 +2,7 @@
 #include "Boundary_planar.h"
 #include "Boundary_axis_symmetric.h"
 #include "Scene.h"
+#include <QOpenGLWidget>
 
 Particle::Particle() {
 }

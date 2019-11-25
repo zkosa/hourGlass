@@ -4,8 +4,6 @@
 #include <iostream>
 #include "Vec3d.h"
 #include "Constants.h"
-//#include "Boundary_planar.h"
-#include <GLFW/glfw3.h>  // version 3.3 is installed to Dependencies
 
 class Boundary;
 class Boundary_planar;

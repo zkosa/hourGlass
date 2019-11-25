@@ -4,6 +4,7 @@
 #include "Cell.h"
 #include "Scene.h"
 #include <omp.h>
+#include <QOpenGLWidget>
 
 int Cell::Nx = 10;
 
