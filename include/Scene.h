@@ -12,6 +12,10 @@
 
 class MainWindow;
 
+enum Geometry {
+	hourglass = 0, box = 1
+};
+
 class Scene {
 
 	MainWindow *viewer = nullptr;
@@ -22,9 +26,6 @@ class Scene {
 	std::vector<Boundary_axis_symmetric> boundaries_ax;
 	std::vector<Cell> cells;
 
-	enum Geometry {
-		hourglass = 0, box = 1
-	};
 	Geometry geometry = hourglass;
 	std::string geometry_names[2] = { "hourglass", "box" };
 
@@ -98,6 +99,8 @@ public:
 
 	void createGeometry(int);
 	void createGeometry(Geometry);
+	void removeTemporaryGeo();
+	bool hasTemporaryGeo() const;
 	void createCells();
 	void markBoundaryCells();
 	bool pointIsExternal(const Boundary_axis_symmetric &b, const Vec3d &point);

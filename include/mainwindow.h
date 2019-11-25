@@ -32,6 +32,7 @@ private slots:
 	void on_checkBox_benchmarkMode_stateChanged(int);
 	void on_startButton_clicked(); // it can be generated from QT Creator using right click go to slot -- not from QT Designer :(
 	void on_stopButton_clicked();
+	void on_openOrificeButton_clicked();
 	void on_geometryComboBox_currentIndexChanged(int);
 	void on_Particle_number_slider_valueChanged(int);
 	void on_Particle_diameter_slider_valueChanged(int);

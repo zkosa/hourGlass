@@ -84,11 +84,17 @@ void MainWindow::on_stopButton_clicked() {
 	}
 }
 
+void MainWindow::on_openOrificeButton_clicked() {
+	scene.removeTemporaryGeo();
+	updateGUIcontrols();
+}
+
 void MainWindow::on_geometryComboBox_currentIndexChanged(int geo) {
 	scene.setGeometry(geo);
 	std::cout << "Activating geometry: " << scene.getGeometryName()
 			<< std::endl;
 	scene.createGeometry(geo);
+	updateGUIcontrols();
 }
 
 void MainWindow::on_Particle_number_slider_valueChanged(int particle_number_) {
@@ -206,6 +212,17 @@ void MainWindow::updateGUIcontrols() {
 
 	ui->Drag_coefficient_value->setText(QString::number(Particle::getCd()));
 	ui->Drag_coefficient_slider->setValue(int(Particle::getCd() * 100.)); // double internal value is transformed to int on the slider
+
+	if (scene.getGeometry() == hourglass) {
+		ui->openOrificeButton->show();
+		if (scene.hasTemporaryGeo()) {
+			ui->openOrificeButton->setEnabled(true);
+		} else {
+			ui->openOrificeButton->setEnabled(false);
+		}
+	} else {
+		ui->openOrificeButton->hide();
+	}
 }
 
 void MainWindow::updateLogs() {

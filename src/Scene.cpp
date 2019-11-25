@@ -22,9 +22,14 @@ void Scene::createGeometry(Geometry geometry) {
 		Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, -corner, 0),
 				Vec3d(-1, -corner, 1));
 		Boundary_axis_symmetric glass;
+		Boundary_planar temporary(Vec3d(-0.07, 0, 0), Vec3d(0.07, 0, 0),
+				Vec3d(-0.07, 0, 1));
+		temporary.setTemporary();
 
 		boundaries_pl.push_back(ground);
 		boundaries_ax.push_back(glass);
+		boundaries_pl.push_back(temporary);
+
 	} else if (geometry == box) {
 		Boundary_planar slope(Vec3d(-corner, -corner, 0), Vec3d(corner, 0, 0),
 				Vec3d(-corner, -corner, 1));
@@ -39,6 +44,31 @@ void Scene::createGeometry(Geometry geometry) {
 
 	}
 	createCells();
+}
+
+void Scene::removeTemporaryGeo() {
+	std::cout << "Removing temporary geometries..." << std::endl;
+	boundaries_pl.erase(std::remove_if(boundaries_pl.begin(), boundaries_pl.end(), [](auto &b) {
+			return b.isTemporary();
+		}), boundaries_pl.end());
+	boundaries_ax.erase(std::remove_if(boundaries_ax.begin(), boundaries_ax.end(), [](auto &b) {
+			return b.isTemporary();
+		}), boundaries_ax.end());
+	createCells();
+}
+
+bool Scene::hasTemporaryGeo() const {
+	for (const auto &b : boundaries_pl) {
+		if (b.isTemporary()) {
+			return true;
+		}
+	}
+	for (const auto &b : boundaries_ax) {
+		if (b.isTemporary()) {
+			return true;
+		}
+	}
+	return false;
 }
 
 void Scene::resolve_constraints_on_init(int sweeps) {
@@ -108,14 +138,39 @@ void Scene::resolve_constraints_cells(int max_sweeps) {
 		collision_counter = 0;
 
 		for (auto &c : cells) {
-			for (int p1ID : c.getParticleIDs()) {
-				auto &p1 = particles[p1ID];
-				for (int p2ID : c.getParticleIDs()) {
-					auto &p2 = particles[p2ID];
-					if (p1.distance(p2) < p1.getR() + p2.getR()) {
-						if (p1ID != p2ID) { // do not collide with itself
-							p1.collide_particle_check_boundary(p2);
-							collision_counter++;
+			if (c.hasBoundary()) { // TODO: check if the compiler can optimize it when it is moved into the loop!
+				for (int p1ID : c.getParticleIDs()) {
+					auto &p1 = particles[p1ID];
+					for (auto &b : boundaries_pl) {
+						if (b.distance(p1) < p1.getR()) {
+							p1.collide_wall(b);
+						}
+					}
+					for (auto &b : boundaries_ax) {
+						if (b.distance(p1) < p1.getR()) {
+							p1.collide_wall(b);
+						}
+					}
+					for (int p2ID : c.getParticleIDs()) {
+						auto &p2 = particles[p2ID];
+						if (p1.distance(p2) < p1.getR() + p2.getR()) {
+							if (p1ID != p2ID) { // do not collide with itself
+								p1.collide_particle_check_boundary(p2);
+								collision_counter++;
+							}
+						}
+					}
+				}
+			} else {
+				for (int p1ID : c.getParticleIDs()) {
+					auto &p1 = particles[p1ID];
+					for (int p2ID : c.getParticleIDs()) {
+						auto &p2 = particles[p2ID];
+						if (p1.distance(p2) < p1.getR() + p2.getR()) {
+							if (p1ID != p2ID) { // do not collide with itself
+								p1.collide_particle(p2);
+								collision_counter++;
+							}
 						}
 					}
 				}
@@ -341,6 +396,9 @@ void Scene::markExternal(Cell &c) {
 	}
 
 	for (auto &b : boundaries_pl) {
+		/*if (b.isTemporary()) {
+			continue; // do not consider temporary boundaries in cell removal
+		}*/
 		internalStatus = false;
 		for (const auto &point : c.getAllPoints()) {
 			if (pointIsInternal(b, point)) {

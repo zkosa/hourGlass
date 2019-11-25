@@ -28,6 +28,7 @@ void CustomOpenGLWidget::paintGL() {
 		scene->populateCells();
 		scene->advance();
 
+		//scene->resolve_constraints_cells(5);
 		//m_scene->collide_boundaries();
 		scene->collide_boundaries_cells();
 		scene->populateCells();

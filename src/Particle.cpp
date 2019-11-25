@@ -162,6 +162,7 @@ void Particle::collide_particle_check_boundary(Particle &other) {
 			&& !tmp_particle.overlap_walls()) {
 		pos = pos + 2 * pos_corr; // correct where there is no wall
 	} else { // both particles overlap with walls
+		//return;
 		// TODO: implement correction
 		pos = pos + pos_corr;
 		other.setPos(other.getPos() - pos_corr);
@@ -171,7 +172,6 @@ void Particle::collide_particle_check_boundary(Particle &other) {
 	other.correct_velocity(-1*pos_corr);
 
 	exchange_impulse(other);
-
 }
 
 void Particle::correct_velocity(const Vec3d& pos_corr) {

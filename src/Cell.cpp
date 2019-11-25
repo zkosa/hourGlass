@@ -97,8 +97,8 @@ void Cell::clear() {
 void Cell::populate(std::vector<Particle> &particles) {
 //#pragma omp parallel for
 	for (auto &p : particles) {
-		if (this->contains(p)) {
-			this->addParticle(p);
+		if (contains(p)) {
+			addParticle(p);
 		}
 	}
 }

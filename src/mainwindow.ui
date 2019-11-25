@@ -19,7 +19,7 @@
      <rect>
       <x>10</x>
       <y>450</y>
-      <width>282</width>
+      <width>359</width>
       <height>46</height>
      </rect>
     </property>
@@ -41,7 +41,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Kinetic energy Σ :          </string>
+          <string>Kinetic + potential energy Σ :</string>
          </property>
         </widget>
        </item>
@@ -92,7 +92,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Impulse magnitude Σ :</string>
+          <string>Impulse magnitude Σ :              </string>
          </property>
         </widget>
        </item>
@@ -447,6 +447,19 @@
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QPushButton" name="openOrificeButton">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>340</y>
+      <width>141</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Open the orifice</string>
+    </property>
    </widget>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
