@@ -10,36 +10,36 @@ Particle::Particle() {
 Particle::~Particle() {
 }
 
-Vec3d Particle::acc = gravity;
+Vec3d Particle::force_field = gravity;
 
 Scene *Particle::scene = nullptr;
 
-double Particle::Cd = 0.5; // non-constexpr static members must be initialized in the definition
+double Particle::drag_coefficient = 0.5; // non-constexpr static members must be initialized in the definition
 
 double Particle::uniform_radius = 0.005;
 
 void Particle::advance(double dt) {
 	// velocity Verlet integration:
-	Vec3d new_pos = pos + vel * dt + acc * (dt * dt * 0.5);
+	Vec3d new_pos = pos + vel * dt + force_field * (dt * dt * 0.5);
 	Vec3d new_acc = apply_forces();
-	Vec3d new_vel = vel + (acc + new_acc) * (dt * 0.5);
+	Vec3d new_vel = vel + (force_field + new_acc) * (dt * 0.5);
 
 	pos = new_pos;
 	vel = new_vel;
-	acc = new_acc;
+	force_field = new_acc;
 }
 
-double Particle::kinetic_energy() {
+double Particle::kineticEnergy() {
 	return vel * vel * (mass() / 2);
 }
 
-double Particle::potential_energy() {
+double Particle::potentialEnergy() {
 	//return mass * (gravity * (pos + Vec3d(0,1,0)));
 	return mass() * g * (pos.y + 1);
 }
 
 double Particle::energy() {
-	return kinetic_energy() + potential_energy();
+	return kineticEnergy() + potentialEnergy();
 }
 
 Vec3d Particle::impulse() {
@@ -59,32 +59,37 @@ void Particle::info() {
 			<< std::endl;
 	std::cout << "vel: " << vel.x << ", " << vel.y << ", " << vel.z
 			<< std::endl;
-	std::cout << "acc: " << acc.x << ", " << acc.y << ", " << acc.z
-			<< std::endl;
-	std::cout << "energy: " << energy() << "\t= " << potential_energy()
-			<< "\t+ " << kinetic_energy() << std::endl;
+	std::cout << "acc: " << force_field.x << ", " << force_field.y << ", "
+			<< force_field.z << std::endl;
+	std::cout << "energy: " << energy() << "\t= " << potentialEnergy() << "\t+ "
+			<< kineticEnergy() << std::endl;
 }
 
 void Particle::draw2D() {
 	GLfloat display_radius = radius; //radius
 	GLfloat twicePi = 2.0f * pi;
 
-	int triangleAmount; //# of triangles used to draw circle
+	int number_of_triangles; //# of triangles used to draw circle
 	if (display_radius < 0.002) {
-		triangleAmount = 6;
+		number_of_triangles = 6;
 	} else if (display_radius < 0.01) {
-		triangleAmount = 10;
+		number_of_triangles = 10;
 	} else if (display_radius < 0.05) {
-		triangleAmount = 15;
+		number_of_triangles = 15;
 	} else {
-		triangleAmount = 20;
+		number_of_triangles = 20;
 	}
 
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex2f(pos.x, pos.y); // center of circle
-	for (int i = 0; i <= triangleAmount; i++) {
-		glVertex2f(pos.x + (display_radius * cos(i * twicePi / triangleAmount)),
-				pos.y + (display_radius * sin(i * twicePi / triangleAmount)));
+	for (int i = 0; i <= number_of_triangles; i++) {
+		glVertex2f(
+				pos.x
+						+ (display_radius
+								* cos(i * twicePi / number_of_triangles)),
+				pos.y
+						+ (display_radius
+								* sin(i * twicePi / number_of_triangles)));
 	}
 	glEnd();
 }
@@ -93,7 +98,7 @@ double Particle::distance(const Particle &other) const {
 	return abs(pos - other.pos);
 }
 
-void Particle::collide_wall(const Boundary &wall) {
+void Particle::collideToWall(const Boundary &wall) {
 
 	Vec3d n = wall.getNormal(*this);
 
@@ -118,7 +123,7 @@ void Particle::collide_wall(const Boundary &wall) {
 	vel = vel - (1 + Particle::restitution_coeff) * (vel * n) * n;
 }
 
-void Particle::collide_particle(Particle &other) {
+void Particle::collideToParticle(Particle &other) {
 
 	Vec3d n = other.pos - this->pos; // distance vector, pointing towards the other particle
 
@@ -130,13 +135,13 @@ void Particle::collide_particle(Particle &other) {
 	pos = pos + pos_corr;
 	other.setPos(other.getPos() - pos_corr);
 
-	correct_velocity(pos_corr); // TODO: use the actually used one! (0/1/2)
-	other.correct_velocity(-1*pos_corr);
+	correctVelocity(pos_corr); // TODO: use the actually used one! (0/1/2)
+	other.correctVelocity(-1 * pos_corr);
 
-	exchange_impulse(other);
+	exchangeImpulse(other);
 }
 
-void Particle::collide_particle_check_boundary(Particle &other) {
+void Particle::collideToParticle_checkBoundary(Particle &other) {
 
 	Vec3d n = other.pos - this->pos; // distance vector, pointing towards the other particle
 
@@ -152,15 +157,16 @@ void Particle::collide_particle_check_boundary(Particle &other) {
 	tmp_other_particle.setPos(other.getPos() - pos_corr);
 
 	// TODO: store overlapping properties (free/bounded by wall)
-	if (!tmp_particle.overlap_walls() && !tmp_other_particle.overlap_walls()) {
+	if (!tmp_particle.overlapWithWalls()
+			&& !tmp_other_particle.overlapWithWalls()) {
 		// move back to the position when it touched the other:
 		pos = pos + pos_corr;
 		other.setPos(other.getPos() - pos_corr);
-	} else if (tmp_particle.overlap_walls()
-			&& !tmp_other_particle.overlap_walls()) {
+	} else if (tmp_particle.overlapWithWalls()
+			&& !tmp_other_particle.overlapWithWalls()) {
 		other.setPos(other.getPos() - 2 * pos_corr); // correct where there is no wall
-	} else if (tmp_other_particle.overlap_walls()
-			&& !tmp_particle.overlap_walls()) {
+	} else if (tmp_other_particle.overlapWithWalls()
+			&& !tmp_particle.overlapWithWalls()) {
 		pos = pos + 2 * pos_corr; // correct where there is no wall
 	} else { // both particles overlap with walls
 		//return;
@@ -169,13 +175,13 @@ void Particle::collide_particle_check_boundary(Particle &other) {
 		other.setPos(other.getPos() - pos_corr);
 	}
 
-	correct_velocity(pos_corr); // TODO: use the actually used one! (0/1/2)
-	other.correct_velocity(-1*pos_corr);
+	correctVelocity(pos_corr); // TODO: use the actually used one! (0/1/2)
+	other.correctVelocity(-1 * pos_corr);
 
-	exchange_impulse(other);
+	exchangeImpulse(other);
 }
 
-void Particle::correct_velocity(const Vec3d& pos_corr) {
+void Particle::correctVelocity(const Vec3d &pos_corr) {
 	// correct the velocity to conserve energy (dissipation work is not considered!)
 	if (vel * vel + 2 * gravity * pos_corr >= 0.0) {
 		vel = std::sqrt(vel * vel + 2 * gravity * pos_corr) * norm(vel);
@@ -184,7 +190,7 @@ void Particle::correct_velocity(const Vec3d& pos_corr) {
 	}
 }
 
-void Particle::exchange_impulse(Particle &other) {
+void Particle::exchangeImpulse(Particle &other) {
 
 	Vec3d n = other.pos - this->pos; // distance vector, pointing towards the other particle
 	n = norm(n); // normalize
@@ -203,7 +209,7 @@ void Particle::exchange_impulse(Particle &other) {
 							* (other.getV() * n));
 }
 
-bool Particle::overlap_wall(const Boundary &wall) const {
+bool Particle::overlapWithWall(const Boundary &wall) const {
 	if (wall.distance(*this) - radius < 0) {
 		return true;
 	} else {
@@ -211,27 +217,21 @@ bool Particle::overlap_wall(const Boundary &wall) const {
 	}
 }
 
-bool Particle::overlap_walls() const {
+bool Particle::overlapWithWalls() const {
 	// TODO return pointers to the actually overlapped walls?
 	for (const auto &b : scene->getBoundariesPlanar()) {
-		if (overlap_wall(b)) {
+		if (overlapWithWall(b)) {
 			return true;
 		}
 	}
 	for (const auto &b : scene->getBoundariesAxiSym()) {
-		if (overlap_wall(b)) {
+		if (overlapWithWall(b)) {
 			return true;
 		}
 	}
 	return false;
 }
 
-Vec3d Particle::overlapVect_wall(const Boundary &wall) {
+Vec3d Particle::overlapVectorWithWall(const Boundary &wall) {
 	return (wall.distance(*this) - radius) * wall.getNormal(*this);
-}
-
-Vec3d Particle::findPlace(Particle &other) {
-	// gives a direction in case of null vectors (coinciding particles!)
-	// TODO: choose later from available place (scene must be known!)
-	return Vec3d { 1, 0, 0 };
 }

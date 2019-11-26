@@ -17,8 +17,8 @@ public:
 
 	double distance(const Vec3d &point) const;
 	double distance(const Particle &particle) const override;
-	double distance_signed(const Vec3d &point) const;
-	double distance_signed(const Particle &particle) const;
+	double distanceSigned(const Vec3d &point) const;
+	double distanceSigned(const Particle &particle) const;
 
 	void draw2D() override;
 

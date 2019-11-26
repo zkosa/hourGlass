@@ -24,13 +24,13 @@ Cell::Cell(const Vec3d &center, const Vec3d &dX) {
 	bounds.z2 = (center + dX / 2.) * Vec3d::k;
 
 	double factor = 0.94;
-	bounds_display.x1 = (center - factor * dX / 2.) * Vec3d::i;
-	bounds_display.y1 = (center - factor * dX / 2.) * Vec3d::j;
-	bounds_display.z1 = (center - factor * dX / 2.) * Vec3d::k;
+	bounds_for_display.x1 = (center - factor * dX / 2.) * Vec3d::i;
+	bounds_for_display.y1 = (center - factor * dX / 2.) * Vec3d::j;
+	bounds_for_display.z1 = (center - factor * dX / 2.) * Vec3d::k;
 
-	bounds_display.x2 = (center + factor * dX / 2.) * Vec3d::i;
-	bounds_display.y2 = (center + factor * dX / 2.) * Vec3d::j;
-	bounds_display.z2 = (center + factor * dX / 2.) * Vec3d::k;
+	bounds_for_display.x2 = (center + factor * dX / 2.) * Vec3d::i;
+	bounds_for_display.y2 = (center + factor * dX / 2.) * Vec3d::j;
+	bounds_for_display.z2 = (center + factor * dX / 2.) * Vec3d::k;
 
 	half_diagonal = abs(0.5 * dX);
 
@@ -45,47 +45,47 @@ Cell::Cell(const Vec3d &center, const Vec3d &dX) {
 	corners.push_back(Vec3d { bounds.x2, bounds.y2, bounds.z1 });
 	corners.push_back(Vec3d { bounds.x2, bounds.y2, bounds.z2 });
 
-	faceCenters.push_back(center + dX / 2. * Vec3d::i * Vec3d::i);
-	faceCenters.push_back(center + dX / 2. * Vec3d::j * Vec3d::j);
-	faceCenters.push_back(center + dX / 2. * Vec3d::k * Vec3d::k);
-	faceCenters.push_back(center - dX / 2. * Vec3d::i * Vec3d::i);
-	faceCenters.push_back(center - dX / 2. * Vec3d::j * Vec3d::j);
-	faceCenters.push_back(center - dX / 2. * Vec3d::k * Vec3d::k);
+	face_centers.push_back(center + dX / 2. * Vec3d::i * Vec3d::i);
+	face_centers.push_back(center + dX / 2. * Vec3d::j * Vec3d::j);
+	face_centers.push_back(center + dX / 2. * Vec3d::k * Vec3d::k);
+	face_centers.push_back(center - dX / 2. * Vec3d::i * Vec3d::i);
+	face_centers.push_back(center - dX / 2. * Vec3d::j * Vec3d::j);
+	face_centers.push_back(center - dX / 2. * Vec3d::k * Vec3d::k);
 
-	edgeCenters.push_back(
+	edge_centers.push_back(
 			center + 0.5 * dX * Vec3d::i * Vec3d::i
 					+ 0.5 * dX * Vec3d::j * Vec3d::j);
-	edgeCenters.push_back(
+	edge_centers.push_back(
 			center + 0.5 * dX * Vec3d::i * Vec3d::i
 					- 0.5 * dX * Vec3d::j * Vec3d::j);
-	edgeCenters.push_back(
+	edge_centers.push_back(
 			center - 0.5 * dX * Vec3d::i * Vec3d::i
 					+ 0.5 * dX * Vec3d::j * Vec3d::j);
-	edgeCenters.push_back(
+	edge_centers.push_back(
 			center - 0.5 * dX * Vec3d::i * Vec3d::i
 					- 0.5 * dX * Vec3d::j * Vec3d::j);
-	edgeCenters.push_back(
+	edge_centers.push_back(
 			center + 0.5 * dX * Vec3d::i * Vec3d::i
 					+ 0.5 * dX * Vec3d::k * Vec3d::k);
-	edgeCenters.push_back(
+	edge_centers.push_back(
 			center + 0.5 * dX * Vec3d::i * Vec3d::i
 					- 0.5 * dX * Vec3d::k * Vec3d::k);
-	edgeCenters.push_back(
+	edge_centers.push_back(
 			center - 0.5 * dX * Vec3d::i * Vec3d::i
 					+ 0.5 * dX * Vec3d::k * Vec3d::k);
-	edgeCenters.push_back(
+	edge_centers.push_back(
 			center - 0.5 * dX * Vec3d::i * Vec3d::i
 					- 0.5 * dX * Vec3d::k * Vec3d::k);
-	edgeCenters.push_back(
+	edge_centers.push_back(
 			center + 0.5 * dX * Vec3d::j * Vec3d::j
 					+ 0.5 * dX * Vec3d::k * Vec3d::k);
-	edgeCenters.push_back(
+	edge_centers.push_back(
 			center + 0.5 * dX * Vec3d::j * Vec3d::j
 					- 0.5 * dX * Vec3d::k * Vec3d::k);
-	edgeCenters.push_back(
+	edge_centers.push_back(
 			center - 0.5 * dX * Vec3d::j * Vec3d::j
 					+ 0.5 * dX * Vec3d::k * Vec3d::k);
-	edgeCenters.push_back(
+	edge_centers.push_back(
 			center - 0.5 * dX * Vec3d::j * Vec3d::j
 					- 0.5 * dX * Vec3d::k * Vec3d::k);
 
@@ -138,10 +138,10 @@ void Cell::draw2D() {
 	 } else {
 	 glColor4f(1, 1, 0, 0.1);
 	 } */
-	glVertex2f(float(bounds_display.x1), float(bounds_display.y1));
-	glVertex2f(float(bounds_display.x2), float(bounds_display.y1));
-	glVertex2f(float(bounds_display.x2), float(bounds_display.y2));
-	glVertex2f(float(bounds_display.x1), float(bounds_display.y2));
+	glVertex2f(float(bounds_for_display.x1), float(bounds_for_display.y1));
+	glVertex2f(float(bounds_for_display.x2), float(bounds_for_display.y1));
+	glVertex2f(float(bounds_for_display.x2), float(bounds_for_display.y2));
+	glVertex2f(float(bounds_for_display.x1), float(bounds_for_display.y2));
 	glColor4f(1, 1, 1, 1);
 	glEnd();
 }

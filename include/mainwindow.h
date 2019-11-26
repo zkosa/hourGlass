@@ -29,8 +29,9 @@ public:
 	void sendFinishedSignal();
 
 private slots:
+	// they can be auto generated from QT Creator using right click go to slot -- not from QT Designer :(
 	void on_checkBox_benchmarkMode_stateChanged(int);
-	void on_startButton_clicked(); // it can be generated from QT Creator using right click go to slot -- not from QT Designer :(
+	void on_startButton_clicked();
 	void on_stopButton_clicked();
 	void on_openOrificeButton_clicked();
 	void on_geometryComboBox_currentIndexChanged(int);

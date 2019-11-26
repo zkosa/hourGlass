@@ -22,13 +22,13 @@ private:
 
 	std::string last_collision = "";
 
-	static Vec3d acc;
+	static Vec3d force_field;
 	static Scene *scene;
 
-	static constexpr double density = 2700; // kg/m3
-	static constexpr double density_medium = 1; // air kg/m3
+	static constexpr double density = 2700.; // kg/m3
+	static constexpr double density_medium = 1.; // air kg/m3
 	static constexpr double restitution_coeff = 0.5;
-	static double Cd; // non-const can not be initialized in the declaration
+	static double drag_coefficient; // non-const can not be initialized in the declaration
 	static double uniform_radius;
 	double radius = uniform_radius;
 	double volume() const {
@@ -41,7 +41,7 @@ private:
 		return radius * radius * pi;
 	}
 	double CdA() const {
-		return Cd * A();
+		return drag_coefficient * A();
 	}
 	double CoR() const {
 		return restitution_coeff;
@@ -66,8 +66,8 @@ public:
 	~Particle();
 
 	void advance(double dt);
-	double kinetic_energy();
-	double potential_energy();
+	double kineticEnergy();
+	double potentialEnergy();
 	double energy();
 	Vec3d impulse();
 
@@ -77,16 +77,14 @@ public:
 
 	double distance(const Particle &other) const;
 
-	void collide_wall(const Boundary &wall);
-	void collide_particle(Particle &other);
-	void collide_particle_check_boundary(Particle &other);
-	void correct_velocity(const Vec3d &position_correction);
-	void exchange_impulse(Particle &other);
-	bool overlap_wall(const Boundary &wall) const;
-	bool overlap_walls() const;
-	Vec3d overlapVect_wall(const Boundary &wall);
-
-	Vec3d findPlace(Particle &other);
+	void collideToWall(const Boundary &wall);
+	void collideToParticle(Particle &other);
+	void collideToParticle_checkBoundary(Particle &other);
+	void correctVelocity(const Vec3d &position_correction);
+	void exchangeImpulse(Particle &other);
+	bool overlapWithWall(const Boundary &wall) const;
+	bool overlapWithWalls() const;
+	Vec3d overlapVectorWithWall(const Boundary &wall);
 
 	void setX(double x) {
 		this->pos.x = x;
@@ -103,12 +101,9 @@ public:
 	static void connectScene(Scene *scene) {
 		Particle::scene = scene;
 	}
-	void setCheckBoundary(bool is_near) {
-		check_boundary = is_near;
-	}
 
-	static void setCd(const double _Cd) {
-		Cd = _Cd;
+	static void setCd(const double _drag_coefficient) {
+		drag_coefficient = _drag_coefficient;
 	}
 	static void setUniformRadius(double _uniform_radius) {
 		uniform_radius = _uniform_radius;
@@ -142,9 +137,8 @@ public:
 	// static getters can not be qualified as const according to the standard
 	// (they do not modify any instance of the class)
 	static double getCd() {
-		return Cd;
+		return drag_coefficient;
 	}
-	static double energy_of_all_particles_combined();
 	static double getUniformRadius() {
 		return uniform_radius;
 	}

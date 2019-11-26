@@ -1,6 +1,5 @@
 #include "CustomOpenGLWidget.h"
 #include "Scene.h"
-//#include <QPainter>
 #include "mainwindow.h"
 #include "Timer.h"
 
@@ -30,9 +29,9 @@ void CustomOpenGLWidget::paintGL() {
 
 		//scene->resolve_constraints_cells(5);
 		//m_scene->collide_boundaries();
-		scene->collide_boundaries_cells();
+		scene->collideWithBoundariesCells();
 		scene->populateCells();
-		scene->collide_cells();
+		scene->collideParticlesCells();
 		scene->timer.stop();
 		scene->addToDuration(scene->timer.milliSeconds());
 		std::cout << scene->timer.milliSeconds() << "ms" << std::endl

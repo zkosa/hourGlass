@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	scene.createCells();
 
 	// connecting the simulation scene to the window:
-	Scene *scene_ptr = &scene; // TODO: check with Tamas
+	Scene *scene_ptr = &scene; // TODO: check
 	Particle::connectScene(scene_ptr);
 	Cell::connectScene(scene_ptr);
 	ui->openGLWidget->connectScene(scene_ptr);
@@ -228,12 +228,11 @@ void MainWindow::updateGUIcontrols() {
 void MainWindow::updateLogs() {
 	ui->Energy_value->setText(QString::number(scene.energy()) + " J");
 	ui->Impulse_value->setText(
-			QString::number(scene.impulse_magnitude()) + " kg*m/s");
+			QString::number(scene.impulseMagnitude()) + " kg*m/s");
 }
 
 void MainWindow::handleFinish() {
 	// for updating the buttons according to the new state, which was changed not from the GUI, but from the the scene
-	std::cout << "sendFinishedSignal() is successfully received." << std::endl;
 	updateGUIcontrols();
 }
 
@@ -251,7 +250,7 @@ void MainWindow::run() { // start, continue
 	disableParticleNumberControl();
 
 	if (start_or_continue_text == start_text) {
-		scene.resolve_constraints_on_init_cells(5);
+		scene.resolveConstraintsOnInitCells(5);
 		//scene.resolve_constraints_cells();
 		scene.populateCells();
 	}

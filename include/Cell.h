@@ -29,12 +29,12 @@ class Cell {
 	static int Nx, Ny, Nz;
 
 	Bounds bounds;
-	Bounds bounds_display; // scaled for avoiding overlap of edges during display
+	Bounds bounds_for_display; // scaled for avoiding overlap of edges during display
 
 	Vec3d center = { 0, 0, 0 };
 	pointData corners;
-	pointData faceCenters;
-	pointData edgeCenters; // TODO: check if it improves performance when they are not stored
+	pointData face_centers;
+	pointData edge_centers; // TODO: check if it improves performance when they are not stored
 
 	std::vector<int> particle_IDs; // TODO reserve the expected size
 	std::vector<int> boundary_IDs_planar;
@@ -77,17 +77,17 @@ public:
 		return corners;
 	}
 	const pointData getFaceCenters() const {
-		return faceCenters;
+		return face_centers;
 	}
 	const pointData getEdgeCenters() const {
-		return edgeCenters;
+		return edge_centers;
 	}
 	const pointData getAllPoints() const {
 		pointData all;
 		all.push_back(center);
 		all.insert(all.end(), corners.begin(), corners.end());
-		all.insert(all.end(), faceCenters.begin(), faceCenters.end());
-		all.insert(all.end(), edgeCenters.begin(), edgeCenters.end());
+		all.insert(all.end(), face_centers.begin(), face_centers.end());
+		all.insert(all.end(), edge_centers.begin(), edge_centers.end());
 		return all;
 	}
 	const double getHalfDiagonal() const {

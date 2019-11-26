@@ -34,7 +34,7 @@ class Scene {
 	bool finished = false;
 	bool benchmark_mode = false;
 
-	double benchmark_simulation_time = 1; // [s]
+	double benchmark_simulation_time = 1.; // [s]
 
 	int loop_counter = 0;
 	double duration = 0.;
@@ -53,19 +53,19 @@ class Scene {
 public:
 	Timer timer_all, timer;
 
-	void connectViewer(MainWindow *_mainwindow) {
-		viewer = _mainwindow;
+	void connectViewer(MainWindow *window) {
+		viewer = window;
 	}
 	void init(int number_of_particles = 500, double radius = 0.01);
-	void resolve_constraints_on_init(int sweeps = 20);
-	void resolve_constraints_on_init_cells(int sweeps = 20); // running the sweeps cell-wise
-	void resolve_constraints_cells(int max_sweeps = 500); // do while there is collision
+	void resolveConstraintsOnInit(int sweeps = 20);
+	void resolveConstraintsOnInitCells(int sweeps = 20); // running the sweeps cell-wise
+	void resolveConstraintsCells(int max_sweeps = 500); // do while there is collision
 	void draw();
 	void advance();
-	void collide_boundaries();
-	void collide_boundaries_cells();
-	void collide_particles();
-	void collide_cells();
+	void collideWithBoundaries();
+	void collideWithBoundariesCells();
+	void collideParticles();
+	void collideParticlesCells();
 
 	std::vector<Particle>& getParticles() {
 		return particles;
@@ -95,7 +95,7 @@ public:
 		return finished;
 	}
 
-	BoundingBox boundingBox = BoundingBox(*this);
+	BoundingBox bounding_box = BoundingBox(*this);
 
 	void createGeometry(int);
 	void createGeometry(Geometry);
@@ -125,7 +125,7 @@ public:
 
 	double energy();
 	Vec3d impulse();
-	double impulse_magnitude() {
+	double impulseMagnitude() {
 		return abs(impulse());
 	}
 
