@@ -4,8 +4,8 @@
 #include <chrono>
 
 class Timer {
-	std::chrono::_V2::steady_clock::time_point begin;
-	std::chrono::_V2::steady_clock::time_point end;
+	std::chrono::steady_clock::time_point begin;
+	std::chrono::steady_clock::time_point end;
 	bool running = false;
 
 public:
