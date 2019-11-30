@@ -19,13 +19,13 @@ class Boundary_axis_symmetric: public Boundary {
 	Vec3d axis = norm(p2_axis - p1_axis);
 	std::unordered_map<int, Vec3d> normals_to_particles;
 
-	double hour_glass_shape(double X) const {
+	double hourGlassShape(double X) const {
 		double min_height = 0.07;
 		return X * X + min_height;
 	}
 
 	std::function<double(double)> contour = std::bind(
-			&Boundary_axis_symmetric::hour_glass_shape, this,
+			&Boundary_axis_symmetric::hourGlassShape, this,
 			std::placeholders::_1);
 	/*
 	 double distance2(double X, double X0, double R0) const {
@@ -34,7 +34,7 @@ class Boundary_axis_symmetric: public Boundary {
 	 */
 	double distance2(double X, double X0, double R0) const {
 		return (X - X0) * (X - X0)
-				+ (hour_glass_shape(X) - R0) * (hour_glass_shape(X) - R0); // fine
+				+ (hourGlassShape(X) - R0) * (hourGlassShape(X) - R0); // fine
 	}
 	//std::function<double(double, double, double)> distance2_fun = distance2;
 	std::function<double(double, double, double)> distance2_fun = std::bind(
@@ -49,7 +49,7 @@ public:
 
 	Vec3d getNormal(const Particle &particle) const override;
 
-	Vec3d getAxis() const {
+	const Vec3d& getAxis() const {
 		return axis;
 	}
 

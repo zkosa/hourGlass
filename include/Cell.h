@@ -41,6 +41,7 @@ class Cell {
 	std::vector<int> boundary_IDs_axis_symmetric;
 
 	double half_diagonal; // center to corner distance
+	double test;
 
 	bool cell_with_boundary = false;
 	bool cell_is_external = false;
@@ -73,16 +74,16 @@ public:
 	const Vec3d& getCenter() const {
 		return center;
 	}
-	const pointData getCorners() const {
+	const pointData& getCorners() const {
 		return corners;
 	}
-	const pointData getFaceCenters() const {
+	const pointData& getFaceCenters() const {
 		return face_centers;
 	}
-	const pointData getEdgeCenters() const {
+	const pointData& getEdgeCenters() const {
 		return edge_centers;
 	}
-	const pointData getAllPoints() const {
+	pointData getAllPoints() const {
 		pointData all;
 		all.push_back(center);
 		all.insert(all.end(), corners.begin(), corners.end());
@@ -90,7 +91,7 @@ public:
 		all.insert(all.end(), edge_centers.begin(), edge_centers.end());
 		return all;
 	}
-	const double getHalfDiagonal() const {
+	double getHalfDiagonal() const {
 		return half_diagonal;
 	}
 	const std::vector<int>& getParticleIDs() const {

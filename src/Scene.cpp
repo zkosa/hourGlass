@@ -485,16 +485,18 @@ void Scene::addParticles(int N, double y, double r, bool randomize_y) {
 
 	float corner = 0.999;
 	double x;
-	double random1, random2;
-	double radius;
+	double random_y;
 	for (int i = 0; i < N; i++) {
 		x = -corner * 0.99 + i * (2 * corner * 0.99) / N;
-		random1 = 0; //double(distr(eng))  / number_of_distinct_random;
-		random2 = double(distr(eng)) / number_of_distinct_random;
-		radius = r * (1 + random1 / 2.);
 
-		particles.emplace_back(Vec3d(x, y * (1 + random2 / 200.), 0),
-				Vec3d(0, 0, 0), i, radius); // no need to type the constructor!!!
+		if (randomize_y) {
+			random_y = double(distr(eng)) / number_of_distinct_random;
+		} else {
+			random_y = 0;
+		}
+
+		particles.emplace_back(Vec3d(x, y * (1 + random_y / 200.), 0),
+				Vec3d(0, 0, 0), i, r); // no need to type the constructor!!!
 	}
 }
 
