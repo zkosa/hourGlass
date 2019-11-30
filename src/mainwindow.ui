@@ -153,6 +153,11 @@
          </item>
          <item>
           <property name="text">
+           <string>Hourglass with removable orifice</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Box</string>
           </property>
          </item>

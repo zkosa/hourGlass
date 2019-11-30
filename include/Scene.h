@@ -13,7 +13,7 @@
 class MainWindow;
 
 enum Geometry {
-	hourglass = 0, box = 1
+	hourglass = 0, hourglass_with_removable_orifice = 1, box = 2
 };
 
 class Scene {
@@ -27,7 +27,8 @@ class Scene {
 	std::vector<Cell> cells;
 
 	Geometry geometry = hourglass;
-	std::string geometry_names[2] = { "hourglass", "box" };
+	std::string geometry_names[3] = { "hourglass",
+			"hourglass_with_removable_orifice", "box" };
 
 	bool started = false;
 	bool running = false;

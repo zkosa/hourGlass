@@ -10,7 +10,9 @@ add_compile_options("-O3")
 #string(APPEND CMAKE_CXX_FLAGS_DEBUG " -g3")
 #string(APPEND CMAKE_CXX_FLAGS_RELEASE " -O3")
 
-set(CMAKE_PREFIX_PATH "C:\\Qt\\Qt5.13.2\\5.13.2\\msvc2017_64") # add aalso to system path (Win)
+if (WIN32)
+	set(CMAKE_PREFIX_PATH "C:\\Qt\\Qt5.13.2\\5.13.2\\msvc2017_64") # add also to system path (Win)
+endif (WIN32)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -29,4 +31,10 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${UI}) # are the headers ne
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${OPENGL_INCLUDE_DIR})
 set_target_properties(${PROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 
-target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets opengl32) #  GL OpenMP::OpenMP_CXX
+if (UNIX)
+    target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets GL) # OpenMP::OpenMP_CXX
+elseif (WIN32)
+    target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets opengl32) # OpenMP::OpenMP_CXX
+else ()
+	message("Unsupported operating system")
+endif ()

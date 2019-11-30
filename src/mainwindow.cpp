@@ -213,7 +213,7 @@ void MainWindow::updateGUIcontrols() {
 	ui->Drag_coefficient_value->setText(QString::number(Particle::getCd()));
 	ui->Drag_coefficient_slider->setValue(int(Particle::getCd() * 100.)); // double internal value is transformed to int on the slider
 
-	if (scene.getGeometry() == hourglass) {
+	if (scene.getGeometry() == hourglass_with_removable_orifice) {
 		ui->openOrificeButton->show();
 		if (scene.hasTemporaryGeo()) {
 			ui->openOrificeButton->setEnabled(true);

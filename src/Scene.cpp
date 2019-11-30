@@ -18,17 +18,19 @@ void Scene::createGeometry(Geometry geometry) {
 
 	float corner = 0.999;
 
-	if (geometry == hourglass) {
+	if (geometry == hourglass || geometry == hourglass_with_removable_orifice) {
 		Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, -corner, 0),
 				Vec3d(-1, -corner, 1));
 		Boundary_axis_symmetric glass;
-		Boundary_planar temporary_orifice(Vec3d(-0.07, 0, 0), Vec3d(0.07, 0, 0),
-				Vec3d(-0.07, 0, 1));
-		temporary_orifice.setTemporary();
 
 		boundaries_pl.push_back(ground);
 		boundaries_ax.push_back(glass);
-		boundaries_pl.push_back(temporary_orifice);
+		if (geometry == hourglass_with_removable_orifice) {
+			Boundary_planar temporary_orifice(Vec3d(-0.07, 0, 0), Vec3d(0.07, 0, 0),
+					Vec3d(-0.07, 0, 1));
+			temporary_orifice.setTemporary();
+			boundaries_pl.push_back(temporary_orifice);
+		}
 
 	} else if (geometry == box) {
 		Boundary_planar slope(Vec3d(-corner, -corner, 0), Vec3d(corner, 0, 0),
