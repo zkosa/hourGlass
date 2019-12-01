@@ -15,12 +15,8 @@ private:
 
 	Vec3d pos { 0.0, 1.0, 0.0 };
 	Vec3d vel { 0.0, 0.0, 0.0 };
-	Vec3d old_pos { 0.0, 1.0, 0.0 };
-	Vec3d old_vel { 0.0, 0.0, 0.0 };
 
 	int ID = -1;
-
-	std::string last_collision = "";
 
 	static Vec3d force_field;
 	static Scene *scene;
@@ -85,6 +81,9 @@ public:
 	bool overlapWithWall(const Boundary &wall) const;
 	bool overlapWithWalls() const;
 	Vec3d overlapVectorWithWall(const Boundary &wall);
+	void size() {
+		std::cout << "Size of particle object: " << sizeof(*this) << std::endl;
+	}
 
 	void setX(double x) {
 		this->pos.x = x;
