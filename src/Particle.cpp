@@ -235,3 +235,23 @@ bool Particle::overlapWithWalls() const {
 Vec3d Particle::overlapVectorWithWall(const Boundary &wall) {
 	return (wall.distance(*this) - radius) * wall.getNormal(*this);
 }
+
+double Particle::terminalVelocity() {
+	return std::sqrt(2 * mass() * abs(gravity) / CdA() / density_medium);
+}
+
+double Particle::maxFreeFallVelocity() {
+	// domain height along the gravity vector:
+	double h = abs(scene->getBoundingBox().diagonal() * norm(gravity));
+	// drag is not considered
+	return std::sqrt(2 * abs(gravity) * h);
+}
+
+double Particle::maxVelocity() {
+	return std::min(terminalVelocity(), maxFreeFallVelocity());
+}
+
+double Particle::timeStepLimit() {
+	// the traveled distance during one time step is a radius length:
+	return radius / maxVelocity();
+}

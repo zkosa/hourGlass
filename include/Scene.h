@@ -167,6 +167,9 @@ public:
 	int getCounter() {
 		return loop_counter;
 	}
+	const BoundingBox& getBoundingBox() {
+		return bounding_box;
+	}
 
 	void applyDefaults();
 
