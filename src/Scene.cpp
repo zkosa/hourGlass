@@ -536,6 +536,8 @@ void Scene::setFinished() {
 	std::cout << "Execution time of physics loop: " << duration << std::endl;
 	std::cout << "Execution time of physics loop / loop: "
 			<< duration / getCounter() << std::endl;
+	resetCounter();
+	resetDuration();
 }
 
 void Scene::reset() {

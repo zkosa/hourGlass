@@ -152,6 +152,9 @@ public:
 	void setDuration(double duration) {
 		this->duration = duration;
 	}
+	void resetDuration() {
+		setDuration(0);
+	}
 	void addToDuration(double duration) {
 		this->duration += duration;
 	}
