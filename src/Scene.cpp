@@ -206,8 +206,7 @@ void Scene::draw() {
 
 void Scene::advance() {
 	if (benchmark_mode && time >= benchmark_simulation_time) { // in benchmark mode the simulation time is fixed
-	//setStopping();
-		setFinished();
+		viewer->wrapStopButtonClicked();
 		std::cout << "The benchmark has been finished." << std::endl;
 	} else {
 		time += time_step;
@@ -531,7 +530,6 @@ void Scene::setFinished() {
 	running = false;
 	finished = true;
 	std::cout << "Finishing..." << std::endl;
-	viewer->sendFinishedSignal();
 
 	std::cout << "Execution time of physics loop: " << duration << std::endl;
 	std::cout << "Execution time of physics loop / loop: "

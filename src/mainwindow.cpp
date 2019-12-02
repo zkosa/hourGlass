@@ -29,10 +29,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	setupHooverHints();
 
-	// refreshing when simulation has ended (end time is reached, not the stop button is pressed):
-	QApplication::connect(this, SIGNAL(sendFinishedSignal()), this,
-			SLOT(handleFinish()));
-
 	updateGUIcontrols();
 
 }
@@ -230,11 +226,6 @@ void MainWindow::updateLogs() {
 	ui->Energy_value->setText(QString::number(scene.energy()) + " J");
 	ui->Impulse_value->setText(
 			QString::number(scene.impulseMagnitude()) + " kg*m/s");
-}
-
-void MainWindow::handleFinish() {
-	// for updating the buttons according to the new state, which was changed not from the GUI, but from the the scene
-	updateGUIcontrols();
 }
 
 void MainWindow::run() { // start, continue

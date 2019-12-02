@@ -24,9 +24,9 @@ public:
 	void setNumberOfParticles(double N) {
 		number_of_particles = N;
 	}
-
-	signals:
-	void sendFinishedSignal();
+	void wrapStopButtonClicked() {
+		on_stopButton_clicked();
+	}
 
 private slots:
 	// they can be auto generated from QT Creator using right click go to slot -- not from QT Designer :(
@@ -41,7 +41,6 @@ private slots:
 	void on_cells_Ny_SpinBox_valueChanged(int);
 	void on_cells_Nz_SpinBox_valueChanged(int);
 	void on_Drag_coefficient_slider_valueChanged(int);
-	void handleFinish();
 
 private:
 	void enableAllControls(bool active = true);
