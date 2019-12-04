@@ -1,7 +1,6 @@
 #ifndef PARTICLE_H_
 #define PARTICLE_H_
 
-#include <iostream>
 #include "Vec3d.h"
 #include "Constants.h"
 
@@ -42,8 +41,6 @@ private:
 	double CoR() const {
 		return restitution_coeff;
 	}
-	// particle is in a cell which contains a boundary, therefore it must be considered for collision to boundary
-	bool check_boundary = true;
 
 	Vec3d apply_forces();
 
@@ -81,9 +78,7 @@ public:
 	bool overlapWithWall(const Boundary &wall) const;
 	bool overlapWithWalls() const;
 	Vec3d overlapVectorWithWall(const Boundary &wall);
-	void size() {
-		std::cout << "Size of particle object: " << sizeof(*this) << std::endl;
-	}
+	void size() const;
 
 	void setX(double x) {
 		this->pos.x = x;

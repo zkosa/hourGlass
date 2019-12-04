@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	scene.applyDefaults();
 	scene.createGeometry(scene.getGeometry());
 	scene.addParticles(number_of_particles);
-	//scene.getParticles()[0].size();
+	scene.getParticles()[0].size();
 	scene.createCells();
 
 	// connecting the simulation scene to the window:

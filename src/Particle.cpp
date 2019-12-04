@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Particle.h"
 #include "Boundary_planar.h"
 #include "Boundary_axis_symmetric.h"
@@ -234,6 +235,10 @@ bool Particle::overlapWithWalls() const {
 
 Vec3d Particle::overlapVectorWithWall(const Boundary &wall) {
 	return (wall.distance(*this) - radius) * wall.getNormal(*this);
+}
+
+void Particle::size() const {
+	std::cout << "Size of particle object: " << sizeof(*this) << std::endl;
 }
 
 double Particle::terminalVelocity() {
