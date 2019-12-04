@@ -14,7 +14,7 @@ public:
 
 	Vec3d center() const;
 	Vec3d diagonal() const;
-	double volume() const;
+	float volume() const;
 
 	//void extend(); // TODO add it for particles and boundaries?
 

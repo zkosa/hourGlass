@@ -13,13 +13,13 @@ typedef std::vector<Vec3d> pointData;
 
 struct Bounds {
 	// lower bound coordinates:
-	double x1 = 0;
-	double y1 = 0;
-	double z1 = 0;
+	float x1 = 0;
+	float y1 = 0;
+	float z1 = 0;
 	// upper bound coordinates:
-	double x2 = 0;
-	double y2 = 0;
-	double z2 = 0;
+	float x2 = 0;
+	float y2 = 0;
+	float z2 = 0;
 };
 
 class Cell {
@@ -40,8 +40,8 @@ class Cell {
 	std::vector<int> boundary_IDs_planar;
 	std::vector<int> boundary_IDs_axis_symmetric;
 
-	double half_diagonal; // center to corner distance
-	double test;
+	float half_diagonal; // center to corner distance
+	float test;
 
 	bool cell_with_boundary = false;
 	bool cell_is_external = false;
@@ -91,7 +91,7 @@ public:
 		all.insert(all.end(), edge_centers.begin(), edge_centers.end());
 		return all;
 	}
-	double getHalfDiagonal() const {
+	float getHalfDiagonal() const {
 		return half_diagonal;
 	}
 	const std::vector<int>& getParticleIDs() const {

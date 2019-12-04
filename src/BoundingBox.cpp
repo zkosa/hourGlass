@@ -7,7 +7,7 @@
 BoundingBox::BoundingBox(Scene &scene) :
 		corner1( { 0, 0, 0 }), corner2( { 0, 0, 0 }) {
 
-	double x1, y1, z1, x2, y2, z2;
+	float x1, y1, z1, x2, y2, z2;
 	/*
 	 for (auto b_ax : scene.getBoundariesAxiSym()) {
 	 auto contour = b_ax.getContourFun();
@@ -31,6 +31,6 @@ Vec3d BoundingBox::diagonal() const {
 	return corner2 - corner1;
 }
 
-double BoundingBox::volume() const {
+float BoundingBox::volume() const {
 	return diagonal().x * diagonal().y * diagonal().z;
 }

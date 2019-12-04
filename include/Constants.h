@@ -1,13 +1,13 @@
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
-const double pi = 3.14159;
+const float pi = 3.14159;
 
-const double g = 9.81;
+const float g = 9.81;
 
-const double SMALL = 1e-10;
-const double VSMALL = 1e-90;
-const double LARGE = 1e10;
-const double VLARGE = 1e90;
+const float SMALL = 1e-10;
+const float VSMALL = 1e-30;
+const float LARGE = 1e10;
+const float VLARGE = 1e30;
 
 #endif /* CONSTANTS_H_ */

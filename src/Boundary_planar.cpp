@@ -1,19 +1,19 @@
 #include "Boundary_planar.h"
 #include <QOpenGLWidget>
 
-double Boundary_planar::distance(const Vec3d &point) const {
+float Boundary_planar::distance(const Vec3d &point) const {
 	return abs(Boundary_planar::distanceSigned(point));
 }
 
-double Boundary_planar::distance(const Particle &particle) const {
+float Boundary_planar::distance(const Particle &particle) const {
 	return Boundary_planar::distance(particle.getPos());
 }
 
-double Boundary_planar::distanceSigned(const Vec3d &point) const {
+float Boundary_planar::distanceSigned(const Vec3d &point) const {
 	return (point - plane_point) * normal;
 }
 
-double Boundary_planar::distanceSigned(const Particle &particle) const {
+float Boundary_planar::distanceSigned(const Particle &particle) const {
 	return Boundary_planar::distanceSigned(particle.getPos());
 }
 

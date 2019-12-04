@@ -106,7 +106,7 @@ void MainWindow::on_Particle_number_slider_valueChanged(int particle_number_) {
 void MainWindow::on_Particle_diameter_slider_valueChanged(
 		int particle_diameter_mm) {
 	//ui->Particle_diameter_value->setNum(particle_diameter_mm);
-	double r = particle_diameter_mm / 1000. / 2.; // int [mm] --> double [m], diameter --> radius
+	float r = particle_diameter_mm / 1000. / 2.; // int [mm] --> float [m], diameter --> radius
 	Particle::setUniformRadius(r);
 	updateGUIcontrols();
 
@@ -140,7 +140,7 @@ void MainWindow::on_cells_Nz_SpinBox_valueChanged(int Nz_) {
 }
 
 void MainWindow::on_Drag_coefficient_slider_valueChanged(int drag100) {
-	double Cd = drag100 / 100.; // value of integer slider is converted to double
+	float Cd = drag100 / 100.; // value of integer slider is converted to float
 	Particle::setCd(Cd); // setting static data member
 	updateGUIcontrols();
 }
@@ -208,7 +208,7 @@ void MainWindow::updateGUIcontrols() {
 			QString::number(Particle::getUniformRadius() * 2. * 1000.) + " mm");
 
 	ui->Drag_coefficient_value->setText(QString::number(Particle::getCd()));
-	ui->Drag_coefficient_slider->setValue(int(Particle::getCd() * 100.)); // double internal value is transformed to int on the slider
+	ui->Drag_coefficient_slider->setValue(int(Particle::getCd() * 100.)); // float internal value is transformed to int on the slider
 
 	if (scene.getGeometry() == hourglass_with_removable_orifice) {
 		ui->openOrificeButton->show();

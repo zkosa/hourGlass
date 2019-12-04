@@ -7,31 +7,31 @@
 #include "Boundary_axis_symmetric.h"
 
 class Minimum {
-	std::function<double(double, double, double)> function; // to be minimized (distance squared)
-	std::function<double(double)> contour;
+	std::function<float(float, float, float)> function; // to be minimized (distance squared)
+	std::function<float(float)> contour;
 
-	double X0;
-	double R0;
+	float X0;
+	float R0;
 
-	double Xmin = 0; // result axial coordinate
-	double Rmin = 0; // result radial coordinate
-	double distance = 0; // result
+	float Xmin = 0; // result axial coordinate
+	float Rmin = 0; // result radial coordinate
+	float distance = 0; // result
 
 public:
 
-	Minimum(std::function<double(double, double, double)> _function, double _X0,
-			double _R0) :
+	Minimum(std::function<float(float, float, float)> _function, float _X0,
+			float _R0) :
 			function(_function), X0(_X0), R0(_R0) {
 	}
 
-	Minimum(const Boundary_axis_symmetric &wall, double _X0, double _R0) :
+	Minimum(const Boundary_axis_symmetric &wall, float _X0, float _R0) :
 			function(wall.getDistance2Fun()), contour(wall.getContourFun()), X0(
 					_X0), R0(_R0) {
 	}
 
-	void search(double starting_value = 0);
+	void search(float starting_value = 0);
 
-	double getDistance() {
+	float getDistance() {
 		return distance;
 	}
 	VecAxiSym getContactPointInRadialCoord();

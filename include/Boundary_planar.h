@@ -15,10 +15,10 @@ public:
 	}
 	;
 
-	double distance(const Vec3d &point) const;
-	double distance(const Particle &particle) const override;
-	double distanceSigned(const Vec3d &point) const;
-	double distanceSigned(const Particle &particle) const;
+	float distance(const Vec3d &point) const;
+	float distance(const Particle &particle) const override;
+	float distanceSigned(const Vec3d &point) const;
+	float distanceSigned(const Particle &particle) const;
 
 	void draw2D() override;
 

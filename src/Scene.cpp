@@ -306,9 +306,9 @@ void Scene::createCells() {
 	int Ny = Cell::getNy();
 	int Nz = Cell::getNz();
 
-	double dx = bounding_box.diagonal().x / Nx;
-	double dy = bounding_box.diagonal().y / Ny;
-	double dz = bounding_box.diagonal().z / Nz;
+	float dx = bounding_box.diagonal().x / Nx;
+	float dy = bounding_box.diagonal().y / Ny;
+	float dz = bounding_box.diagonal().z / Nz;
 
 	// add extra cell layer on top for the particles which go beyond y=1
 	// during e.g. the initial geometric constraint resolution
@@ -359,8 +359,8 @@ bool Scene::pointIsExternal(const Boundary_axis_symmetric &b,
 		const Vec3d &point) {
 	// rough method!
 	auto contour = b.getContourFun();
-	double contour_radius = contour(point * norm(b.getAxis()));
-	double point_radius = abs(
+	float contour_radius = contour(point * norm(b.getAxis()));
+	float point_radius = abs(
 			point - (point * norm(b.getAxis())) * norm(b.getAxis()));
 	// tuning factor for marking also those cells where all points are external,
 	// but there is still interference with a boundary:
@@ -474,7 +474,7 @@ void Scene::clearParticles() {
 	particles.clear();
 }
 
-void Scene::addParticles(int N, double y, double r, bool randomize_y) {
+void Scene::addParticles(int N, float y, float r, bool randomize_y) {
 
 	int number_of_distinct_random = 500;
 	std::random_device rd; // obtain a random number from hardware
@@ -483,13 +483,13 @@ void Scene::addParticles(int N, double y, double r, bool randomize_y) {
 			number_of_distinct_random); // define the range
 
 	float corner = 0.999;
-	double x;
-	double random_y;
+	float x;
+	float random_y;
 	for (int i = 0; i < N; i++) {
 		x = -corner * 0.99 + i * (2 * corner * 0.99) / N;
 
 		if (randomize_y) {
-			random_y = double(distr(eng)) / number_of_distinct_random;
+			random_y = float(distr(eng)) / number_of_distinct_random;
 		} else {
 			random_y = 0;
 		}
@@ -499,8 +499,8 @@ void Scene::addParticles(int N, double y, double r, bool randomize_y) {
 	}
 }
 
-double Scene::energy() {
-	double energy = 0;
+float Scene::energy() {
+	float energy = 0;
 	for (auto &p : particles) {
 		energy += p.energy();
 	}

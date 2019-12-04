@@ -4,10 +4,10 @@
 // container with axial and radial coordinates for axis-symmetric vector calculations
 
 struct VecAxiSym {
-	double X;
-	double R;
+	float X;
+	float R;
 
-	VecAxiSym(double X_, double R_) :
+	VecAxiSym(float X_, float R_) :
 			X(X_), R(R_) {
 	}
 };

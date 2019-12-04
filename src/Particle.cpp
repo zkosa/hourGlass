@@ -15,11 +15,11 @@ Vec3d Particle::force_field = gravity;
 
 Scene *Particle::scene = nullptr;
 
-double Particle::drag_coefficient = 0.5; // non-constexpr static members must be initialized in the definition
+float Particle::drag_coefficient = 0.5; // non-constexpr static members must be initialized in the definition
 
-double Particle::uniform_radius = 0.005;
+float Particle::uniform_radius = 0.005;
 
-void Particle::advance(double dt) {
+void Particle::advance(float dt) {
 	// velocity Verlet integration:
 	Vec3d new_pos = pos + vel * dt + force_field * (dt * dt * 0.5);
 	Vec3d new_acc = apply_forces();
@@ -30,16 +30,16 @@ void Particle::advance(double dt) {
 	force_field = new_acc;
 }
 
-double Particle::kineticEnergy() {
+float Particle::kineticEnergy() {
 	return vel * vel * (mass() / 2);
 }
 
-double Particle::potentialEnergy() {
+float Particle::potentialEnergy() {
 	//return mass * (gravity * (pos + Vec3d(0,1,0)));
 	return mass() * g * (pos.y + 1);
 }
 
-double Particle::energy() {
+float Particle::energy() {
 	return kineticEnergy() + potentialEnergy();
 }
 
@@ -95,7 +95,7 @@ void Particle::draw2D() {
 	glEnd();
 }
 
-double Particle::distance(const Particle &other) const {
+float Particle::distance(const Particle &other) const {
 	return abs(pos - other.pos);
 }
 
@@ -128,7 +128,7 @@ void Particle::collideToParticle(Particle &other) {
 
 	Vec3d n = other.pos - this->pos; // distance vector, pointing towards the other particle
 
-	double distance = abs(n);
+	float distance = abs(n);
 	n = norm(n); // normalize
 
 	Vec3d pos_corr = -0.5 * n * (this->getR() + other.getR() - distance);
@@ -146,7 +146,7 @@ void Particle::collideToParticle_checkBoundary(Particle &other) {
 
 	Vec3d n = other.pos - this->pos; // distance vector, pointing towards the other particle
 
-	double distance = abs(n);
+	float distance = abs(n);
 	n = norm(n); // normalize
 
 	Vec3d pos_corr = -0.5 * n * (this->getR() + other.getR() - distance);
@@ -241,22 +241,22 @@ void Particle::size() const {
 	std::cout << "Size of particle object: " << sizeof(*this) << std::endl;
 }
 
-double Particle::terminalVelocity() {
+float Particle::terminalVelocity() {
 	return std::sqrt(2 * mass() * abs(gravity) / CdA() / density_medium);
 }
 
-double Particle::maxFreeFallVelocity() {
+float Particle::maxFreeFallVelocity() {
 	// domain height along the gravity vector:
-	double h = abs(scene->getBoundingBox().diagonal() * norm(gravity));
+	float h = abs(scene->getBoundingBox().diagonal() * norm(gravity));
 	// drag is not considered
 	return std::sqrt(2 * abs(gravity) * h);
 }
 
-double Particle::maxVelocity() {
+float Particle::maxVelocity() {
 	return std::min(terminalVelocity(), maxFreeFallVelocity());
 }
 
-double Particle::timeStepLimit() {
+float Particle::timeStepLimit() {
 	// the traveled distance during one time step is a radius length:
 	return radius / maxVelocity();
 }

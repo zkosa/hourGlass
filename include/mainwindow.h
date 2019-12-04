@@ -21,7 +21,7 @@ public:
 	int getNumberOfParticles() {
 		return number_of_particles;
 	}
-	void setNumberOfParticles(double N) {
+	void setNumberOfParticles(float N) {
 		number_of_particles = N;
 	}
 	void wrapStopButtonClicked() {
@@ -76,7 +76,7 @@ private:
 
 	Scene scene;
 	int number_of_particles;
-	double radius;
+	float radius;
 
 	// button texts:
 	QString start_text = QString("Start");

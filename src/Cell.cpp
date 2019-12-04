@@ -23,7 +23,7 @@ Cell::Cell(const Vec3d &center, const Vec3d &dX) {
 	bounds.y2 = (center + dX / 2.) * Vec3d::j;
 	bounds.z2 = (center + dX / 2.) * Vec3d::k;
 
-	double factor = 0.94;
+	float factor = 0.94;
 	bounds_for_display.x1 = (center - factor * dX / 2.) * Vec3d::i;
 	bounds_for_display.y1 = (center - factor * dX / 2.) * Vec3d::j;
 	bounds_for_display.z1 = (center - factor * dX / 2.) * Vec3d::k;
@@ -105,7 +105,7 @@ void Cell::populate(std::vector<Particle> &particles) {
 }
 
 bool Cell::contains(const Particle &p) {
-	double r = p.getR();
+	float r = p.getR();
 
 	return (p.getX() + r > bounds.x1 && p.getX() - r < bounds.x2)
 			&& (p.getY() + r > bounds.y1 && p.getY() - r < bounds.y2)

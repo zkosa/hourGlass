@@ -7,8 +7,8 @@
 
 /*  // discards const qualifier!
  // inlined to avoid problems from multiple definitions
- inline double hour_glass_shape(double X) {
- double min_height = 0.07;
+ inline float hour_glass_shape(float X) {
+ float min_height = 0.07;
  return X*X + min_height;
  }
  */
@@ -19,31 +19,31 @@ class Boundary_axis_symmetric: public Boundary {
 	Vec3d axis = norm(p2_axis - p1_axis);
 	std::unordered_map<int, Vec3d> normals_to_particles;
 
-	double hourGlassShape(double X) const {
-		double min_height = 0.07;
+	float hourGlassShape(float X) const {
+		float min_height = 0.07;
 		return X * X + min_height;
 	}
 
-	std::function<double(double)> contour = std::bind(
+	std::function<float(float)> contour = std::bind(
 			&Boundary_axis_symmetric::hourGlassShape, this,
 			std::placeholders::_1);
 	/*
-	 double distance2(double X, double X0, double R0) const {
+	 float distance2(float X, float X0, float R0) const {
 	 return (X - X0)*(X - X0) + (contour(X) - R0)*(contour(X) - R0); // crashes
 	 }
 	 */
-	double distance2(double X, double X0, double R0) const {
+	float distance2(float X, float X0, float R0) const {
 		return (X - X0) * (X - X0)
 				+ (hourGlassShape(X) - R0) * (hourGlassShape(X) - R0); // fine
 	}
-	//std::function<double(double, double, double)> distance2_fun = distance2;
-	std::function<double(double, double, double)> distance2_fun = std::bind(
+	//std::function<float(float, float, float)> distance2_fun = distance2;
+	std::function<float(float, float, float)> distance2_fun = std::bind(
 			&Boundary_axis_symmetric::distance2, this, std::placeholders::_1,
 			std::placeholders::_2, std::placeholders::_3);
 
-	//std::function<double(double)> shape = hour_glass_shape(1.);
+	//std::function<float(float)> shape = hour_glass_shape(1.);
 public:
-	double distance(const Particle &particle) const override;
+	float distance(const Particle &particle) const override;
 
 	void draw2D() override;
 
@@ -53,10 +53,10 @@ public:
 		return axis;
 	}
 
-	std::function<double(const double)> getContourFun() const {
+	std::function<float(const float)> getContourFun() const {
 		return contour;
 	}
-	std::function<double(double, double, double)> getDistance2Fun() const {
+	std::function<float(float, float, float)> getDistance2Fun() const {
 		return distance2_fun;
 	}
 

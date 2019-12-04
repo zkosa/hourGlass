@@ -1,12 +1,12 @@
 #include "Minimum.h"
 #include <cmath>
 
-void Minimum::search(double starting_value) {
-	double X = starting_value;
-	double X_new = X;
-	double delta = 1e-3;
-	double dist2_prime, dist2_prime_prime;
-	double epsilon = 1e-5;
+void Minimum::search(float starting_value) {
+	float X = starting_value;
+	float X_new = X;
+	float delta = 1e-3;
+	float dist2_prime, dist2_prime_prime;
+	float epsilon = 1e-5;
 	int counter = 0;
 	int max_iter = 2000;
 

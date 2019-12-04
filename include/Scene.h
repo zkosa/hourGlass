@@ -19,8 +19,8 @@ enum Geometry {
 class Scene {
 
 	MainWindow *viewer = nullptr;
-	double time_step = 0.001; // [s]
-	double time = 0;
+	float time_step = 0.001; // [s]
+	float time = 0;
 	std::vector<Particle> particles;
 	std::vector<Boundary_planar> boundaries_pl;
 	std::vector<Boundary_axis_symmetric> boundaries_ax;
@@ -35,18 +35,18 @@ class Scene {
 	bool finished = false;
 	bool benchmark_mode = false;
 
-	double benchmark_simulation_time = 1.; // [s]
+	float benchmark_simulation_time = 1.; // [s]
 
 	int loop_counter = 0;
-	double duration = 0.;
+	float duration = 0.;
 
 	struct Defaults {
-		double time_step = 0.001;
+		float time_step = 0.001;
 		int Nx = 10, Ny = Nx, Nz = 1;
 		Geometry geometry = hourglass;
 		int number_of_particles = 5000;
-		double particle_diameter = 0.005; // [m]
-		double Cd = 0.5;
+		float particle_diameter = 0.005; // [m]
+		float Cd = 0.5;
 	};
 
 	Defaults defaults;
@@ -57,7 +57,7 @@ public:
 	void connectViewer(MainWindow *window) {
 		viewer = window;
 	}
-	void init(int number_of_particles = 500, double radius = 0.01);
+	void init(int number_of_particles = 500, float radius = 0.01);
 	void resolveConstraintsOnInit(int sweeps = 20);
 	void resolveConstraintsOnInitCells(int sweeps = 20); // running the sweeps cell-wise
 	void resolveConstraintsCells(int max_sweeps = 500); // do while there is collision
@@ -121,12 +121,12 @@ public:
 	void deleteCells();
 
 	void clearParticles();
-	void addParticles(int N, double y = 1.0, double r =
+	void addParticles(int N, float y = 1.0, float r =
 			Particle::getUniformRadius(), bool randomize_y = true);
 
-	double energy();
+	float energy();
 	Vec3d impulse();
-	double impulseMagnitude() {
+	float impulseMagnitude() {
 		return abs(impulse());
 	}
 
@@ -142,20 +142,20 @@ public:
 	void setBenchmarkMode(bool benchmark_mode) {
 		this->benchmark_mode = benchmark_mode;
 	}
-	void setTimestep(double time_step) {
+	void setTimestep(float time_step) {
 		this->time_step = time_step;
 	}
 
-	double getDuration() {
+	float getDuration() {
 		return duration;
 	}
-	void setDuration(double duration) {
+	void setDuration(float duration) {
 		this->duration = duration;
 	}
 	void resetDuration() {
 		setDuration(0);
 	}
-	void addToDuration(double duration) {
+	void addToDuration(float duration) {
 		this->duration += duration;
 	}
 

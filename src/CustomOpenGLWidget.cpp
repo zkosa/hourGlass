@@ -27,11 +27,11 @@ void CustomOpenGLWidget::paintGL() {
 		scene->populateCells();
 		scene->advance();
 /*
-		std::vector<double> vels(sizeof(scene->getParticles()));
+		std::vector<float> vels(sizeof(scene->getParticles()));
 		for (auto &p : scene->getParticles()) {
 			vels.emplace_back(abs(p.getV()));
 		}
-		double domMaxVel = *std::max_element(vels.begin(), vels.end());
+		float domMaxVel = *std::max_element(vels.begin(), vels.end());
 
 		std::cout << "timeStepLimit: " << scene->getParticles()[0].timeStepLimit() << "\t"
 				<< "domMaxVel: " << domMaxVel << "\t"
