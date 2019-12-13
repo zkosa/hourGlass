@@ -11,11 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	// connecting the window to the simulation scene:
 	scene.connectViewer(this);
 
-	scene.applyDefaults();
-	scene.createGeometry(scene.getGeometry());
-	scene.addParticles(number_of_particles);
-	scene.getParticles()[0].size();
-	scene.createCells();
+	scene.reset();
 
 	// connecting the simulation scene to the window:
 	Scene *scene_ptr = &scene; // TODO: check
@@ -54,7 +50,7 @@ void MainWindow::on_checkBox_benchmarkMode_stateChanged(int benchmark_checked) {
 		ui->geometryComboBox->setEnabled(true);
 		ui->cells_Nx_SpinBox->setEnabled(true);
 		ui->cells_Ny_SpinBox->setEnabled(true);
-		ui->cells_Nz_SpinBox->setEnabled(true);
+		ui->cells_Nz_SpinBox->setEnabled(false); // 2D
 		ui->Particle_number_slider->setEnabled(true);
 		ui->Particle_diameter_slider->setEnabled(true);
 		ui->Drag_coefficient_slider->setEnabled(true);
