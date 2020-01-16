@@ -1,9 +1,11 @@
 *
 !include
 !src
+!img
 !CMakeLists.txt
 !.gitignore
 !.project
 !.cprojiect
 !include/*.h
 !src/*.cpp
+!img/*
