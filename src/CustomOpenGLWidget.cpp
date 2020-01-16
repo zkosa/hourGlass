@@ -41,7 +41,7 @@ void CustomOpenGLWidget::paintGL() {
 				<< "v: " << abs(scene->getParticles()[0].getV())
 				<< std::endl << std::flush;
 */
-		//scene->resolve_constraints_cells(5);
+		//scene->resolveConstraintsCells(5);
 		//m_scene->collide_boundaries();
 		scene->collideWithBoundariesCells();
 		scene->populateCells();
