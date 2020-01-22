@@ -2,7 +2,7 @@
 #include "Boundary_planar.h"
 #include "Boundary_axis_symmetric.h"
 #include <random>
-#include <omp.h>
+//#include <omp.h>
 #include "mainwindow.h"
 
 void Scene::createGeometry(int geo) {
@@ -513,6 +513,23 @@ Vec3d Scene::impulse() {
 		impulse = impulse + p.impulse();
 	}
 	return impulse;
+}
+
+void Scene::veloCheck() {
+
+	std::vector<float> vels(sizeof(particles));
+	for (const auto &p : particles) {
+		vels.emplace_back(abs(p.getV()));
+	}
+	float domMaxVel = *std::max_element(vels.begin(), vels.end());
+
+	std::cout << "timeStepLimit: " << particles[0].timeStepLimit() << "\t"
+			<< "domMaxVel: " << domMaxVel << "\t"
+			<< "maxV: " << particles[0].maxVelocity() << "\t"
+			<< "terminalV: " << particles[0].terminalVelocity() << "\t"
+			<< "maxFreeFallV: " << particles[0].maxFreeFallVelocity() << "\t"
+			<< "v: " << abs(particles[0].getV())
+			<< std::endl << std::flush;
 }
 
 void Scene::setRunning() {

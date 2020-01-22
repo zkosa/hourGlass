@@ -26,21 +26,7 @@ void CustomOpenGLWidget::paintGL() {
 		scene->timer.start();
 		scene->populateCells();
 		scene->advance();
-/*
-		std::vector<float> vels(sizeof(scene->getParticles()));
-		for (auto &p : scene->getParticles()) {
-			vels.emplace_back(abs(p.getV()));
-		}
-		float domMaxVel = *std::max_element(vels.begin(), vels.end());
-
-		std::cout << "timeStepLimit: " << scene->getParticles()[0].timeStepLimit() << "\t"
-				<< "domMaxVel: " << domMaxVel << "\t"
-				<< "maxV: " << scene->getParticles()[0].maxVelocity() << "\t"
-				<< "terminalV: " << scene->getParticles()[0].terminalVelocity() << "\t"
-				<< "maxFreeFallV: " << scene->getParticles()[0].maxFreeFallVelocity() << "\t"
-				<< "v: " << abs(scene->getParticles()[0].getV())
-				<< std::endl << std::flush;
-*/
+		//scene->veloCheck();
 		//scene->resolveConstraintsCells(5);
 		//m_scene->collide_boundaries();
 		scene->collideWithBoundariesCells();

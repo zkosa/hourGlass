@@ -8,13 +8,8 @@ BoundingBox::BoundingBox(Scene &scene) :
 		corner1( { 0, 0, 0 }), corner2( { 0, 0, 0 }) {
 
 	float x1, y1, z1, x2, y2, z2;
-	/*
-	 for (auto b_ax : scene.getBoundariesAxiSym()) {
-	 auto contour = b_ax.getContourFun();
-	 // TODO: find mins and maxes!
-	 }
-	 */
-	// hardcoded temporarily:
+
+	// hardcoded:
 	x1 = y1 = z1 = -1;
 	x2 = y2 = z2 = 1;
 

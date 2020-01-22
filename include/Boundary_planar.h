@@ -6,14 +6,13 @@
 class Boundary_planar: public Boundary {
 	Vec3d plane_point;
 	Vec3d normal;
-	Vec3d p1, p2; // temporary, for display
+	Vec3d p1, p2; // for display purposes
 
 public:
 	Boundary_planar(Vec3d p1, Vec3d p2, Vec3d p3) :
 			plane_point(p1), normal(norm(crossProduct(p3 - p1, p2 - p1))), p1(
 					p1), p2(p2) {
 	}
-	;
 
 	float distance(const Vec3d &point) const;
 	float distance(const Particle &particle) const override;

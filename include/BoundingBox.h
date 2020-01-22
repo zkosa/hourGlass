@@ -16,8 +16,6 @@ public:
 	Vec3d diagonal() const;
 	float volume() const;
 
-	//void extend(); // TODO add it for particles and boundaries?
-
 	const Vec3d& getCorner1() const {
 		return corner1;
 	}

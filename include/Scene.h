@@ -130,6 +130,8 @@ public:
 		return abs(impulse());
 	}
 
+	void veloCheck();
+
 	void setRunning();
 	void setStopping();
 	void setFinished();

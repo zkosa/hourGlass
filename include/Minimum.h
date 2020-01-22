@@ -7,7 +7,8 @@
 #include "Boundary_axis_symmetric.h"
 
 class Minimum {
-	std::function<float(float, float, float)> function; // to be minimized (distance squared)
+	// std::function enables passing the functions to other objects
+	std::function<float(float, float, float)> function; // the function to be minimized (distance squared)
 	std::function<float(float)> contour;
 
 	float X0;
