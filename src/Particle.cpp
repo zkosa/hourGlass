@@ -95,10 +95,6 @@ void Particle::draw2D() {
 	glEnd();
 }
 
-float Particle::distance(const Particle &other) const {
-	return abs(pos - other.pos);
-}
-
 void Particle::collideToWall(const Boundary &wall) {
 
 	Vec3d n = wall.getNormal(*this);

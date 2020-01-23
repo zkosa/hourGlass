@@ -68,7 +68,9 @@ public:
 	void draw2D();
 	void drawNow2D();
 
-	float distance(const Particle &other) const;
+	inline float distance(const Particle &other) const {
+		return abs(pos - other.pos);
+	}
 
 	void collideToWall(const Boundary &wall);
 	void collideToParticle(Particle &other);
