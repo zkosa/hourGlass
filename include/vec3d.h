@@ -3,7 +3,7 @@
 
 #include <math.h>
 #include <iostream>
-#include "Constants.h"
+#include "constants.h"
 
 struct Vec3d {
 

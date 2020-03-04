@@ -1,7 +1,7 @@
 #ifndef BOUNDARY_PLANAR_H_
 #define BOUNDARY_PLANAR_H_
 
-#include "Boundary.h"
+#include "boundary.h"
 
 class Boundary_planar: public Boundary {
 	Vec3d plane_point;

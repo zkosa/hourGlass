@@ -2,12 +2,12 @@
 #define CELL_H_
 
 #include <vector>
-#include "Vec3d.h"
+#include "vec3d.h"
 
 class Scene;
 class Particle;
 class Boundary_planar;
-class Boundary_axis_symmetric;
+class Boundary_axissymmetric;
 
 typedef std::vector<Vec3d> pointData;
 

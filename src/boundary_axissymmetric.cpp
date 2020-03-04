@@ -1,8 +1,8 @@
-#include "Boundary_axis_symmetric.h"
-#include "Minimum.h"
+#include "boundary_axissymmetric.h"
+#include "minimum.h"
 #include <QOpenGLWidget>
 
-float Boundary_axis_symmetric::distance(const Particle &particle) const {
+float Boundary_axissymmetric::distance(const Particle &particle) const {
 
 	const Vec3d &pos = particle.getPos();
 	float X0 = pos * axis; // axial coordinate
@@ -28,7 +28,7 @@ float Boundary_axis_symmetric::distance(const Particle &particle) const {
 	return minimum.getDistance();
 }
 
-Vec3d Boundary_axis_symmetric::getNormal(const Particle &particle) const {
+Vec3d Boundary_axissymmetric::getNormal(const Particle &particle) const {
 
 	const Vec3d &pos = particle.getPos();
 	float X0 = pos * axis; // axial coordinate
@@ -51,7 +51,7 @@ Vec3d Boundary_axis_symmetric::getNormal(const Particle &particle) const {
 	return n;
 }
 
-void Boundary_axis_symmetric::draw2D() {
+void Boundary_axissymmetric::draw2D() {
 	// hardcoded for x= 0 axis
 	// TODO: generalize
 

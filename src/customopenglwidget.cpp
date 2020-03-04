@@ -1,7 +1,7 @@
-#include "CustomOpenGLWidget.h"
-#include "Scene.h"
+#include "customopenglwidget.h"
+#include "scene.h"
 #include "mainwindow.h"
-#include "Timer.h"
+#include "timer.h"
 
 CustomOpenGLWidget::CustomOpenGLWidget(QWidget *parent) :
 		QOpenGLWidget(parent) {

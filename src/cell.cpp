@@ -1,8 +1,8 @@
-#include "Particle.h"
-#include "Boundary_planar.h"
-#include "Boundary_axis_symmetric.h"
-#include "Cell.h"
-#include "Scene.h"
+#include "particle.h"
+#include "boundary_planar.h"
+#include "boundary_axissymmetric.h"
+#include "cell.h"
+#include "scene.h"
 //#include <omp.h>
 #include <QOpenGLWidget>
 

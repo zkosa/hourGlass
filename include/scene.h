@@ -2,13 +2,13 @@
 #define SCENE_H_
 
 #include <vector>
-#include "Particle.h"
-#include "Boundary.h"
-#include "BoundingBox.h"
-#include "Boundary_planar.h"
-#include "Boundary_axis_symmetric.h"
-#include "Cell.h"
-#include "Timer.h"
+#include "particle.h"
+#include "boundary.h"
+#include "boundingbox.h"
+#include "boundary_planar.h"
+#include "boundary_axissymmetric.h"
+#include "cell.h"
+#include "timer.h"
 
 class MainWindow;
 
@@ -23,7 +23,7 @@ class Scene {
 	float time = 0;
 	std::vector<Particle> particles;
 	std::vector<Boundary_planar> boundaries_pl;
-	std::vector<Boundary_axis_symmetric> boundaries_ax;
+	std::vector<Boundary_axissymmetric> boundaries_ax;
 	std::vector<Cell> cells;
 
 	Geometry geometry = hourglass;
@@ -74,7 +74,7 @@ public:
 	const std::vector<Boundary_planar>& getBoundariesPlanar() {
 		return boundaries_pl;
 	}
-	const std::vector<Boundary_axis_symmetric>& getBoundariesAxiSym() {
+	const std::vector<Boundary_axissymmetric>& getBoundariesAxiSym() {
 		return boundaries_ax;
 	}
 	const Geometry& getGeometry() {
@@ -104,9 +104,9 @@ public:
 	bool hasTemporaryGeo() const;
 	void createCells();
 	void markBoundaryCells();
-	bool pointIsExternal(const Boundary_axis_symmetric &b, const Vec3d &point);
+	bool pointIsExternal(const Boundary_axissymmetric &b, const Vec3d &point);
 	bool pointIsExternal(const Boundary_planar &b, const Vec3d &point);
-	bool pointIsInternal(const Boundary_axis_symmetric &b, const Vec3d &point) {
+	bool pointIsInternal(const Boundary_axissymmetric &b, const Vec3d &point) {
 		return !pointIsExternal(b, point);
 	}
 	bool pointIsInternal(const Boundary_planar &b, const Vec3d &point) {

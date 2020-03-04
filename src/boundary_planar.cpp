@@ -1,4 +1,4 @@
-#include "Boundary_planar.h"
+#include "boundary_planar.h"
 #include <QOpenGLWidget>
 
 float Boundary_planar::distance(const Vec3d &point) const {

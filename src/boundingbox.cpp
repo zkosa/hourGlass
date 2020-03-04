@@ -1,8 +1,8 @@
-#include "Vec3d.h"
-#include "Scene.h"
-#include "BoundingBox.h"
-#include "Boundary_planar.h"
-#include "Boundary_axis_symmetric.h"
+#include "vec3d.h"
+#include "scene.h"
+#include "boundingbox.h"
+#include "boundary_planar.h"
+#include "boundary_axissymmetric.h"
 
 BoundingBox::BoundingBox(Scene &scene) :
 		corner1( { 0, 0, 0 }), corner2( { 0, 0, 0 }) {

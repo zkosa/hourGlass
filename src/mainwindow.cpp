@@ -2,8 +2,8 @@
 #include "ui_mainwindow.h"
 #include <iostream>
 
-#include "Timer.h"
-#include "CustomOpenGLWidget.h"
+#include "timer.h"
+#include "customopenglwidget.h"
 
 MainWindow::MainWindow(QWidget *parent) :
 		QMainWindow(parent), ui(new Ui::MainWindow), number_of_particles(5000) {

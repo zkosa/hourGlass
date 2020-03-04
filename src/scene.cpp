@@ -1,6 +1,6 @@
-#include "Scene.h"
-#include "Boundary_planar.h"
-#include "Boundary_axis_symmetric.h"
+#include "scene.h"
+#include "boundary_planar.h"
+#include "boundary_axissymmetric.h"
 #include <random>
 //#include <omp.h>
 #include "mainwindow.h"
@@ -21,7 +21,7 @@ void Scene::createGeometry(Geometry geometry) {
 	if (geometry == hourglass || geometry == hourglass_with_removable_orifice) {
 		Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, -corner, 0),
 				Vec3d(-1, -corner, 1));
-		Boundary_axis_symmetric glass;
+		Boundary_axissymmetric glass;
 
 		boundaries_pl.push_back(ground);
 		boundaries_ax.push_back(glass);
@@ -355,7 +355,7 @@ void Scene::markBoundaryCells() {
 	}
 }
 
-bool Scene::pointIsExternal(const Boundary_axis_symmetric &b,
+bool Scene::pointIsExternal(const Boundary_axissymmetric &b,
 		const Vec3d &point) {
 	// rough method!
 	auto contour = b.getContourFun();

@@ -1,12 +1,12 @@
 #ifndef PARTICLE_H_
 #define PARTICLE_H_
 
-#include "Vec3d.h"
-#include "Constants.h"
+#include "vec3d.h"
+#include "constants.h"
 
 class Boundary;
 class Boundary_planar;
-class Boundary_axis_symmetric;
+class Boundary_axissymmetric;
 class Scene;
 
 class Particle {

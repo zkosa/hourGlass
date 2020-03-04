@@ -1,8 +1,8 @@
 #ifndef BOUNDARY_H_
 #define BOUNDARY_H_
 
-#include "Vec3d.h"
-#include "Particle.h"
+#include "vec3d.h"
+#include "particle.h"
 
 class Boundary {
 

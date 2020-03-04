@@ -2,9 +2,9 @@
 #define MINIMUM_H_
 
 #include <functional>
-#include "Vec3d.h"
-#include "VecAxiSym.h"
-#include "Boundary_axis_symmetric.h"
+#include "vec3d.h"
+#include "vecaxisym.h"
+#include "boundary_axissymmetric.h"
 
 class Minimum {
 	// std::function enables passing the functions to other objects
@@ -25,7 +25,7 @@ public:
 			function(_function), X0(_X0), R0(_R0) {
 	}
 
-	Minimum(const Boundary_axis_symmetric &wall, float _X0, float _R0) :
+	Minimum(const Boundary_axissymmetric &wall, float _X0, float _R0) :
 			function(wall.getDistance2Fun()), contour(wall.getContourFun()), X0(
 					_X0), R0(_R0) {
 	}

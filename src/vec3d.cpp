@@ -1,4 +1,4 @@
-#include "Vec3d.h"
+#include "vec3d.h"
 
 std::ostream& Vec3d::print() const {
 	return std::cout << x << ", " << y << ", " << z << std::endl;

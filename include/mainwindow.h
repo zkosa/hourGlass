@@ -3,7 +3,7 @@
 
 #include <string>
 #include <QMainWindow>
-#include "Scene.h"
+#include "scene.h"
 
 namespace Ui {
 class MainWindow;

@@ -1,4 +1,4 @@
-#include "Minimum.h"
+#include "minimum.h"
 #include <cmath>
 
 void Minimum::search(float starting_value) {

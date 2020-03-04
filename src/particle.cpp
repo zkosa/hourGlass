@@ -1,8 +1,8 @@
 #include <iostream>
-#include "Particle.h"
-#include "Boundary_planar.h"
-#include "Boundary_axis_symmetric.h"
-#include "Scene.h"
+#include "particle.h"
+#include "boundary_planar.h"
+#include "boundary_axissymmetric.h"
+#include "scene.h"
 #include <QOpenGLWidget>
 
 Particle::Particle() {

@@ -1,11 +1,11 @@
-#ifndef BOUNDARY_AXIS_SYMMETRIC_H_
-#define BOUNDARY_AXIS_SYMMETRIC_H_
+#ifndef BOUNDARY_AXISSYMMETRIC_H_
+#define BOUNDARY_AXISSYMMETRIC_H_
 
-#include "Boundary.h"
+#include "boundary.h"
 #include <functional>
 #include <unordered_map>
 
-class Boundary_axis_symmetric: public Boundary {
+class Boundary_axissymmetric: public Boundary {
 	Vec3d p1_axis { 0, -1, 0 };
 	Vec3d p2_axis { 0, 1, 0 };
 	Vec3d axis = norm(p2_axis - p1_axis);
@@ -17,7 +17,7 @@ class Boundary_axis_symmetric: public Boundary {
 	}
 
 	std::function<float(float)> contour = std::bind(
-			&Boundary_axis_symmetric::hourGlassShape, this,
+			&Boundary_axissymmetric::hourGlassShape, this,
 			std::placeholders::_1);
 
 	float distance2(float X, float X0, float R0) const {
@@ -26,7 +26,7 @@ class Boundary_axis_symmetric: public Boundary {
 	}
 
 	std::function<float(float, float, float)> distance2_fun = std::bind(
-			&Boundary_axis_symmetric::distance2, this, std::placeholders::_1,
+			&Boundary_axissymmetric::distance2, this, std::placeholders::_1,
 			std::placeholders::_2, std::placeholders::_3);
 
 public:
@@ -50,4 +50,4 @@ public:
 
 };
 
-#endif /* BOUNDARY_AXIS_SYMMETRIC_H_ */
+#endif /* BOUNDARY_AXISSYMMETRIC_H_ */
