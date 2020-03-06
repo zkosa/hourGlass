@@ -46,6 +46,7 @@ private:
 
 public:
 	Particle();
+	//Particle(const Particle& other) ;
 	Particle(Vec3d _pos, float _r = Particle::uniform_radius) :
 			pos(_pos), radius(_r) {
 	}

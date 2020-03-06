@@ -482,7 +482,7 @@
   <customwidget>
    <class>CustomOpenGLWidget</class>
    <extends>QOpenGLWidget</extends>
-   <header>CustomOpenGLWidget.h</header>
+   <header>customopenglwidget.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

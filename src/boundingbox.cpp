@@ -29,3 +29,4 @@ Vec3d BoundingBox::diagonal() const {
 float BoundingBox::volume() const {
 	return diagonal().x * diagonal().y * diagonal().z;
 }
+
