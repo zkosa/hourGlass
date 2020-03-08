@@ -36,8 +36,9 @@ if (UNIX)
 elseif (WIN32)
     target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets opengl32) # OpenMP::OpenMP_CXX
 else ()
-	message("Unsupported operating system")
+       message("Unsupported operating system")
 endif ()
+
 
 # TEST:
 find_package(Boost REQUIRED unit_test_framework)
@@ -45,3 +46,16 @@ file(GLOB SOURCES "test/vec3d-test.cpp" "src/vec3d.cpp")
 add_executable(vec3d-test ${SOURCES})
 target_include_directories(vec3d-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 target_link_libraries(vec3d-test ${Boost_LIBRARIES})
+
+file(GLOB SOURCES "test/particle-test.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp")
+add_executable(particle-test ${SOURCES})
+target_include_directories(particle-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
+target_link_libraries(particle-test ${Boost_LIBRARIES})
+
+if (UNIX)
+    target_link_libraries(particle-test Qt5::Core Qt5::Gui Qt5::Widgets GL) # OpenMP::OpenMP_CXX
+elseif (WIN32)
+    target_link_libraries(particle-test Qt5::Core Qt5::Gui Qt5::Widgets opengl32) # OpenMP::OpenMP_CXX
+else ()
+	message("Unsupported operating system")
+endif ()
