@@ -3,6 +3,7 @@
 
 #include <math.h>
 #include <iostream>
+#include <stdexcept>
 #include "constants.h"
 
 struct Vec3d {
@@ -37,8 +38,20 @@ inline Vec3d Multiply(const Vec3d &a, const float m) {
 }
 
 inline Vec3d Divide(const Vec3d &a, const float m) {
-	// TODO: handle division by zero
+	if (abs(m) < VSMALL) {
+		throw std::invalid_argument("Division by very small number.");
+	}
 	return Vec3d(a.x / m, a.y / m, a.z / m);
+
+}
+
+inline bool operator==(const Vec3d &a, const Vec3d &b) {
+	return ( a.x == b.x && a.y == b.y && a.z == b.z );
+}
+
+inline std::ostream& operator<<(std::ostream &out, const Vec3d &a) {
+	out << "(" << a.x << ", " << a.y << ", " << a.z << ")" << std::endl;
+	return out;
 }
 
 inline Vec3d operator+(const Vec3d &a, const Vec3d &b) {

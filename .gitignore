@@ -1,6 +1,7 @@
 *
 !include
 !src
+!test
 !img
 !CMakeLists.txt
 !.gitignore
@@ -8,5 +9,7 @@
 !.cprojiect
 !include/*.h
 !src/*.cpp
+!test/*.h
+!test/*.cpp
 !img/*
 !README.md
