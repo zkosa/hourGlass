@@ -6,7 +6,7 @@
 #include <boost/test/unit_test.hpp>
 
 
-BOOST_AUTO_TEST_CASE( constrction_test )
+BOOST_AUTO_TEST_CASE( construction_test )
 {
 	float r = 0.005;
 	Vec3d pos(0,0,0);

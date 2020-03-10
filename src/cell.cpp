@@ -14,7 +14,8 @@ int Cell::Nz = 1; // 2D
 
 Scene *Cell::scene = nullptr;
 
-Cell::Cell(const Vec3d &center, const Vec3d &dX) {
+Cell::Cell(const Vec3d &center, const Vec3d &_dX) : dX(_dX) {
+
 	bounds.x1 = (center - dX / 2.) * Vec3d::i;
 	bounds.y1 = (center - dX / 2.) * Vec3d::j;
 	bounds.z1 = (center - dX / 2.) * Vec3d::k;
@@ -36,6 +37,11 @@ Cell::Cell(const Vec3d &center, const Vec3d &dX) {
 
 	this->center = center;
 
+}
+
+pointData Cell::getCorners() const {
+	pointData corners;
+
 	corners.push_back(Vec3d { bounds.x1, bounds.y1, bounds.z1 });
 	corners.push_back(Vec3d { bounds.x1, bounds.y1, bounds.z2 });
 	corners.push_back(Vec3d { bounds.x1, bounds.y2, bounds.z1 });
@@ -45,6 +51,12 @@ Cell::Cell(const Vec3d &center, const Vec3d &dX) {
 	corners.push_back(Vec3d { bounds.x2, bounds.y2, bounds.z1 });
 	corners.push_back(Vec3d { bounds.x2, bounds.y2, bounds.z2 });
 
+	return corners;
+}
+
+pointData Cell::getFaceCenters() const {
+	pointData face_centers;
+
 	face_centers.push_back(center + dX / 2. * Vec3d::i * Vec3d::i);
 	face_centers.push_back(center + dX / 2. * Vec3d::j * Vec3d::j);
 	face_centers.push_back(center + dX / 2. * Vec3d::k * Vec3d::k);
@@ -52,6 +64,12 @@ Cell::Cell(const Vec3d &center, const Vec3d &dX) {
 	face_centers.push_back(center - dX / 2. * Vec3d::j * Vec3d::j);
 	face_centers.push_back(center - dX / 2. * Vec3d::k * Vec3d::k);
 
+	return face_centers;
+}
+
+pointData Cell::getEdgeCenters() const {
+	pointData edge_centers;
+
 	edge_centers.push_back(
 			center + 0.5 * dX * Vec3d::i * Vec3d::i
 					+ 0.5 * dX * Vec3d::j * Vec3d::j);
@@ -89,6 +107,20 @@ Cell::Cell(const Vec3d &center, const Vec3d &dX) {
 			center - 0.5 * dX * Vec3d::j * Vec3d::j
 					- 0.5 * dX * Vec3d::k * Vec3d::k);
 
+	return edge_centers;
+}
+
+pointData Cell::getAllPoints() const {
+	pointData all;
+	all.push_back(center);
+
+	pointData corners = getCorners();
+	pointData faceCenters = getFaceCenters();
+	pointData edgeCenters = getEdgeCenters();
+	all.insert(all.end(), corners.begin(), corners.end());
+	all.insert(all.end(), faceCenters.begin(), faceCenters.end());
+	all.insert(all.end(), edgeCenters.begin(), edgeCenters.end());
+	return all;
 }
 
 void Cell::clear() {
@@ -113,7 +145,7 @@ bool Cell::contains(const Particle &p) {
 }
 
 bool Cell::contains(const Boundary &b) {
-	if (b.distance(center) <= half_diagonal) { // + Particle::getUniformRadius()
+	if (b.distance(center) <= half_diagonal) {
 		return true;
 	} else {
 		return false;
@@ -127,7 +159,6 @@ void Cell::addParticle(const Particle &p) {
 void Cell::size() const {
 	std::cout << "Size of cell object: " << sizeof(*this) << std::endl;
 }
-
 
 void Cell::draw2D() {
 	glBegin(GL_LINE_LOOP);
@@ -149,4 +180,13 @@ void Cell::draw2D() {
 	glVertex2f(float(bounds_for_display.x1), float(bounds_for_display.y2));
 	glColor4f(1, 1, 1, 1);
 	glEnd();
+}
+
+Vec3d Cell::average(const pointData& pd) {
+
+	Vec3d sum(0,0,0);
+	for (const auto & p : pd) {
+		sum = sum + p;
+	}
+	return sum / pd.size();
 }

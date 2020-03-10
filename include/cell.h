@@ -6,6 +6,7 @@
 
 class Scene;
 class Particle;
+class Boundary;
 class Boundary_planar;
 class Boundary_axissymmetric;
 
@@ -32,16 +33,13 @@ class Cell {
 	Bounds bounds_for_display; // scaled for avoiding overlap of edges during display
 
 	Vec3d center = { 0, 0, 0 };
-	pointData corners;
-	pointData face_centers;
-	pointData edge_centers; // TODO: check if it improves performance when they are not stored
+	Vec3d dX; // cell edge sizes
 
 	std::vector<int> particle_IDs; // TODO reserve the expected size
 	std::vector<int> boundary_IDs_planar;
 	std::vector<int> boundary_IDs_axis_symmetric;
 
 	float half_diagonal; // center to corner distance
-	float test;
 
 	bool cell_with_boundary = false;
 	bool cell_is_external = false;
@@ -75,23 +73,14 @@ public:
 	const Vec3d& getCenter() const {
 		return center;
 	}
-	const pointData& getCorners() const {
-		return corners;
-	}
-	const pointData& getFaceCenters() const {
-		return face_centers;
-	}
-	const pointData& getEdgeCenters() const {
-		return edge_centers;
-	}
-	pointData getAllPoints() const {
-		pointData all;
-		all.push_back(center);
-		all.insert(all.end(), corners.begin(), corners.end());
-		all.insert(all.end(), face_centers.begin(), face_centers.end());
-		all.insert(all.end(), edge_centers.begin(), edge_centers.end());
-		return all;
-	}
+
+	// they are not stored, because they are needed only during cell classification after creation:
+	pointData getCorners() const;
+	pointData getFaceCenters() const;
+	pointData getEdgeCenters() const;
+
+	pointData getAllPoints() const;
+
 	float getHalfDiagonal() const {
 		return half_diagonal;
 	}
@@ -144,6 +133,8 @@ public:
 	static void setNz(int Ny) {
 		Cell::Nz = Ny;
 	}
+
+	static Vec3d average(const pointData& pd);
 
 };
 
