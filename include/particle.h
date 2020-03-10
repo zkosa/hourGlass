@@ -129,10 +129,10 @@ public:
 	Vec3d getPos() const {
 		return pos;
 	}
-	float terminalVelocity();
-	float maxFreeFallVelocity(); // in the domain, no drag
-	float maxVelocity();
-	float timeStepLimit();
+	float terminalVelocity() const;
+	float maxFreeFallVelocity() const; // in the domain, no drag
+	float maxVelocity() const;
+	float timeStepLimit() const;
 
 	// static getters can not be qualified as const according to the standard
 	// (they do not modify any instance of the class)

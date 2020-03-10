@@ -460,6 +460,7 @@ void Scene::populateCells() {
 }
 
 void Scene::clearCells() {
+	//cells[0].size();
 	for (auto &c : cells) {
 		c.clear();
 	}
@@ -471,6 +472,7 @@ void Scene::deleteCells() {
 }
 
 void Scene::clearParticles() {
+	//particles[0].size();
 	particles.clear();
 }
 
@@ -497,6 +499,7 @@ void Scene::addParticles(int N, float y, float r, bool randomize_y) {
 		particles.emplace_back(Vec3d(x, y * (1 + random_y / 200.), 0),
 				Vec3d(0, 0, 0), i, r); // no need to type the constructor!!!
 	}
+
 }
 
 float Scene::energy() {
@@ -518,18 +521,27 @@ Vec3d Scene::impulse() {
 void Scene::veloCheck() {
 
 	std::vector<float> vels(sizeof(particles));
+	std::vector<float> max_vels(sizeof(particles));
 	for (const auto &p : particles) {
 		vels.emplace_back(abs(p.getV()));
+		max_vels.emplace_back(p.maxVelocity());
 	}
-	float domMaxVel = *std::max_element(vels.begin(), vels.end());
+	float domainActualMaxVel = *std::max_element(vels.begin(), vels.end());
+	float domainTheoreticalMaxVel = *std::max_element(max_vels.begin(), max_vels.end());
 
 	std::cout << "timeStepLimit: " << particles[0].timeStepLimit() << "\t"
-			<< "domMaxVel: " << domMaxVel << "\t"
+			<< "domMaxVel: " << domainActualMaxVel << "\t"
 			<< "maxV: " << particles[0].maxVelocity() << "\t"
 			<< "terminalV: " << particles[0].terminalVelocity() << "\t"
 			<< "maxFreeFallV: " << particles[0].maxFreeFallVelocity() << "\t"
 			<< "v: " << abs(particles[0].getV())
 			<< std::endl << std::flush;
+
+	if ( domainActualMaxVel > domainTheoreticalMaxVel ) {
+		std::cout << "Largest particle velocity: " << domainActualMaxVel
+				<< "is higher than theoretical: " << domainTheoreticalMaxVel << std::endl;
+	}
+
 }
 
 void Scene::setRunning() {

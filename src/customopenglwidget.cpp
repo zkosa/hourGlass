@@ -26,16 +26,20 @@ void CustomOpenGLWidget::paintGL() {
 		scene->timer.start();
 		scene->populateCells();
 		scene->advance();
+		//std::cout << "before collision..." << std::endl;
 		//scene->veloCheck();
 		//scene->resolveConstraintsCells(5);
 		//m_scene->collide_boundaries();
 		scene->collideWithBoundariesCells();
 		scene->populateCells();
 		scene->collideParticlesCells();
+		//std::cout << "after collision..." << std::endl;
+		//scene->veloCheck();
 		scene->timer.stop();
 		scene->addToDuration(scene->timer.milliSeconds());
 		std::cout << scene->timer.milliSeconds() << "ms" << std::endl
 				<< std::flush;
+
 	} else {
 		scene->drawCells();
 	}

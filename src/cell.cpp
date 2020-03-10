@@ -124,6 +124,11 @@ void Cell::addParticle(const Particle &p) {
 	particle_IDs.emplace_back(p.getID());
 }
 
+void Cell::size() const {
+	std::cout << "Size of cell object: " << sizeof(*this) << std::endl;
+}
+
+
 void Cell::draw2D() {
 	glBegin(GL_LINE_LOOP);
 //	glEnable( GL_BLEND ); // alpha seems to have no effect

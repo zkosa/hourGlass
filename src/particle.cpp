@@ -237,22 +237,22 @@ void Particle::size() const {
 	std::cout << "Size of particle object: " << sizeof(*this) << std::endl;
 }
 
-float Particle::terminalVelocity() {
+float Particle::terminalVelocity() const {
 	return std::sqrt(2 * mass() * abs(gravity) / CdA() / density_medium);
 }
 
-float Particle::maxFreeFallVelocity() {
+float Particle::maxFreeFallVelocity() const {
 	// domain height along the gravity vector:
 	float h = abs(scene->getBoundingBox().diagonal() * norm(gravity));
 	// drag is not considered
 	return std::sqrt(2 * abs(gravity) * h);
 }
 
-float Particle::maxVelocity() {
+float Particle::maxVelocity() const {
 	return std::min(terminalVelocity(), maxFreeFallVelocity());
 }
 
-float Particle::timeStepLimit() {
+float Particle::timeStepLimit() const {
 	// the traveled distance during one time step is a radius length:
 	return radius / maxVelocity();
 }

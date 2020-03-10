@@ -60,6 +60,7 @@ public:
 	bool contains(const Boundary&);
 	void addParticle(const Particle&);
 
+	void size() const;
 	void draw2D();
 
 	const std::vector<int>& getBoundaryIDsAxisSymmetric() const {
