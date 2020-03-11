@@ -308,7 +308,7 @@ void Scene::createCells() {
 
 	float dx = bounding_box.diagonal().x / Nx;
 	float dy = bounding_box.diagonal().y / Ny;
-	float dz = bounding_box.diagonal().z / Nz;
+	float dz = 0.0f; //dy; // bounding_box.diagonal().z / Nz;// 2D: keep the third dimension small !!!
 
 	Cell::setDX(Vec3d(dx, dy, dz));
 
@@ -321,15 +321,11 @@ void Scene::createCells() {
 	for (int i = 0; i < Nx; ++i) {
 		for (int j = 0; j < Ny + extra_layers_on_top; ++j) {
 			for (int k = 0; k < Nz; ++k) {
-				cell_center.x = (corner1 * Vec3d::i) + dx * (i + 0.5);
-				cell_center.y = (corner1 * Vec3d::j) + dy * (j + 0.5);
-				cell_center.z = (corner1 * Vec3d::k) + dy * (k + 0.5); // 2D: keep the third dimension small !!!
-						/*
-						((corner1 * Vec3d::i) + dx * (i + 0.5)) * Vec3d::i +
-						((corner1 * Vec3d::j) + dy * (j + 0.5)) * Vec3d::j +
-						((corner1 * Vec3d::k) + dy * (k + 0.5)) * Vec3d::k  // 2D: keep the third dimension small !!!
-						);*/
-				cells.emplace_back( cell_center );
+				cell_center.x = corner1.x + dx * (i + 0.5);
+				cell_center.y = corner1.y + dy * (j + 0.5);
+				cell_center.z = 0.0; //corner1.z + dz * (k + 0.5);  // 2D workaround
+
+				cells.emplace_back(cell_center);
 			}
 		}
 	}

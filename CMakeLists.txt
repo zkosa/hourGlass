@@ -24,11 +24,12 @@ find_package(Qt5 REQUIRED Core Gui Widgets)
 
 file(GLOB SOURCES "src/*.cpp") # new files are read only after modifying this file?
 file(GLOB HEADERS "include/*.h")
+file(GLOB MOC_HEADERS "include/mainwindow.h")
 set(UI "src/mainwindow.ui") # ui must be placed alongside the cpp file!
 
 include_directories("include")
 
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${UI}) # are the headers needed?
+add_executable(${PROJECT_NAME} ${SOURCES} ${MOC_HEADERS} ${UI}) # the MOC headers are needed
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${OPENGL_INCLUDE_DIR})
 set_target_properties(${PROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 
@@ -62,12 +63,22 @@ add_executable(cell-test ${SOURCES})
 target_include_directories(cell-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 target_link_libraries(cell-test ${Boost_LIBRARIES})
 
+
+# scene-test
+file(GLOB SOURCES "test/scene-test.cpp" "src/scene.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp")
+add_executable(scene-test ${SOURCES} ${MOC_HEADERS} ${UI})
+target_include_directories(scene-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
+set_target_properties(scene-test PROPERTIES AUTOMOC TRUE)
+target_link_libraries(scene-test ${Boost_LIBRARIES})
+
 if (UNIX)
     target_link_libraries(particle-test Qt5::Core Qt5::Gui Qt5::Widgets GL) # OpenMP::OpenMP_CXX
     target_link_libraries(cell-test Qt5::Core Qt5::Gui Qt5::Widgets GL) # OpenMP::OpenMP_CXX
+    target_link_libraries(scene-test Qt5::Core Qt5::Gui Qt5::Widgets GL) # OpenMP::OpenMP_CXX
 elseif (WIN32)
     target_link_libraries(particle-test Qt5::Core Qt5::Gui Qt5::Widgets opengl32) # OpenMP::OpenMP_CXX
     target_link_libraries(cell-test Qt5::Core Qt5::Gui Qt5::Widgets opengl32) # OpenMP::OpenMP_CXX
+    target_link_libraries(scene-test Qt5::Core Qt5::Gui Qt5::Widgets opengl32) # OpenMP::OpenMP_CXX
 else ()
 	message("Unsupported operating system")
 endif ()
