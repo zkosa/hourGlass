@@ -310,24 +310,26 @@ void Scene::createCells() {
 	float dy = bounding_box.diagonal().y / Ny;
 	float dz = bounding_box.diagonal().z / Nz;
 
+	Cell::setDX(Vec3d(dx, dy, dz));
+
 	// add extra cell layer on top for the particles which go beyond y=1
 	// during e.g. the initial geometric constraint resolution
 	int extra_layers_on_top = 1;
 
+	Vec3d corner1 = bounding_box.getCorner1();
+	Vec3d cell_center;
 	for (int i = 0; i < Nx; ++i) {
 		for (int j = 0; j < Ny + extra_layers_on_top; ++j) {
 			for (int k = 0; k < Nz; ++k) {
-				cells.emplace_back(
-						Cell(
-								(bounding_box.getCorner1() * Vec3d::i)
-										* Vec3d::i + dx * (i + 0.5) * Vec3d::i
-										+ (bounding_box.getCorner1() * Vec3d::j)
-												* Vec3d::j
-										+ dy * (j + 0.5) * Vec3d::j
-										+ (bounding_box.getCorner1() * Vec3d::k)
-												* Vec3d::k
-										+ dz * (k + 0.5) * Vec3d::k,
-								dx * Vec3d::i + dy * Vec3d::j + dy * Vec3d::k));
+				cell_center.x = (corner1 * Vec3d::i) + dx * (i + 0.5);
+				cell_center.y = (corner1 * Vec3d::j) + dy * (j + 0.5);
+				cell_center.z = (corner1 * Vec3d::k) + dy * (k + 0.5); // 2D: keep the third dimension small !!!
+						/*
+						((corner1 * Vec3d::i) + dx * (i + 0.5)) * Vec3d::i +
+						((corner1 * Vec3d::j) + dy * (j + 0.5)) * Vec3d::j +
+						((corner1 * Vec3d::k) + dy * (k + 0.5)) * Vec3d::k  // 2D: keep the third dimension small !!!
+						);*/
+				cells.emplace_back( cell_center );
 			}
 		}
 	}

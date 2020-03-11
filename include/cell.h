@@ -33,20 +33,18 @@ class Cell {
 	Bounds bounds_for_display; // scaled for avoiding overlap of edges during display
 
 	Vec3d center = { 0, 0, 0 };
-	Vec3d dX; // cell edge sizes
+	static Vec3d dX; // cell edge sizes
 
 	std::vector<int> particle_IDs; // TODO reserve the expected size
 	std::vector<int> boundary_IDs_planar;
 	std::vector<int> boundary_IDs_axis_symmetric;
-
-	float half_diagonal; // center to corner distance
 
 	bool cell_with_boundary = false;
 	bool cell_is_external = false;
 
 public:
 	//Cell() {};
-	Cell(const Vec3d &center, const Vec3d &dX);
+	Cell(const Vec3d &center);
 
 	static void connectScene(Scene *scene) {
 		Cell::scene = scene;
@@ -81,9 +79,6 @@ public:
 
 	pointData getAllPoints() const;
 
-	float getHalfDiagonal() const {
-		return half_diagonal;
-	}
 	const std::vector<int>& getParticleIDs() const {
 		return particle_IDs;
 	}
@@ -124,6 +119,9 @@ public:
 	static int getNz() {
 		return Nz;
 	}
+	static Vec3d getDX() {
+		return Cell::dX;
+	}
 	static void setNx(int Nx) {
 		Cell::Nx = Nx;
 	}
@@ -132,6 +130,12 @@ public:
 	}
 	static void setNz(int Ny) {
 		Cell::Nz = Ny;
+	}
+	static void setDX(Vec3d dX) {
+		Cell::dX = dX;
+	}
+	static float getHalfDiagonal() {
+		return 	abs(0.5 * Cell::dX);
 	}
 
 	static Vec3d average(const pointData& pd);

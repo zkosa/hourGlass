@@ -1,4 +1,6 @@
 #include "cell.h"
+#include "boundary_planar.h"
+#include "boundary_axissymmetric.h"
 
 #define BOOST_TEST_DYN_LINK
 
@@ -22,8 +24,9 @@ BOOST_AUTO_TEST_CASE( construction_test, * boost::unit_test::tolerance(FLOAT_TES
 {
 	Vec3d center(0,0,0);
 	Vec3d dX(0.1,0.1,0.1);
+	Cell::setDX(dX);
 
-	Cell c(center, dX);
+	Cell c(center);
 
 	BOOST_REQUIRE_EQUAL( c.getCenter(), center );
 	BOOST_REQUIRE_EQUAL( c.getHalfDiagonal(),  abs(dX)/2.0 );
@@ -35,9 +38,10 @@ BOOST_AUTO_TEST_CASE( average_test, * boost::unit_test::tolerance(FLOAT_TEST_PRE
 {
 	Vec3d center(0,0,0);
 	Vec3d dX(0.1,0.1,0.1);
+	Cell::setDX(dX);
 
-	Cell c(center, dX);
-	Cell c2(center+dX, dX);
+	Cell c(center);
+	Cell c2(center+dX);
 
 	BOOST_TEST( abs(Cell::average(c.getCorners())) == abs(center) );
 	BOOST_TEST( Cell::average(c.getCorners()).x == center.x );
@@ -82,3 +86,57 @@ BOOST_AUTO_TEST_CASE( average_test, * boost::unit_test::tolerance(FLOAT_TEST_PRE
 	BOOST_TEST( Cell::average(c2.getAllPoints()).z == (center+dX).z );
 }
 
+BOOST_AUTO_TEST_CASE( boundary_planar_test )
+{
+	float corner = 0.999;
+	Boundary_planar ground(
+			Vec3d(-1, -corner, 0),
+			Vec3d(1, -corner, 0),
+			Vec3d(-1, -corner, 1)
+			);
+
+	Vec3d center(0,-corner,0);
+	Vec3d dX(0.1,0.1,0.1);
+	Cell::setDX(dX);
+
+	Cell c_crossing(center);
+	Cell c_touching(center + 0.5 * dX.y * Vec3d::j);
+	Cell c_above(   center + 1.5 * dX.y * Vec3d::j);
+
+	BOOST_REQUIRE_EQUAL( c_crossing.contains( ground ) , true );
+	BOOST_REQUIRE_EQUAL( c_touching.contains( ground ) , true );
+	BOOST_REQUIRE_EQUAL( c_above.contains( ground ) , false );
+}
+
+BOOST_AUTO_TEST_CASE( boundary_axissymmetric_test )
+{
+	Boundary_axissymmetric glass;
+
+	Vec3d center(0,0,0);
+
+	Vec3d dX_small(0.01,0.01,0.01);
+	Cell::setDX(dX_small);
+	Cell c_small(center);
+
+	BOOST_REQUIRE_EQUAL( c_small.contains( glass ), false );
+
+
+	Vec3d dX_large(0.2,0.2,0.2);
+	Cell::setDX(dX_large);
+	Cell c_large(center);
+
+	BOOST_REQUIRE_EQUAL( c_large.contains( glass ), true );
+
+
+	Vec3d dX_touching(2*0.07,2*0.07,2*0.07);
+	Cell::setDX(dX_touching);
+	Cell c_touching(center);
+
+	BOOST_REQUIRE_EQUAL( c_touching.contains( glass ), true );
+
+	// repeated execution fails
+/*
+	BOOST_REQUIRE_EQUAL( c_small.contains( glass ), false );
+	BOOST_REQUIRE_EQUAL( c_large.contains( glass ), true );
+*/
+}

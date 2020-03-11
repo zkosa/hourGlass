@@ -6,6 +6,7 @@
 //#include <omp.h>
 #include <QOpenGLWidget>
 
+// static members:
 int Cell::Nx = 10;
 
 int Cell::Ny = Cell::Nx;
@@ -14,7 +15,12 @@ int Cell::Nz = 1; // 2D
 
 Scene *Cell::scene = nullptr;
 
-Cell::Cell(const Vec3d &center, const Vec3d &_dX) : dX(_dX) {
+Vec3d Cell::dX{0,0,0}; // 2D
+
+// constructor
+Cell::Cell(const Vec3d &center) {
+
+	Vec3d dX = Cell::dX;
 
 	bounds.x1 = (center - dX / 2.) * Vec3d::i;
 	bounds.y1 = (center - dX / 2.) * Vec3d::j;
@@ -32,8 +38,6 @@ Cell::Cell(const Vec3d &center, const Vec3d &_dX) : dX(_dX) {
 	bounds_for_display.x2 = (center + factor * dX / 2.) * Vec3d::i;
 	bounds_for_display.y2 = (center + factor * dX / 2.) * Vec3d::j;
 	bounds_for_display.z2 = (center + factor * dX / 2.) * Vec3d::k;
-
-	half_diagonal = abs(0.5 * dX);
 
 	this->center = center;
 
@@ -145,7 +149,7 @@ bool Cell::contains(const Particle &p) {
 }
 
 bool Cell::contains(const Boundary &b) {
-	if (b.distance(center) <= half_diagonal) {
+	if (b.distance(center) <= getHalfDiagonal()) {
 		return true;
 	} else {
 		return false;

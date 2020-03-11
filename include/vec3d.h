@@ -12,9 +12,10 @@ struct Vec3d {
 	float y;
 	float z;
 
+	Vec3d() : x(0.0f), y(0.0f), z(0.0f) {}
+
 	Vec3d(float x, float y, float z) :
-			x(x), y(y), z(z) {
-	}
+			x(x), y(y), z(z) {}
 
 	std::ostream& print() const;
 	bool large() const;

@@ -57,7 +57,7 @@ target_include_directories(particle-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Bo
 target_link_libraries(particle-test ${Boost_LIBRARIES})
 
 # cell-test
-file(GLOB SOURCES "test/cell-test.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp")
+file(GLOB SOURCES "test/cell-test.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp")
 add_executable(cell-test ${SOURCES})
 target_include_directories(cell-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 target_link_libraries(cell-test ${Boost_LIBRARIES})
