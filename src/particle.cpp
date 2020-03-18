@@ -1,7 +1,6 @@
 #include <iostream>
 #include "particle.h"
-#include "boundary_planar.h"
-#include "boundary_axissymmetric.h"
+#include "boundary.h"
 #include "scene.h"
 #include <QOpenGLWidget>
 

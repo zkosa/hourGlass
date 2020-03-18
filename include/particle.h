@@ -5,8 +5,6 @@
 #include "constants.h"
 
 class Boundary;
-class Boundary_planar;
-class Boundary_axissymmetric;
 class Scene;
 
 class Particle {
@@ -20,8 +18,8 @@ private:
 	static Vec3d force_field;
 	static Scene *scene;
 
-	static constexpr float density = 2700.; // kg/m3
-	static constexpr float density_medium = 1.; // air kg/m3
+	static constexpr float density = 2700.0; // kg/m3
+	static constexpr float density_medium = 1.0; // air kg/m3
 	static constexpr float restitution_coeff = 0.5;
 	static float drag_coefficient; // non-const can not be initialized in the declaration
 	static float uniform_radius;

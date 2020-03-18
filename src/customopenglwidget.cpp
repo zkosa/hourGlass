@@ -1,3 +1,4 @@
+#include <iostream>
 #include "customopenglwidget.h"
 #include "scene.h"
 #include "mainwindow.h"
@@ -21,7 +22,7 @@ void CustomOpenGLWidget::initializeGL() {
 
 void CustomOpenGLWidget::paintGL() {
 
-	//m_scene->resolve_constraints_on_init_cells(5);
+	//scene->resolve_constraints_on_init_cells(5);
 	if (scene->isRunning()) {
 		scene->timer.start();
 		scene->populateCells();
@@ -29,7 +30,7 @@ void CustomOpenGLWidget::paintGL() {
 		//std::cout << "before collision..." << std::endl;
 		//scene->veloCheck();
 		//scene->resolveConstraintsCells(5);
-		//m_scene->collide_boundaries();
+		//scene->collide_boundaries();
 		scene->collideWithBoundariesCells();
 		scene->populateCells();
 		scene->collideParticlesCells();
@@ -41,6 +42,7 @@ void CustomOpenGLWidget::paintGL() {
 				<< std::flush;
 
 	} else {
+		// draw cells only when simulation is stopped/paused
 		scene->drawCells();
 	}
 

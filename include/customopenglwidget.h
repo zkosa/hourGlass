@@ -1,9 +1,7 @@
 #ifndef CUSTOMOPENGLWIDGET_H
 #define CUSTOMOPENGLWIDGET_H
 
-#include <iostream>
 #include <QOpenGLWidget>
-#include <QApplication>
 
 class Scene;
 class MainWindow;

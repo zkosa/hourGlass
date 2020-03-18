@@ -2,9 +2,8 @@
 #define MINIMUM_H_
 
 #include <functional>
-#include "vec3d.h"
-#include "vecaxisym.h"
 #include "boundary_axissymmetric.h"
+#include "vecaxisym.h"
 
 class Minimum {
 	// std::function enables passing the functions to other objects

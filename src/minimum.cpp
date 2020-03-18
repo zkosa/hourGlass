@@ -1,5 +1,4 @@
 #include "minimum.h"
-#include <cmath>
 
 void Minimum::search(float starting_value) {
 	float X = starting_value;

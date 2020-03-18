@@ -1,8 +1,6 @@
+#include <iostream>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <iostream>
-
-#include "timer.h"
 #include "customopenglwidget.h"
 
 MainWindow::MainWindow(QWidget *parent) :

@@ -35,7 +35,7 @@ class Cell {
 	Vec3d center = { 0, 0, 0 };
 	static Vec3d dX; // cell edge sizes
 
-	std::vector<int> particle_IDs; // TODO reserve the expected size
+	std::vector<int> particle_IDs;
 	std::vector<int> boundary_IDs_planar;
 	std::vector<int> boundary_IDs_axis_symmetric;
 

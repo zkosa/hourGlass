@@ -24,10 +24,10 @@ public:
 			stop();
 		}
 		return std::chrono::duration_cast<std::chrono::microseconds>(
-				end - begin).count() / 1000.;
+				end - begin).count() / 1000.0;
 	}
 	float seconds() {
-		return milliSeconds() / 1000.;
+		return milliSeconds() / 1000.0;
 	}
 };
 
