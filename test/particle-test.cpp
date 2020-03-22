@@ -3,6 +3,8 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE particle-TEST
 #include <boost/test/unit_test.hpp>
+#include <boost/test/data/test_case.hpp>
+#include <boost/array.hpp>
 
 
 BOOST_AUTO_TEST_CASE( construction_test )
@@ -128,7 +130,9 @@ BOOST_AUTO_TEST_CASE( no_drag_fall_test )
 
 }
 
-BOOST_AUTO_TEST_CASE( terminal_velocity_test )
+static const boost::array< float, 6 > Cd_data{0.01, 0.1, 0.5, 5.0, 25.0, 100.0}; // it would fail with 0, because there the terminal velocity is infinite
+
+BOOST_DATA_TEST_CASE( terminal_velocity_test, Cd_data, Cd )
 {
 	float time_step = 0.001; // [s]
 	float r = 0.005;
@@ -137,7 +141,7 @@ BOOST_AUTO_TEST_CASE( terminal_velocity_test )
 	Vec3d vel(0,0,0);
 
 	Particle p(pos, vel, r);
-	Particle::setCd(0.5); // although it is the default, but needed, because in the previous test it was set to 0
+	Particle::setCd(Cd); // although it is the default, but needed, because in the previous test it was set to 0
 
 	Vec3d velo_old;
 	float calculated_terminal_velocity = p.terminalVelocity();
@@ -151,7 +155,7 @@ BOOST_AUTO_TEST_CASE( terminal_velocity_test )
 	float simulated_terminal_velocity = abs(p.getV());
 
 	//std::cout << calculated_terminal_velocity << "  " << simulated_terminal_velocity << std::endl;
-	float tolerance = 0.01; // [%]
+	float tolerance = 0.1; // [%]
 	BOOST_REQUIRE_CLOSE( calculated_terminal_velocity, simulated_terminal_velocity, tolerance );
 
 }
