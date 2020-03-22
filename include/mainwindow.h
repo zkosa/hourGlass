@@ -17,12 +17,6 @@ public:
 
 	void updateGUIcontrols();
 	void updateLogs();
-	int getNumberOfParticles() {
-		return number_of_particles;
-	}
-	void setNumberOfParticles(float N) {
-		number_of_particles = N;
-	}
 	void wrapStopButtonClicked() {
 		on_stopButton_clicked();
 	}
@@ -74,7 +68,6 @@ private:
 	Ui::MainWindow *ui;
 
 	Scene scene;
-	int number_of_particles;
 	float radius;
 
 	// button texts:

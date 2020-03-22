@@ -4,7 +4,7 @@
 #include "customopenglwidget.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-		QMainWindow(parent), ui(new Ui::MainWindow), number_of_particles(5000) {
+		QMainWindow(parent), ui(new Ui::MainWindow) {
 	ui->setupUi(this);
 	// connecting the window to the simulation scene:
 	scene.connectViewer(this);
@@ -89,12 +89,18 @@ void MainWindow::on_geometryComboBox_currentIndexChanged(int geo) {
 }
 
 void MainWindow::on_Particle_number_slider_valueChanged(int particle_number_) {
-	number_of_particles = particle_number_;
-	ui->Particle_number_value->setNum(number_of_particles);
+
+	scene.setNumberOfParticles(particle_number_);
+	ui->Particle_number_value->setNum(scene.getNumberOfParticles());
 
 	scene.clearParticles();
-	scene.addParticles(number_of_particles);
+	scene.addParticles(scene.getNumberOfParticles());
 	scene.populateCells();  // scene.resolve_constraints_on_init_cells(5);
+
+	if ( scene.getGeometry() == test ) {
+		scene.setVeloThreeParticlesTest();
+		disableParticleNumberControl();
+	}
 }
 
 void MainWindow::on_Particle_diameter_slider_valueChanged(
@@ -193,8 +199,8 @@ void MainWindow::updateGUIcontrols() {
 	ui->cells_Nz_SpinBox->setValue(Cell::getNz());
 
 	// for sliders both the slider positions and the corresponding display labels:
-	ui->Particle_number_slider->setValue(number_of_particles);
-	ui->Particle_number_value->setText(QString::number(number_of_particles));
+	ui->Particle_number_slider->setValue(scene.getNumberOfParticles());
+	ui->Particle_number_value->setText(QString::number(scene.getNumberOfParticles()));
 
 	ui->Particle_diameter_slider->setValue(
 			Particle::getUniformRadius() * 2. * 1000.);

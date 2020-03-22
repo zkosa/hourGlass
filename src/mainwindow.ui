@@ -161,6 +161,11 @@
            <string>Box</string>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Test</string>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>

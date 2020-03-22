@@ -13,7 +13,7 @@
 class MainWindow;
 
 enum Geometry {
-	hourglass = 0, hourglass_with_removable_orifice = 1, box = 2
+	hourglass = 0, hourglass_with_removable_orifice = 1, box = 2, test = 3
 };
 
 class Scene {
@@ -27,8 +27,9 @@ class Scene {
 	std::vector<Cell> cells;
 
 	Geometry geometry = hourglass;
-	std::string geometry_names[3] = { "hourglass",
-			"hourglass_with_removable_orifice", "box" };
+	std::string geometry_names[4] = { "hourglass",
+			"hourglass_with_removable_orifice", "box", "test" };
+	int number_of_particles = 0; // it is not a "status", but a "request"
 
 	bool started = false;
 	bool running = false;
@@ -41,12 +42,23 @@ class Scene {
 	float duration = 0.;
 
 	struct Defaults {
-		float time_step = 0.001;
+		float time_step = 0.001; // [s]
 		int Nx = 10, Ny = Nx, Nz = 1;
 		Geometry geometry = hourglass;
 		int number_of_particles = 5000;
 		float particle_diameter = 0.005; // [m]
 		float Cd = 0.5;
+
+		void print() const {
+			std::cout << "time_step: " << time_step << " [s]" << std::endl;
+			std::cout << "Nx: " << Nx << std::endl;
+			std::cout << "Ny: " << Ny << std::endl;
+			std::cout << "Nz: " << Nz << std::endl;
+			std::cout << "geometry: " << geometry << std::endl;
+			std::cout << "number_of_particles: " << number_of_particles << std::endl;
+			std::cout << "particle_diameter: " << particle_diameter << " [m]" << std::endl;
+			std::cout << "Cd: " << Cd << std::endl;
+		}
 	};
 
 	Defaults defaults;
@@ -62,6 +74,7 @@ public:
 	void resolveConstraintsOnInitCells(int sweeps = 20); // running the sweeps cell-wise
 	void resolveConstraintsCells(int max_sweeps = 500); // do while there is collision
 	void draw();
+	void calculatePhysics();
 	void advance();
 	void collideWithBoundaries();
 	void collideWithBoundariesCells();
@@ -100,6 +113,7 @@ public:
 
 	void createGeometry(int);
 	void createGeometry(Geometry);
+	void setVeloThreeParticlesTest();
 	void removeTemporaryGeo();
 	bool hasTemporaryGeo() const;
 	void createCells();
@@ -141,6 +155,9 @@ public:
 	void setGeometry(Geometry geometry) {
 		this->geometry = geometry;
 	}
+	void setNumberOfParticles(int number_of_particles) {
+		this->number_of_particles = number_of_particles;
+	}
 	void setBenchmarkMode(bool benchmark_mode) {
 		this->benchmark_mode = benchmark_mode;
 	}
@@ -175,7 +192,12 @@ public:
 	const BoundingBox& getBoundingBox() {
 		return bounding_box;
 	}
-
+	const Defaults& getDefaults() {
+		return defaults;
+	}
+	int getNumberOfParticles() const {
+		return number_of_particles;
+	}
 	void applyDefaults();
 
 };

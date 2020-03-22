@@ -44,8 +44,42 @@ void Scene::createGeometry(Geometry geometry) {
 		boundaries_pl.push_back(side_wall_left);
 		boundaries_pl.push_back(side_wall_right);
 
+	} else if (geometry == test) {
+		Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, -corner, 0),
+						Vec3d(-1, -corner, 1));
+		Boundary_planar side_wall_left(Vec3d(-corner, -corner, 0),
+				Vec3d(-corner, corner, 0), Vec3d(-corner, -corner, -1));
+		Boundary_planar side_wall_right(Vec3d(corner, -corner, 0),
+				Vec3d(corner, corner, 0), Vec3d(corner, -corner, 1));
+
+		boundaries_pl.push_back(ground);
+		boundaries_pl.push_back(side_wall_left);
+		boundaries_pl.push_back(side_wall_right);
+
+		clearParticles();
+		setNumberOfParticles(3);
+		// addParticles(getNumberOfParticles()); // it will be called implicitly via the
+		//initializeTestThreeParticles(); // do not call it here, because it will be overridden by the add particles in MainWindow::on_Particle_number_slider_valueChanged
+
 	}
 	createCells();
+}
+
+void Scene::setVeloThreeParticlesTest() {
+	// check, whether the context is appropriate
+	if( geometry == test && getNumberOfParticles() == 3 ) {
+		int particle_diameter_mm = 50;
+		float r = particle_diameter_mm / 1000. / 2.; // int [mm] --> float [m], diameter --> radius
+		Particle::setUniformRadius(r);
+		float vx = 10.0f;
+		// left particle:
+		particles[0].setV(Vec3d(vx, 0.0f, 0.0f));
+		// right particle:
+		particles[2].setV(Vec3d(-vx, 0.0f, 0.0f));
+	} else {
+		std::string message = "wrong call to initializeTestThreeParticles()";
+		std::cout << message << std::endl;
+	}
 }
 
 void Scene::removeTemporaryGeo() {
@@ -204,6 +238,24 @@ void Scene::draw() {
 	}
 }
 
+void Scene::calculatePhysics() {
+	timer.start();
+	populateCells();
+	advance();
+	//std::cout << "before collision..." << std::endl;
+	//veloCheck();
+	//resolveConstraintsCells(5);
+	//collide_boundaries();
+	collideWithBoundariesCells();
+	populateCells();
+	collideParticlesCells();
+	//std::cout << "after collision..." << std::endl;
+	//veloCheck();
+	timer.stop();
+	addToDuration(timer.milliSeconds());
+	std::cout << timer.milliSeconds() << "ms" << std::endl << std::flush;
+}
+
 void Scene::advance() {
 	if (benchmark_mode && time >= benchmark_simulation_time) { // in benchmark mode the simulation time is fixed
 		viewer->wrapStopButtonClicked();
@@ -316,6 +368,7 @@ void Scene::createCells() {
 	// during e.g. the initial geometric constraint resolution
 	int extra_layers_on_top = 1;
 
+	std::cout << "Creating cells..." << std::endl;
 	Vec3d corner1 = bounding_box.getCorner1();
 	Vec3d cell_center;
 	for (int i = 0; i < Nx; ++i) {
@@ -430,7 +483,7 @@ void Scene::markExternalCells() {
 		markExternal(c);
 	}
 
-	std::cout << "Number of cells after marking:" << cells.size() << std::endl;
+	std::cout << "Number of cells after marking: " << cells.size() << std::endl;
 }
 
 void Scene::removeExternalCells() {
@@ -440,7 +493,7 @@ void Scene::removeExternalCells() {
 		return c.isExternal();
 	}), cells.end());
 
-	std::cout << "Number of cells after removal:" << cells.size() << std::endl;
+	std::cout << "Number of cells after removal: " << cells.size() << std::endl;
 }
 
 void Scene::drawCells() {
@@ -465,8 +518,12 @@ void Scene::clearCells() {
 }
 
 void Scene::deleteCells() {
-	std::cout << "Deleting all cells..." << std::endl;
-	cells.clear();
+	if (cells.size() > 0) {
+		std::cout << "Deleting all cells..." << std::endl;
+		cells.clear();
+	} else {
+		std::cout << "No cells to delete." << std::endl;
+	}
 }
 
 void Scene::clearParticles() {
@@ -475,6 +532,10 @@ void Scene::clearParticles() {
 }
 
 void Scene::addParticles(int N, float y, float r, bool randomize_y) {
+
+	if (geometry == test) {
+		std::cout << "adding particles in test mode..." << std::endl;
+	}
 
 	int number_of_distinct_random = 500;
 	std::random_device rd; // obtain a random number from hardware
@@ -581,7 +642,7 @@ void Scene::reset() {
 	applyDefaults();
 
 	createGeometry(geometry);
-	addParticles(viewer->getNumberOfParticles());
+	addParticles(getNumberOfParticles());
 	createCells();
 	populateCells();
 }
@@ -592,7 +653,7 @@ void Scene::applyDefaults() {
 	Cell::setNx(defaults.Nx);
 	Cell::setNy(defaults.Ny);
 	Cell::setNz(defaults.Nz);
-	viewer->setNumberOfParticles(defaults.number_of_particles);
+	setNumberOfParticles(defaults.number_of_particles);
 	Particle::setUniformRadius(0.5 * defaults.particle_diameter);
 	Particle::setCd(defaults.Cd);
 }

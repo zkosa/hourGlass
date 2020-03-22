@@ -24,30 +24,14 @@ void CustomOpenGLWidget::paintGL() {
 
 	//scene->resolve_constraints_on_init_cells(5);
 	if (scene->isRunning()) {
-		scene->timer.start();
-		scene->populateCells();
-		scene->advance();
-		//std::cout << "before collision..." << std::endl;
-		//scene->veloCheck();
-		//scene->resolveConstraintsCells(5);
-		//scene->collide_boundaries();
-		scene->collideWithBoundariesCells();
-		scene->populateCells();
-		scene->collideParticlesCells();
-		//std::cout << "after collision..." << std::endl;
-		//scene->veloCheck();
-		scene->timer.stop();
-		scene->addToDuration(scene->timer.milliSeconds());
-		std::cout << scene->timer.milliSeconds() << "ms" << std::endl
-				<< std::flush;
-
+		scene->calculatePhysics();
 	} else {
 		// draw cells only when simulation is stopped/paused
 		scene->drawCells();
 	}
 
 	window->updateLogs();
-	scene->draw();
+	scene->draw(); // draw all other than cells
 	update();
 }
 
