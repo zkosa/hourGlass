@@ -56,7 +56,8 @@ BOOST_AUTO_TEST_CASE( scene_add_particles_test )
 	Particle::connectScene(scene_ptr);
 	Cell::connectScene(scene_ptr);
 
-	scene.applyDefaults(); // crashes
+	scene.applyDefaults();
+	Particle::setCd(0.0f); // easier checking without drag
 	scene.setGeometry(test);
 	scene.createGeometry(test);
 	scene.setNumberOfParticles(3);
