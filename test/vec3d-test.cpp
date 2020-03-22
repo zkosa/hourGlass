@@ -1,7 +1,6 @@
 #include "vec3d.h"
 
 #define BOOST_TEST_DYN_LINK
-
 #define BOOST_TEST_MODULE vec3d-TEST
 #include <boost/test/unit_test.hpp>
 
