@@ -237,13 +237,14 @@ void Particle::size() const {
 }
 
 float Particle::terminalVelocity() const {
+	// equilibrium velocity, where drag cancels the gravitation force
 	return std::sqrt(2 * mass() * abs(gravity) / CdA() / density_medium);
 }
 
 float Particle::maxFreeFallVelocity() const {
+	// The velocity which can be reached by gravitational acceleration within the domain.
 	// domain height along the gravity vector:
 	float h = abs(scene->getBoundingBox().diagonal() * norm(gravity));
-	// drag is not considered
 	return std::sqrt(2 * abs(gravity) * h);
 }
 

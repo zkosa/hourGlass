@@ -125,4 +125,33 @@ BOOST_AUTO_TEST_CASE( no_drag_fall_test )
 
 	float tolerance = 0.001; // [%]
 	BOOST_REQUIRE_CLOSE( calculated_time, elapsed_time, tolerance );
+
+}
+
+BOOST_AUTO_TEST_CASE( terminal_velocity_test )
+{
+	float time_step = 0.001; // [s]
+	float r = 0.005;
+	float height = 1;
+	Vec3d pos(0,height,0);
+	Vec3d vel(0,0,0);
+
+	Particle p(pos, vel, r);
+	Particle::setCd(0.5); // although it is the default, but needed, because in the previous test it was set to 0
+
+	Vec3d velo_old;
+	float calculated_terminal_velocity = p.terminalVelocity();
+	do {
+		velo_old = p.getV();
+		p.advance(time_step);
+		//p.getV().print();
+	}
+	while ( abs(p.getV() - velo_old) > SMALL ); // reaching equilibrium
+
+	float simulated_terminal_velocity = abs(p.getV());
+
+	//std::cout << calculated_terminal_velocity << "  " << simulated_terminal_velocity << std::endl;
+	float tolerance = 0.01; // [%]
+	BOOST_REQUIRE_CLOSE( calculated_terminal_velocity, simulated_terminal_velocity, tolerance );
+
 }
