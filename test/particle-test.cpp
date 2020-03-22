@@ -1,5 +1,5 @@
 #include "particle.h"
-
+#define BOOST_TEST_TOOLS_UNDER_DEBUGGER
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE particle-TEST
 #include <boost/test/unit_test.hpp>
@@ -102,22 +102,27 @@ BOOST_AUTO_TEST_CASE( collision_touching_parallel_test )
 
 }
 
-BOOST_AUTO_TEST_CASE( advance_test )
+BOOST_AUTO_TEST_CASE( no_drag_fall_test )
 {
-
-	float dt = 0.001; // [s]
+	float time_step = 0.001; // [s]
 	float r = 0.005;
-	Vec3d pos(0.5,1,0);
+	float height = 1;
+	Vec3d pos(0,height,0);
 	Vec3d vel(0,0,0);
 
 	Particle p(pos, vel, r);
+	Particle::setCd(0);
 
-	p.advance(dt);
-	p.getPos().print();
-	p.getV().print();
+	float elapsed_time = 0;
+	do {
+		p.advance(time_step);
+		elapsed_time += time_step;
+	}
+	while (p.getPos().y > 0); // particle reaching the ground, traveling 2 [m]
 
-	p.advance(dt);
-	p.getPos().print();
-	p.getV().print();
+	float simulated_height = height - p.getPos().y;
+	float calculated_time = std::sqrt(2*simulated_height/g);
 
+	float tolerance = 0.001; // [%]
+	BOOST_REQUIRE_CLOSE( calculated_time, elapsed_time, tolerance );
 }
