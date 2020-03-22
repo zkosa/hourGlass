@@ -202,10 +202,9 @@ void MainWindow::updateGUIcontrols() {
 	ui->Particle_number_slider->setValue(scene.getNumberOfParticles());
 	ui->Particle_number_value->setText(QString::number(scene.getNumberOfParticles()));
 
-	ui->Particle_diameter_slider->setValue(
-			Particle::getUniformRadius() * 2. * 1000.);
-	ui->Particle_diameter_value->setText(
-			QString::number(Particle::getUniformRadius() * 2. * 1000.) + " mm");
+	int radius_mm = std::round(Particle::getUniformRadius() * 2. * 1000.);
+	ui->Particle_diameter_slider->setValue(radius_mm);
+	ui->Particle_diameter_value->setText(QString::number(radius_mm) + " mm");
 
 	ui->Drag_coefficient_value->setText(QString::number(Particle::getCd()));
 	ui->Drag_coefficient_slider->setValue(int(Particle::getCd() * 100.)); // float internal value is transformed to int on the slider
