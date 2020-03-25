@@ -101,6 +101,33 @@ BOOST_AUTO_TEST_CASE( collision_touching_parallel_test )
 	BOOST_REQUIRE_EQUAL( p2.getV(), vel );
 }
 
+BOOST_AUTO_TEST_CASE( no_drag_first_step_test )
+{
+	float time_step = 0.001; // [s]
+	float r = 0.005;
+	float height = 1;
+	Vec3d pos(0,height,0);
+	Vec3d vel(0,0,0);
+
+	Particle p(pos, vel, r);
+	Particle::setCd(0.0);
+
+	p.advance(time_step);
+
+	Vec3d calculated_travel = 0.5 * gravity * time_step * time_step;
+	Vec3d calculated_speed = gravity * time_step;
+	Vec3d calculated_acceleration = gravity;
+
+	Vec3d simulated_travel = p.getPos() - pos;
+	Vec3d simulated_speed = p.getV();
+	Vec3d simulated_acceleration = p.getAcceleration();
+
+	float tolerance = 1e-9; // [%]
+	BOOST_REQUIRE_SMALL( abs(calculated_travel - simulated_travel), tolerance );
+	BOOST_REQUIRE_SMALL( abs(calculated_speed - simulated_speed), tolerance );
+	BOOST_REQUIRE_SMALL( abs(calculated_acceleration - simulated_acceleration), tolerance );
+}
+
 BOOST_AUTO_TEST_CASE( no_drag_fall_test )
 {
 	float time_step = 0.001; // [s]
