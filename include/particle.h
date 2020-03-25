@@ -12,6 +12,7 @@ private:
 
 	Vec3d pos { 0.0, 1.0, 0.0 };
 	Vec3d vel { 0.0, 0.0, 0.0 };
+	Vec3d acc = gravity;
 
 	int ID = -1;
 
@@ -127,6 +128,9 @@ public:
 	}
 	Vec3d getPos() const {
 		return pos;
+	}
+	Vec3d getAcceleration() {
+		return acc;
 	}
 	float terminalVelocity() const;
 	float maxFreeFallVelocity() const; // in the domain, no drag

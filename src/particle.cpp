@@ -20,13 +20,13 @@ float Particle::uniform_radius = 0.005;
 
 void Particle::advance(float dt) {
 	// velocity Verlet integration:
-	Vec3d new_pos = pos + vel * dt + force_field * (dt * dt * 0.5);
+	Vec3d new_pos = pos + vel * dt + acc * dt * dt * 0.5;
 	Vec3d new_acc = apply_forces();
-	Vec3d new_vel = vel + (force_field + new_acc) * (dt * 0.5);
+	Vec3d new_vel = vel + 0.5 * (acc + new_acc) * dt;
 
 	pos = new_pos;
 	vel = new_vel;
-	force_field = new_acc;
+	acc = new_acc;
 }
 
 float Particle::kineticEnergy() {
