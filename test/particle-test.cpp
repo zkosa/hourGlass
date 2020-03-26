@@ -27,6 +27,20 @@ BOOST_AUTO_TEST_CASE( construction_test )
 	BOOST_REQUIRE_EQUAL( p1.getV(), 2*vel );
 }
 
+BOOST_AUTO_TEST_CASE( self_collision_test )
+{
+	float r = 0.005;
+	Vec3d pos(0,0,0);
+	Vec3d vel(-1,0,0);
+
+	Particle p1(pos, vel, r);
+
+	p1.collideToParticle(p1);
+
+	BOOST_REQUIRE_EQUAL( p1.getPos(), pos );
+	BOOST_REQUIRE_EQUAL( p1.getV(), vel );
+}
+
 BOOST_AUTO_TEST_CASE( collision_touching_test )
 {
 	float r = 0.005;
