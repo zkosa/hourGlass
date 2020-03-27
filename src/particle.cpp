@@ -107,11 +107,7 @@ void Particle::collideToWall(const Boundary &wall) {
 	pos = pos + pos_corr;
 
 	// correct the velocity to conserve energy (dissipation work is not considered!)
-	if (vel * vel + 2 * gravity * pos_corr >= 0.0) {
-		vel = std::sqrt(vel * vel + 2 * gravity * pos_corr) * norm(vel);
-	} else {
-		vel = -std::sqrt(-1 * (vel * vel + 2 * gravity * pos_corr)) * norm(vel);
-	}
+	correctVelocity(pos_corr);
 
 	// revert the wall normal velocity component
 	vel = vel - (1 + Particle::restitution_coeff) * (vel * n) * n;
@@ -129,7 +125,7 @@ void Particle::collideToParticle(Particle &other) {
 	pos = pos + pos_corr;
 	other.setPos(other.getPos() - pos_corr);
 
-	correctVelocity(pos_corr); // TODO: use the actually used one! (0/1/2)
+	correctVelocity(pos_corr);
 	other.correctVelocity(-1 * pos_corr);
 
 	exchangeImpulse(other);
