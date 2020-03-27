@@ -55,14 +55,12 @@ Vec3d Particle::apply_forces() {
 
 void Particle::info() {
 	std::cout << "---------------------------" << std::endl;
-	std::cout << "pos: " << pos.x << ", " << pos.y << ", " << pos.z
-			<< std::endl;
-	std::cout << "vel: " << vel.x << ", " << vel.y << ", " << vel.z
-			<< std::endl;
-	std::cout << "acc: " << force_field.x << ", " << force_field.y << ", "
-			<< force_field.z << std::endl;
-	std::cout << "energy: " << energy() << "\t= " << potentialEnergy() << "\t+ "
-			<< kineticEnergy() << std::endl;
+	std::cout << "ID: " << ID << std::endl;
+	std::cout << "pos: "; pos.print();
+	std::cout << "vel: "; vel.print();
+	std::cout << "acc: "; acc.print();
+	std::cout << "energy: " << energy() << " = "
+			  << potentialEnergy() << " + " << kineticEnergy() << std::endl;
 }
 
 void Particle::draw2D() {
