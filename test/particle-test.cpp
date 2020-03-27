@@ -136,7 +136,7 @@ BOOST_AUTO_TEST_CASE( no_drag_first_step_test )
 	Vec3d simulated_speed = p.getV();
 	Vec3d simulated_acceleration = p.getAcceleration();
 
-	float tolerance = 1e-9; // [%]
+	float tolerance = 1e-7; // [%]
 	BOOST_REQUIRE_SMALL( abs(calculated_travel - simulated_travel), tolerance );
 	BOOST_REQUIRE_SMALL( abs(calculated_speed - simulated_speed), tolerance );
 	BOOST_REQUIRE_SMALL( abs(calculated_acceleration - simulated_acceleration), tolerance );
