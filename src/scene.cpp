@@ -532,6 +532,10 @@ void Scene::clearParticles() {
 	particles.clear();
 }
 
+void Scene::addParticle(const Particle &p) {
+	particles.push_back(p);
+}
+
 void Scene::addParticles(int N, float y, float r, bool randomize_y) {
 
 	if (geometry == test) {
@@ -556,8 +560,11 @@ void Scene::addParticles(int N, float y, float r, bool randomize_y) {
 			random_y = 0;
 		}
 
-		particles.emplace_back(Vec3d(x, y * (1 + random_y / 200.), 0),
-				Vec3d(0, 0, 0), i, r); // no need to type the constructor!!!
+		Vec3d pos(x, y * (1 + random_y / 200.), 0);
+		Vec3d vel(0,0,0);
+		Particle p(pos, vel, i, r);
+
+		addParticle(p);
 	}
 
 }

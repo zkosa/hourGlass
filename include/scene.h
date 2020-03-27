@@ -135,6 +135,7 @@ public:
 	void deleteCells();
 
 	void clearParticles();
+	void addParticle(const Particle &p);
 	void addParticles(int N, float y = 1.0, float r =
 			Particle::getUniformRadius(), bool randomize_y = true);
 
