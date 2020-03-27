@@ -126,7 +126,7 @@ void Particle::collideToParticle(Particle &other) {
 	other.setPos(other.getPos() - pos_corr);
 
 	correctVelocity(pos_corr);
-	other.correctVelocity(-1 * pos_corr);
+	other.correctVelocity(-pos_corr);
 
 	exchangeImpulse(other);
 }
@@ -166,7 +166,7 @@ void Particle::collideToParticle_checkBoundary(Particle &other) {
 	}
 
 	correctVelocity(pos_corr); // TODO: use the actually used one! (0/1/2)
-	other.correctVelocity(-1 * pos_corr);
+	other.correctVelocity(-pos_corr);
 
 	exchangeImpulse(other);
 }
@@ -176,7 +176,7 @@ void Particle::correctVelocity(const Vec3d &pos_corr) {
 	if (vel * vel + 2 * gravity * pos_corr >= 0.0) {
 		vel = std::sqrt(vel * vel + 2 * gravity * pos_corr) * norm(vel);
 	} else {
-		vel = -std::sqrt(-1 * (vel * vel + 2 * gravity * pos_corr)) * norm(vel);
+		vel = -std::sqrt(-(vel * vel + 2 * gravity * pos_corr)) * norm(vel);
 	}
 }
 

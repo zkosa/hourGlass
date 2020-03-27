@@ -71,6 +71,10 @@ inline Vec3d operator*(const Vec3d &a, const float m) {
 	return Multiply(a, m);
 }
 
+inline Vec3d operator-(const Vec3d &a) {
+	return Multiply(a, -1);
+}
+
 inline float operator*(const Vec3d &a, const Vec3d &b) {
 	return a.x * b.x + a.y * b.y + a.z * b.z;
 }

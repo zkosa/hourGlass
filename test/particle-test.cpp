@@ -48,7 +48,7 @@ BOOST_AUTO_TEST_CASE( collision_touching_test )
 	Vec3d vel(-1,0,0);
 
 	Particle p1(pos - r*Vec3d::i, vel, r);
-	Particle p2(pos + r*Vec3d::i, -1*vel, r);
+	Particle p2(pos + r*Vec3d::i, -vel, r);
 
 	p1.collideToParticle(p2);
 /*
@@ -57,8 +57,8 @@ BOOST_AUTO_TEST_CASE( collision_touching_test )
 	p1.getPos().print();
 	p2.getPos().print();
 */
-	BOOST_REQUIRE_EQUAL( p1.getPos(), -1*p2.getPos() );
-	BOOST_REQUIRE_EQUAL( p1.getV(), -1*p2.getV() );
+	BOOST_REQUIRE_EQUAL( p1.getPos(), -p2.getPos() );
+	BOOST_REQUIRE_EQUAL( p1.getV(), -p2.getV() );
 }
 
 BOOST_AUTO_TEST_CASE( collision_overlapping_test )
@@ -69,12 +69,12 @@ BOOST_AUTO_TEST_CASE( collision_overlapping_test )
 	Vec3d vel(-1,0,0);
 
 	Particle p1(pos - scale*r*Vec3d::i, vel, r);
-	Particle p2(pos + scale*r*Vec3d::i, -1*vel, r);
+	Particle p2(pos + scale*r*Vec3d::i, -vel, r);
 
 	p1.collideToParticle(p2);
 
-	BOOST_REQUIRE_EQUAL( p1.getPos(), -1*p2.getPos() );
-	BOOST_REQUIRE_EQUAL( p1.getV(), -1*p2.getV() );
+	BOOST_REQUIRE_EQUAL( p1.getPos(), -p2.getPos() );
+	BOOST_REQUIRE_EQUAL( p1.getV(), -p2.getV() );
 }
 
 BOOST_AUTO_TEST_CASE( collision_distant_test )
@@ -85,12 +85,12 @@ BOOST_AUTO_TEST_CASE( collision_distant_test )
 	Vec3d vel(-1,0,0);
 
 	Particle p1(pos - scale*r*Vec3d::i, vel, r);
-	Particle p2(pos + scale*r*Vec3d::i, -1*vel, r);
+	Particle p2(pos + scale*r*Vec3d::i, -vel, r);
 
 	p1.collideToParticle(p2);
 
-	BOOST_REQUIRE_EQUAL( p1.getPos(), -1*p2.getPos() );
-	BOOST_REQUIRE_EQUAL( p1.getV(), -1*p2.getV() );
+	BOOST_REQUIRE_EQUAL( p1.getPos(), -p2.getPos() );
+	BOOST_REQUIRE_EQUAL( p1.getV(), -p2.getV() );
 }
 
 

@@ -14,7 +14,7 @@ BOOST_AUTO_TEST_CASE( helpers_test, * boost::unit_test::tolerance(FLOAT_TEST_PRE
 {
 	Vec3d i(Vec3d::i);
 	pointData pd_is{i, i, i, i};
-	pointData pd_is2{i, i, -1*i, -1*i};
+	pointData pd_is2{i, i, -i, -i};
 
 	BOOST_TEST( Cell::average(pd_is) == i );
 	BOOST_REQUIRE_EQUAL( Cell::average(pd_is2), Vec3d(0,0,0) );
