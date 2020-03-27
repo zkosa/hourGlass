@@ -1,6 +1,6 @@
 #include "scene.h"
 
-//#define BOOST_TEST_TOOLS_UNDER_DEBUGGER
+#define BOOST_TEST_TOOLS_UNDER_DEBUGGER
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE scene-TEST
 #include <boost/test/unit_test.hpp>
@@ -137,3 +137,51 @@ BOOST_AUTO_TEST_CASE( scene_three_particles_test )
 	}
 	std::cout << std::endl;
 }
+
+BOOST_AUTO_TEST_CASE( scene_collide_to_wall_test )
+{
+	Scene scene;
+
+	Scene *scene_ptr = &scene; // TODO: check
+	Particle::connectScene(scene_ptr);
+	Cell::connectScene(scene_ptr);
+
+	scene.applyDefaults();
+
+	scene.setGeometry(test);
+	scene.createGeometry(test);
+
+	float ground_level = -0.999;
+	float r = 0.1;
+	float overlap = 0.5; // in the ratio of the radius
+	float height = ground_level + r*(1 - overlap);
+
+	Vec3d pos(0, height, 0);
+	Vec3d vel(0, 0, 0);
+
+	Particle p(pos, vel, r);
+
+	scene.addParticle(p);
+
+	//Particle::setCd(0);
+	Boundary_planar ground = scene.getBoundariesPlanar()[0];
+	p.collideToWall(ground);
+
+	// the particle touches the surface after collision:
+	BOOST_REQUIRE_EQUAL( p.getY(), ground_level + r );
+
+	p.collideToWall(ground);
+	p.info();
+	BOOST_REQUIRE_EQUAL( p.getY(), ground_level + r );
+
+	p.setV(Vec3d(0,-1,0));
+	p.collideToWall(ground);
+	p.info();
+	BOOST_REQUIRE_EQUAL( p.getY(), ground_level + r );
+
+	p.setV(Vec3d(0,1,0));
+	p.collideToWall(ground);
+	p.info();
+	BOOST_REQUIRE_EQUAL( p.getY(), ground_level + r );
+}
+
