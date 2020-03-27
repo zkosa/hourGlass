@@ -35,6 +35,11 @@ BOOST_AUTO_TEST_CASE( vec3d_test )
 	BOOST_REQUIRE_EQUAL( abs(Vec3d{1,0,0}), 1 );
 	BOOST_REQUIRE_EQUAL( crossProduct(i,j), k );
 
-	BOOST_REQUIRE_EQUAL( Vec3d::i, i);
+	BOOST_REQUIRE_EQUAL( Vec3d::i, i );
 
+	Vec3d v3{1,2,3};
+	Vec3d minv3{-1,-2,-3};
+
+	BOOST_REQUIRE_EQUAL( -v3, minv3 );
+	BOOST_REQUIRE_EQUAL( v3, -minv3 );
 }
