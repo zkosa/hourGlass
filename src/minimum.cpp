@@ -1,35 +1,27 @@
 #include "minimum.h"
 
-void Minimum::search(float starting_value) {
+float Minimum::tolerance = 1e-5;
+
+float Minimum::findRoot(float starting_value) const {
+	// Newton-method
+
+	// initialization:
 	float X = starting_value;
 	float X_new = X;
-	float delta = 1e-3;
-	float dist2_prime, dist2_prime_prime;
-	float epsilon = 1e-5;
+	float func_prime, func_prime_prime;
 	int counter = 0;
-	int max_iter = 2000;
 
 	do {
 		counter++;
 		X = X_new;
 
-		dist2_prime =
-				(function(X + delta, X0, R0) - function(X - delta, X0, R0))
-						/ (2 * delta);
-		dist2_prime_prime = (function(X + 2 * delta, X0, R0)
-				- 2 * function(X, X0, R0) + function(X - 2 * delta, X0, R0))
+		func_prime = (function(X + delta) - function(X - delta)) / (2 * delta);
+		func_prime_prime = (function(X + 2 * delta)
+				- 2 * function(X) + function(X - 2 * delta))
 				/ (4 * delta * delta);
 
-		X_new = X - dist2_prime / dist2_prime_prime;
-	} while (std::abs(X_new - X) >= epsilon && counter < max_iter);
+		X_new = X - func_prime / func_prime_prime;
+	} while (std::abs(X_new - X) >= tolerance && counter < max_iter);
 
-	Xmin = X_new;
-	Rmin = contour(Xmin);
-
-	distance = std::sqrt(function(X_new, X0, R0));
-}
-
-VecAxiSym Minimum::getContactPointInRadialCoord() {
-	this->search(X0);
-	return VecAxiSym { Xmin, Rmin };
+	return X_new;
 }
