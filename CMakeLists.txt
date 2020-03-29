@@ -77,16 +77,25 @@ target_include_directories(boundary-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Bo
 set_target_properties(boundary-test PROPERTIES AUTOMOC TRUE)
 target_link_libraries(boundary-test ${Boost_LIBRARIES})
 
+# minimum-test
+file(GLOB SOURCES "test/minimum-test.cpp" "src/scene.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/customopenglwidget.cpp" "src/mainwindow.cpp")
+add_executable(minimum-test ${SOURCES} ${MOC_HEADERS} ${UI})
+target_include_directories(minimum-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
+set_target_properties(minimum-test PROPERTIES AUTOMOC TRUE)
+target_link_libraries(minimum-test ${Boost_LIBRARIES})
+
 if (UNIX)
     target_link_libraries(particle-test Qt5::Core Qt5::Gui Qt5::Widgets GL) # OpenMP::OpenMP_CXX
     target_link_libraries(cell-test Qt5::Core Qt5::Gui Qt5::Widgets GL) # OpenMP::OpenMP_CXX
     target_link_libraries(scene-test Qt5::Core Qt5::Gui Qt5::Widgets GL) # OpenMP::OpenMP_CXX
     target_link_libraries(boundary-test Qt5::Core Qt5::Gui Qt5::Widgets GL) # OpenMP::OpenMP_CXX
+    target_link_libraries(minimum-test Qt5::Core Qt5::Gui Qt5::Widgets GL) # OpenMP::OpenMP_CXX
 elseif (WIN32)
     target_link_libraries(particle-test Qt5::Core Qt5::Gui Qt5::Widgets opengl32) # OpenMP::OpenMP_CXX
     target_link_libraries(cell-test Qt5::Core Qt5::Gui Qt5::Widgets opengl32) # OpenMP::OpenMP_CXX
     target_link_libraries(scene-test Qt5::Core Qt5::Gui Qt5::Widgets opengl32) # OpenMP::OpenMP_CXX
     target_link_libraries(boundary-test Qt5::Core Qt5::Gui Qt5::Widgets opengl32) # OpenMP::OpenMP_CXX
+    target_link_libraries(minimum-test Qt5::Core Qt5::Gui Qt5::Widgets opengl32) # OpenMP::OpenMP_CXX
 else ()
 	message("Unsupported operating system")
 endif ()
