@@ -29,6 +29,8 @@ float Boundary_axissymmetric::distance(const Particle &particle) const {
 }
 
 Vec3d Boundary_axissymmetric::getNormal(const Particle &particle) const {
+	// provides a normalized direction vector from the closest surface point to the particle
+	// TODO: check, if this is what we really want and what we really do
 
 	const Vec3d &pos = particle.getPos();
 	float X0 = pos * axis; // axial coordinate
