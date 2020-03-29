@@ -20,9 +20,17 @@ inline bool operator==(const VecAxiSym &a, const VecAxiSym &b) {
 	return ( a.X == b.X && a.R == b.R );
 }
 
+inline VecAxiSym operator-(const VecAxiSym &a, const VecAxiSym &b) {
+	return VecAxiSym( a.X - b.X, a.R - b.R );
+}
+
 inline std::ostream& operator<<(std::ostream &out, const VecAxiSym &a) {
 	out << "(X: " << a.X << ", R:" << a.R << ")" << std::endl;
 	return out;
+}
+
+inline float abs(const VecAxiSym& a) {
+	return std::sqrt(a.X*a.X + a.R*a.R);
 }
 
 #endif /* VECAXISYM_H_ */

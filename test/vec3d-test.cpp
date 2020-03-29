@@ -4,7 +4,7 @@
 #define BOOST_TEST_MODULE vec3d-TEST
 #include <boost/test/unit_test.hpp>
 
-BOOST_AUTO_TEST_CASE( vec3d_test )
+BOOST_AUTO_TEST_CASE( vec3d_test, * boost::unit_test::tolerance(1e-6f) )
 {
 	Vec3d i{1,0,0};
 	i = Vec3d::i;
@@ -51,4 +51,13 @@ BOOST_AUTO_TEST_CASE( vec3d_test )
 	z = std::sqrt(2);
 	Vec3d v4{x,y,z};
 	BOOST_REQUIRE_EQUAL( v4.toYAxial(), VecAxiSym(y, std::sqrt(x*x + z*z)) );
+
+	// the absolute values must be equal independently of coordinate system:
+	BOOST_TEST_REQUIRE( abs(v1) == abs(v1.toYAxial()) );
+	BOOST_TEST_REQUIRE( abs(v2) == abs(v2.toYAxial()) );
+	BOOST_TEST_REQUIRE( abs(v3) == abs(v3.toYAxial()) );
+	BOOST_TEST_REQUIRE( abs(v4) == abs(v4.toYAxial()) );
+	BOOST_TEST_REQUIRE( abs(v4) == abs(v4.toYAxial()) ); // passes with global 1e-4f, fails with 1e-7f
+	//BOOST_CHECK_EQUAL( abs(v4), abs(v4.toYAxial()) ); // fails, independently of global tolerance
+
 }
