@@ -44,7 +44,7 @@ inline Vec3d Multiply(const Vec3d &a, const float m) {
 }
 
 inline Vec3d Divide(const Vec3d &a, const float m) {
-	if (abs(m) < VSMALL) {
+	if (std::abs(m) < VSMALL) {
 		throw std::invalid_argument("Division by very small number.");
 	}
 	return Vec3d(a.x / m, a.y / m, a.z / m);

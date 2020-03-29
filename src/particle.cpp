@@ -97,8 +97,8 @@ void Particle::collideToWall(const Boundary &wall) {
 	Vec3d n = wall.getNormal(*this);
 
 	Vec3d pos_corr { 0, 0, 0 };
-	if (abs(n * vel) > SMALL) { // not parallel, and moving
-		pos_corr = (radius - wall.distance(*this)) / abs(n * vel) * vel * (-1); // move along the OLD! velocity vector
+	if (std::abs(n * vel) > SMALL) { // not parallel, and moving
+		pos_corr = (radius - wall.distance(*this)) / std::abs(n * vel) * vel * (-1); // move along the OLD! velocity vector
 	} else {
 		pos_corr = (radius - wall.distance(*this)) * n; // move in surface normal direction
 	}
@@ -250,7 +250,7 @@ float Particle::terminalVelocity() const {
 float Particle::maxFreeFallVelocity() const {
 	// The velocity which can be reached by gravitational acceleration within the domain.
 	// domain height along the gravity vector:
-	float h = abs(scene->getBoundingBox().diagonal() * norm(gravity));
+	float h = std::abs(scene->getBoundingBox().diagonal() * norm(gravity));
 	return std::sqrt(2 * abs(gravity) * h);
 }
 

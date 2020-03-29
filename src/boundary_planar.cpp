@@ -2,7 +2,7 @@
 #include <QOpenGLWidget>
 
 float Boundary_planar::distance(const Vec3d &point) const {
-	return abs(Boundary_planar::distanceSigned(point));
+	return std::abs(Boundary_planar::distanceSigned(point));
 }
 
 float Boundary_planar::distance(const Particle &particle) const {
