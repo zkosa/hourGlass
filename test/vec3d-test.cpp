@@ -37,9 +37,18 @@ BOOST_AUTO_TEST_CASE( vec3d_test )
 
 	BOOST_REQUIRE_EQUAL( Vec3d::i, i );
 
-	Vec3d v3{1,2,3};
-	Vec3d minv3{-1,-2,-3};
+	float x = 1;
+	float y = 2;
+	float z = 3;
+	Vec3d v3{x,y,z};
+	Vec3d minv3{-x,-y,-z};
 
 	BOOST_REQUIRE_EQUAL( -v3, minv3 );
 	BOOST_REQUIRE_EQUAL( v3, -minv3 );
+
+	x = std::sqrt(2);
+	y = 1;
+	z = std::sqrt(2);
+	Vec3d v4{x,y,z};
+	BOOST_REQUIRE_EQUAL( v4.toYAxial(), VecAxiSym(y, std::sqrt(x*x + z*z)) );
 }

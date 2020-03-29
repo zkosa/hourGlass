@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stdexcept>
 #include "constants.h"
+#include "vecaxisym.h"
 
 struct Vec3d {
 
@@ -19,6 +20,10 @@ struct Vec3d {
 
 	std::ostream& print() const;
 	bool large() const;
+
+	VecAxiSym toYAxial() {
+		return VecAxiSym(y, sqrt(x*x + z*z));
+	}
 
 	const static Vec3d i, j, k;
 
