@@ -1,6 +1,6 @@
 #include "particle.h"
 
-//#define BOOST_TEST_TOOLS_UNDER_DEBUGGER
+#define BOOST_TEST_TOOLS_UNDER_DEBUGGER
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE particle-TEST
 #include <boost/test/unit_test.hpp>
@@ -19,8 +19,8 @@ BOOST_AUTO_TEST_CASE( construction_test )
 
 	BOOST_REQUIRE_EQUAL( p1.getPos(), p2.getPos() );
 	BOOST_REQUIRE_EQUAL( p1.getV(), p2.getV() );
+	BOOST_REQUIRE_EQUAL( p1.getAcceleration(), p2.getAcceleration() );
 	BOOST_REQUIRE_EQUAL( p1.getCd(), p2.getCd() );
-
 	BOOST_REQUIRE_EQUAL( p1.getID(), p2.getID() );
 
 	p1.setV(2*vel);
@@ -29,6 +29,7 @@ BOOST_AUTO_TEST_CASE( construction_test )
 
 BOOST_AUTO_TEST_CASE( self_collision_test )
 {
+	// Nothing should change when the particle collides to itself
 	float r = 0.005;
 	Vec3d pos(0,0,0);
 	Vec3d vel(-1,0,0);
@@ -51,12 +52,7 @@ BOOST_AUTO_TEST_CASE( collision_touching_test )
 	Particle p2(pos + r*Vec3d::i, -vel, r);
 
 	p1.collideToParticle(p2);
-/*
-	p1.getV().print();
-	p2.getV().print();
-	p1.getPos().print();
-	p2.getPos().print();
-*/
+
 	BOOST_REQUIRE_EQUAL( p1.getPos(), -p2.getPos() );
 	BOOST_REQUIRE_EQUAL( p1.getV(), -p2.getV() );
 }
@@ -65,11 +61,14 @@ BOOST_AUTO_TEST_CASE( collision_overlapping_test )
 {
 	float r = 0.005;
 	float scale = 0.5;
-	Vec3d pos(0,0,0);
-	Vec3d vel(-1,0,0);
+	Vec3d pos1(-scale*r,0,0);
+	Vec3d vel1(1,0,0);
+	Vec3d pos2 = -pos1;
+	Vec3d vel2 = -vel1;
 
-	Particle p1(pos - scale*r*Vec3d::i, vel, r);
-	Particle p2(pos + scale*r*Vec3d::i, -vel, r);
+	Particle::setCd(0);
+	Particle p1(pos1, vel1, r);
+	Particle p2(pos2, vel2, r);
 
 	p1.collideToParticle(p2);
 
@@ -79,20 +78,25 @@ BOOST_AUTO_TEST_CASE( collision_overlapping_test )
 
 BOOST_AUTO_TEST_CASE( collision_distant_test )
 {
+	// Nothing should change when the particles are distant
+	// it crashed before distance check in the collision
 	float r = 0.005;
 	float scale = 1.5;
-	Vec3d pos(0,0,0);
-	Vec3d vel(-1,0,0);
+	Vec3d pos1(-scale*r,0,0);
+	Vec3d pos2(-pos1);
+	Vec3d vel1(-1,0,0);
+	Vec3d vel2(-vel1);
 
-	Particle p1(pos - scale*r*Vec3d::i, vel, r);
-	Particle p2(pos + scale*r*Vec3d::i, -vel, r);
+	Particle p1(pos1, vel1, r);
+	Particle p2(pos2, vel2, r);
 
 	p1.collideToParticle(p2);
 
-	BOOST_REQUIRE_EQUAL( p1.getPos(), -p2.getPos() );
-	BOOST_REQUIRE_EQUAL( p1.getV(), -p2.getV() );
+	BOOST_REQUIRE_EQUAL( p1.getPos(), pos1 );
+	BOOST_REQUIRE_EQUAL( p1.getV(), vel1 );
+	BOOST_REQUIRE_EQUAL( p2.getPos(), pos2 );
+	BOOST_REQUIRE_EQUAL( p2.getV(), vel2 );
 }
-
 
 BOOST_AUTO_TEST_CASE( collision_touching_parallel_test )
 {
