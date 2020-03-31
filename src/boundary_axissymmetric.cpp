@@ -45,8 +45,8 @@ Vec3d Boundary_axissymmetric::getNormal(const Particle &particle) const {
 	VecAxiSym contactPointInRadialCoord =
 			minimum.getContactPointInRadialCoord();
 
-	Vec3d contactPoint = axis * contactPointInRadialCoord.X
-			+ norm(Radial) * contactPointInRadialCoord.R;
+	Vec3d contactPoint = axis * contactPointInRadialCoord.axial
+			+ norm(Radial) * contactPointInRadialCoord.radial;
 
 	Vec3d n = norm(particle.getPos() - contactPoint);
 

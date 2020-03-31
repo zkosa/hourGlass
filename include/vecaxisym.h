@@ -4,33 +4,37 @@
 // container with axial and radial coordinates for axis-symmetric vector calculations
 
 struct VecAxiSym {
-	float X;
-	float R;
+	// coordinates in axial coordinate system:
+	float axial;
+	float radial;
 
-	VecAxiSym(float X_, float R_) :
-			X(X_), R(R_) {
+	VecAxiSym(float axial, float radial) :
+			axial(axial), radial(radial) {
 	}
 
-	void print(std::ostream& os = std::cout) const {
-		os << this << std::endl;; // TODO: fix and add test
+	std::ostream& print(std::ostream& os = std::cout) const {
+		return os << *this << std::endl;
 	}
+
+	// declare non-member function:
+	friend std::ostream& operator<<(std::ostream &out, const VecAxiSym &a);
 };
 
 inline bool operator==(const VecAxiSym &a, const VecAxiSym &b) {
-	return ( a.X == b.X && a.R == b.R );
+	return ( a.axial == b.axial && a.radial == b.radial );
 }
 
 inline VecAxiSym operator-(const VecAxiSym &a, const VecAxiSym &b) {
-	return VecAxiSym( a.X - b.X, a.R - b.R );
+	return VecAxiSym( a.axial - b.axial, a.radial - b.radial );
 }
 
 inline std::ostream& operator<<(std::ostream &out, const VecAxiSym &a) {
-	out << "(X: " << a.X << ", R: " << a.R << ")";
+	out << "(axial: " << a.axial << ", radial: " << a.radial << ")";
 	return out;
 }
 
 inline float abs(const VecAxiSym& a) {
-	return std::sqrt(a.X*a.X + a.R*a.R);
+	return std::sqrt(a.axial*a.axial + a.radial*a.radial);
 }
 
 #endif /* VECAXISYM_H_ */

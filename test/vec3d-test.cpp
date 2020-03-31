@@ -3,6 +3,8 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE vec3d-TEST
 #include <boost/test/unit_test.hpp>
+#include <boost/test/output_test_stream.hpp>
+
 
 BOOST_AUTO_TEST_CASE( vec3d_test, * boost::unit_test::tolerance(1e-6f) )
 {
@@ -63,9 +65,21 @@ BOOST_AUTO_TEST_CASE( vec3d_test, * boost::unit_test::tolerance(1e-6f) )
 	BOOST_TEST_REQUIRE( abs(v4) == abs(v4.toYAxial()) ); // passes with global 1e-4f, fails with 1e-7f
 	//BOOST_CHECK_EQUAL( abs(v4), abs(v4.toYAxial()) ); // fails, independently of global tolerance
 
-	std::cout << v4;
-	std::cout << v4.toYAxial();
-	v4.print();
-	v4.toYAxial().print(); // TODO: fix
 
+	boost::test_tools::output_test_stream output_test;
+
+	output_test << v3;
+	BOOST_TEST( output_test.is_equal( "(1, 2, 3)" ) );
+
+	// checking repeated execution:
+	output_test << v3;
+	BOOST_TEST( output_test.is_equal( "(1, 2, 3)" ) );
+
+	output_test << v3.toYAxial();
+	BOOST_TEST( output_test.is_equal( "(axial: 2, radial: 3.16228)" ) );
+
+	v3.print();
+	// TODO: implement test
+	v3.toYAxial().print(); // TODO: fix
+	// TODO: implement test
 }

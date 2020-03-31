@@ -22,8 +22,8 @@ class MinimumDistance {
 
 public:
 	MinimumDistance(std::function<float(float)> contour_, Vec3d point) :
-		point_X0(point.toYAxial().X),
-		point_R0(point.toYAxial().R),
+		point_X0(point.toYAxial().axial),
+		point_R0(point.toYAxial().radial),
 		contour(contour_),
 		function( std::bind(&MinimumDistance::distance2, this, std::placeholders::_1) ),
 		minimum(function)

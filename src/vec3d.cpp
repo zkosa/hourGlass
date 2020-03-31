@@ -1,7 +1,7 @@
 #include "vec3d.h"
 
 std::ostream& Vec3d::print() const {
-	return std::cout << x << ", " << y << ", " << z << std::endl;
+	return std::cout << *this << std::endl;
 }
 
 bool Vec3d::isLarge() const {

@@ -49,7 +49,6 @@ inline Vec3d Divide(const Vec3d &a, const float m) {
 		throw std::invalid_argument("Division by very small number.");
 	}
 	return Vec3d(a.x / m, a.y / m, a.z / m);
-
 }
 
 inline bool operator==(const Vec3d &a, const Vec3d &b) {
@@ -57,7 +56,7 @@ inline bool operator==(const Vec3d &a, const Vec3d &b) {
 }
 
 inline std::ostream& operator<<(std::ostream &out, const Vec3d &a) {
-	out << "(" << a.x << ", " << a.y << ", " << a.z << ")" << std::endl;
+	out << "(" << a.x << ", " << a.y << ", " << a.z << ")";
 	return out;
 }
 
