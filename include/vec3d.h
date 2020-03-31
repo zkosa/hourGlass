@@ -19,9 +19,10 @@ struct Vec3d {
 			x(x), y(y), z(z) {}
 
 	std::ostream& print() const;
-	bool large() const;
+	bool isLarge() const;
+	bool isSmall() const;
 
-	VecAxiSym toYAxial() {
+	VecAxiSym toYAxial() const {
 		return VecAxiSym(y, sqrt(x*x + z*z));
 	}
 

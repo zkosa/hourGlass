@@ -11,8 +11,8 @@ struct VecAxiSym {
 			X(X_), R(R_) {
 	}
 
-	std::ostream& print() const {
-		return std::cout << this;
+	void print(std::ostream& os = std::cout) const {
+		os << this << std::endl;; // TODO: fix and add test
 	}
 };
 
@@ -25,7 +25,7 @@ inline VecAxiSym operator-(const VecAxiSym &a, const VecAxiSym &b) {
 }
 
 inline std::ostream& operator<<(std::ostream &out, const VecAxiSym &a) {
-	out << "(X: " << a.X << ", R:" << a.R << ")" << std::endl;
+	out << "(X: " << a.X << ", R: " << a.R << ")";
 	return out;
 }
 

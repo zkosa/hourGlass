@@ -29,8 +29,11 @@ BOOST_AUTO_TEST_CASE( vec3d_test, * boost::unit_test::tolerance(1e-6f) )
 	BOOST_REQUIRE_EQUAL( v2*2, v2/0.5 );
 	BOOST_CHECK_THROW( v2/0, std::invalid_argument );
 
-	BOOST_REQUIRE_EQUAL( v2.large(), false );
-	BOOST_REQUIRE_EQUAL( (v2*1e25).large(), true );
+	BOOST_REQUIRE_EQUAL( v2.isLarge(), false );
+	BOOST_REQUIRE_EQUAL( (1e25*v2).isLarge(), true );
+	BOOST_REQUIRE_EQUAL( v2.isSmall(), false );
+	BOOST_REQUIRE_EQUAL( (1e-25*v2).isSmall(), true );
+
 
 	BOOST_REQUIRE_EQUAL( abs(Vec3d{1,0,0}), 1 );
 	BOOST_REQUIRE_EQUAL( crossProduct(i,j), k );
@@ -59,5 +62,10 @@ BOOST_AUTO_TEST_CASE( vec3d_test, * boost::unit_test::tolerance(1e-6f) )
 	BOOST_TEST_REQUIRE( abs(v4) == abs(v4.toYAxial()) );
 	BOOST_TEST_REQUIRE( abs(v4) == abs(v4.toYAxial()) ); // passes with global 1e-4f, fails with 1e-7f
 	//BOOST_CHECK_EQUAL( abs(v4), abs(v4.toYAxial()) ); // fails, independently of global tolerance
+
+	std::cout << v4;
+	std::cout << v4.toYAxial();
+	v4.print();
+	v4.toYAxial().print(); // TODO: fix
 
 }

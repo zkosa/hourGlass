@@ -4,8 +4,12 @@ std::ostream& Vec3d::print() const {
 	return std::cout << x << ", " << y << ", " << z << std::endl;
 }
 
-bool Vec3d::large() const {
-	return (abs(*this) > LARGE || abs(*this) < -LARGE || std::isnan(abs(*this)));
+bool Vec3d::isLarge() const {
+	return ( abs(*this) > LARGE || std::isnan(abs(*this)) );
+}
+
+bool Vec3d::isSmall() const {
+	return ( abs(*this) < SMALL || std::isnan(abs(*this)) );
 }
 
 // static members:
