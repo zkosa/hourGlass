@@ -28,7 +28,7 @@ class MinimumDistance {
 
 	Minimum minimum;
 
-	Vec3d closest_point_on_the_curve;
+	Vec3d closest_point_on_the_contour;
 
 public:
 	MinimumDistance(std::function<float(float)> contour, const Vec3d& point) :
@@ -51,10 +51,32 @@ public:
 		findClosestPointOnContour();
 	};
 
+	// call in all constructors!
+	void findClosestPointOnContour() {
+		float curve_X = minimum.findRoot(); // location of minimum distance point on the curve
+		float curve_R = contour(curve_X); // radius of axisymmetric shape at curve_X
+
+		VecAxiSym closestPointInRadialCoord(curve_X, curve_R);
+
+		Vec3d radial = point - (point * axis) * axis; // radial vector. it becomes zero, when the point is on the axis!
+
+		// pick a "random" unit vector, when it would be a null vector:
+		if ( radial.isSmall() ) {
+			radial = Vec3d::i;
+		}
+
+		// convert to Cartesian coordinate system:
+		closest_point_on_the_contour = axis * closestPointInRadialCoord.axial
+					+ norm(radial) * closestPointInRadialCoord.radial;
+	}
+
+	Vec3d getClosestPointOnTheContour() const {
+		return closest_point_on_the_contour;
+	}
 
 	float getDistance2() {
-		float curve_X = closest_point_on_the_curve.toYAxial().axial;
-		float curve_R = closest_point_on_the_curve.toYAxial().radial;
+		float curve_X = closest_point_on_the_contour.toYAxial().axial;
+		float curve_R = closest_point_on_the_contour.toYAxial().radial;
 
 		float distance_squared = (curve_X - point_X0)*(curve_X - point_X0) +
 								 (curve_R - point_R0)*(curve_R - point_R0);
@@ -67,7 +89,7 @@ public:
 	}
 
 	Vec3d getDistanceVectorFromClosestPointOfContour() {
-		return point - closest_point_on_the_curve;
+		return point - closest_point_on_the_contour;
 	}
 
 	Vec3d getNormalizedDistanceVectorFromClosestPointOfContour() {
@@ -84,23 +106,6 @@ public:
 		minimum.setInitialGuess(guess);
 	}
 
-	void findClosestPointOnContour() {
-		float curve_X = minimum.findRoot(); // location of minimum distance point on the curve
-		float curve_R = contour(curve_X); // radius of axisymmetric shape at curve_X
-
-		VecAxiSym closestPointInRadialCoord(curve_X, curve_R);
-
-		Vec3d radial = point - (point * axis) * axis; // radial vector. it becomes zero, when the point is on the axis!
-
-		// pick a "random" unit vector, when it would be a null vector:
-		if ( radial.isSmall() ) {
-			radial = Vec3d::i;
-		}
-
-		// convert to Cartesian coordinate system:
-		closest_point_on_the_curve = axis * closestPointInRadialCoord.axial
-					+ norm(radial) * closestPointInRadialCoord.radial;
-	}
 };
 
 #endif /* INCLUDE_MINIMUMDISTANCE_H_ */
