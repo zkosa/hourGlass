@@ -29,6 +29,19 @@ set(UI "src/mainwindow.ui") # ui must be placed alongside the cpp file!
 
 include_directories("include")
 
+add_executable(${PROJECT_NAME} ${SOURCES} ${MOC_HEADERS} ${UI}) # the MOC headers are needed
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${OPENGL_INCLUDE_DIR})
+set_target_properties(${PROJECT_NAME} PROPERTIES AUTOMOC TRUE)
+
+if (UNIX)
+    target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets GL) # OpenMP::OpenMP_CXX
+elseif (WIN32)
+    target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets opengl32) # OpenMP::OpenMP_CXX
+else ()
+       message("Unsupported operating system")
+endif ()
+
+
 # TEST:
 find_package(Boost REQUIRED unit_test_framework)
 
@@ -36,6 +49,23 @@ find_package(Boost REQUIRED unit_test_framework)
 file(GLOB SOURCES "test/vec3d-test.cpp" "src/vec3d.cpp") 
 add_executable(vec3d-test ${SOURCES})
 target_include_directories(vec3d-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
+
+# particle-test
+file(GLOB SOURCES "test/particle-test.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp")
+add_executable(particle-test ${SOURCES})
+target_include_directories(particle-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
+target_link_libraries(particle-test ${Boost_LIBRARIES})
+
+# cell-test
+file(GLOB SOURCES "test/cell-test.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp")
+add_executable(cell-test ${SOURCES})
+target_include_directories(cell-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
+
+# scene-test
+file(GLOB SOURCES "test/scene-test.cpp" "src/scene.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp")
+add_executable(scene-test ${SOURCES} ${MOC_HEADERS} ${UI})
+target_include_directories(scene-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
+set_target_properties(scene-test PROPERTIES AUTOMOC TRUE)
 
 # boundary-test
 file(GLOB SOURCES "test/boundary-test.cpp" "src/scene.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/customopenglwidget.cpp" "src/mainwindow.cpp")
@@ -55,6 +85,9 @@ target_include_directories(minimumdistance-test PUBLIC ${CMAKE_CURRENT_SOURCE_DI
 
 if (UNIX)
    target_link_libraries(vec3d-test ${Boost_LIBRARIES})
+   target_link_libraries(particle-test ${Boost_LIBRARIES} Qt5::Widgets GL)
+   target_link_libraries(cell-test ${Boost_LIBRARIES} Qt5::Widgets GL)
+   target_link_libraries(scene-test ${Boost_LIBRARIES} Qt5::Widgets GL)
    target_link_libraries(boundary-test ${Boost_LIBRARIES} Qt5::Widgets GL)
    target_link_libraries(minimum-test ${Boost_LIBRARIES})
    target_link_libraries(minimumdistance-test ${Boost_LIBRARIES} Qt5::Widgets GL)
