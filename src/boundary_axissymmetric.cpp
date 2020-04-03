@@ -1,56 +1,29 @@
 #include "boundary_axissymmetric.h"
-#include "minimum.h"
+#include "minimumdistance.h"
 #include <QOpenGLWidget>
 
 float Boundary_axissymmetric::distance(const Particle &particle) const {
 
-	const Vec3d &pos = particle.getPos();
-	float X0 = pos * axis; // axial coordinate
-	Vec3d Radial = pos - (pos * axis) * axis; // radial vector
-	float R0 = abs(Radial); // radial coordinate
+	float start_X = particle.getPos() * axis; // use the axial coordinate as guess
 
-	float start_X = X0;
+	MinimumDistance minimum_distance(*this, particle);
 
-	//const std::function<float(float, float, float)> f = std::bind( getDistance2Fun(), 0, X0, R0) ;
-	const std::function<float(float, float, float)> f = getDistance2Fun();
-	//std::cout << "calling f..." << std::endl;
-	//f(1,2,3);
-	//std::cout << "f was called" << std::endl;
-	//std::cout << "distance2(1, X0, R0): " << distance2(1, X0, R0) << std::endl;  // OK
-	//std::cout << "contour(0): " << contour(0) << std::endl; // OK
-	//distance2_fun(1, X0, R0); // crashes
+	minimum_distance.setInitualGuess(start_X);
 
-	// Newton iteration for minimum
-	//Minimum minimum( f, X0, R0 );  // (0, X0, R0)
-	Minimum minimum(*this, X0, R0);
-	minimum.search(start_X);
-
-	return minimum.getDistance();
+	return minimum_distance.getDistance();
 }
 
 Vec3d Boundary_axissymmetric::getNormal(const Particle &particle) const {
 	// provides a normalized direction vector from the closest surface point to the particle
 	// TODO: check, if this is what we really want and what we really do
 
-	const Vec3d &pos = particle.getPos();
-	float X0 = pos * axis; // axial coordinate
-	Vec3d Radial = pos - (pos * axis) * axis; // radial vector
-	float R0 = abs(Radial); // radial coordinate
+	float start_X = particle.getPos() * axis; // use the axial coordinate as guess
 
-	const std::function<float(float, float, float)> f = getDistance2Fun();
+	MinimumDistance minimum_distance(*this, particle);
 
-	// Newton iteration for minimum
-	//Minimum minimum( f, X0, R0 );  // (0, X0, R0)
-	Minimum minimum(*this, X0, R0);
-	VecAxiSym contactPointInRadialCoord =
-			minimum.getContactPointInRadialCoord();
+	minimum_distance.setInitualGuess(start_X);
 
-	Vec3d contactPoint = axis * contactPointInRadialCoord.axial
-			+ norm(Radial) * contactPointInRadialCoord.radial;
-
-	Vec3d n = norm(particle.getPos() - contactPoint);
-
-	return n;
+	return minimum_distance.getNormal();
 }
 
 void Boundary_axissymmetric::draw2D() {

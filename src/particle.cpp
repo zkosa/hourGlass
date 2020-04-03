@@ -235,6 +235,7 @@ bool Particle::overlapWithWalls() const {
 }
 
 Vec3d Particle::overlapVectorWithWall(const Boundary &wall) {
+	// TODO: simplify
 	return (wall.distance(*this) - radius) * wall.getNormal(*this);
 }
 

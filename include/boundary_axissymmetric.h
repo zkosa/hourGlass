@@ -20,15 +20,6 @@ class Boundary_axissymmetric: public Boundary {
 			&Boundary_axissymmetric::hourGlassShape, this,
 			std::placeholders::_1);
 
-	float distance2(float X, float X0, float R0) const {
-		return (X - X0) * (X - X0)
-				+ (hourGlassShape(X) - R0) * (hourGlassShape(X) - R0);
-	}
-
-	std::function<float(float, float, float)> distance2_fun = std::bind(
-			&Boundary_axissymmetric::distance2, this, std::placeholders::_1,
-			std::placeholders::_2, std::placeholders::_3);
-
 public:
 
 	float distance(const Particle &particle) const override;
@@ -43,9 +34,6 @@ public:
 
 	std::function<float(const float)> getContourFun() const {
 		return contour;
-	}
-	std::function<float(float, float, float)> getDistance2Fun() const {
-		return distance2_fun;
 	}
 
 };

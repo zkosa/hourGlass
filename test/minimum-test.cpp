@@ -14,7 +14,7 @@ float parabola(float X) {
 }
 
 float distance2(float X, float X0, float R0) {
-	// distance squared between the parabola and point (X0,R0)
+	// distance squared between the parabola and the point (X0, R0)
 	return (X - X0) * (X - X0) + (parabola(X) - R0) * (parabola(X) - R0);
 }
 
@@ -25,8 +25,6 @@ BOOST_AUTO_TEST_CASE( parabola_minimum_test )
 	std::function<float(float)> parabola_contour = parabola;
 	std::function<float(float, float, float)> distance2_to_parabola = distance2;
 
-	std::cout << parabola(0.0f) << std::endl;
-
 	Minimum curve_minimum(parabola);
 
 	float tolerance = Minimum::getTolerance();
@@ -34,7 +32,6 @@ BOOST_AUTO_TEST_CASE( parabola_minimum_test )
 	float root = curve_minimum.findRoot(guess);
 	float truth = X_offset;
 
-	std::cout << "truth: " << truth << ", root: " << root << std::endl;
 	BOOST_REQUIRE( std::abs(root - truth) < tolerance );
 
 	// check repeated execution:
