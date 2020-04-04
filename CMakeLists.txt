@@ -28,7 +28,7 @@ message(STATUS "OPENGL_LIBRARY:= ${OPENGL_LIBRARY}")
 message(STATUS "OPENGL_LIBRARIES:= ${OPENGL_LIBRARIES}")
 
 
-file(GLOB SOURCES "src/*.cpp") # new files are read only after modifying this file?
+file(GLOB SOURCES "src/*.cpp")
 file(GLOB HEADERS "include/*.h")
 file(GLOB MOC_HEADERS "include/mainwindow.h")
 set(UI "src/mainwindow.ui") # ui must be placed alongside the cpp file!
@@ -41,26 +41,42 @@ set_target_properties(${PROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets ${OPENGL_LIBRARIES}) # OpenMP::OpenMP_CXX
 
 
-# TEST:
+##############################
+# TESTING: ###################
+##############################
+set(TESTS ON) # ON / OFF
+
+if(TESTS)
+
 find_package(Boost REQUIRED unit_test_framework)
+enable_testing()
+
+# macro adds tests and collects the targets to a variable
+macro(add_unit_test UNIT_TEST)
+    set(UNIT_TEST_TARGETS ${UNIT_TEST_TARGETS} ${UNIT_TEST} )   # PARENT_SCOPE removed because of no subfolderss
+    add_test(${UNIT_TEST} ${CMAKE_CURRENT_BINARY_DIR}/${UNIT_TEST})
+endmacro(add_unit_test)
 
 # vec3d-test 
 file(GLOB SOURCES "test/vec3d-test.cpp" "src/vec3d.cpp") 
 add_executable(vec3d-test ${SOURCES})
 target_include_directories(vec3d-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 target_link_libraries(vec3d-test ${Boost_LIBRARIES})
+add_unit_test(vec3d-test)
 
 # particle-test
 file(GLOB SOURCES "test/particle-test.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp")
 add_executable(particle-test ${SOURCES})
 target_include_directories(particle-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 target_link_libraries(particle-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
+add_unit_test(particle-test)
 
 # cell-test
 file(GLOB SOURCES "test/cell-test.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp")
 add_executable(cell-test ${SOURCES})
 target_include_directories(cell-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 target_link_libraries(cell-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
+add_unit_test(cell-test)
 
 # scene-test
 file(GLOB SOURCES "test/scene-test.cpp" "src/scene.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp")
@@ -68,6 +84,7 @@ add_executable(scene-test ${SOURCES} ${MOC_HEADERS} ${UI})
 target_include_directories(scene-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 set_target_properties(scene-test PROPERTIES AUTOMOC TRUE)
 target_link_libraries(scene-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
+add_unit_test(scene-test)
 
 # boundary-test
 file(GLOB SOURCES "test/boundary-test.cpp" "src/scene.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/customopenglwidget.cpp" "src/mainwindow.cpp")
@@ -75,15 +92,32 @@ add_executable(boundary-test ${SOURCES} ${MOC_HEADERS} ${UI})
 target_include_directories(boundary-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}  ${Boost_INCLUDE_DIRS})
 set_target_properties(boundary-test PROPERTIES AUTOMOC TRUE)
 target_link_libraries(boundary-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
+add_unit_test(boundary-test)
 
 # minimum-test
 file(GLOB SOURCES "test/minimum-test.cpp" "src/minimum.cpp")
 add_executable(minimum-test ${SOURCES} )
-target_include_directories(minimum-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS} "./include")
+target_include_directories(minimum-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 target_link_libraries(minimum-test ${Boost_LIBRARIES})
+add_unit_test(minimum-test)
 
 # minimumdistance-test
 file(GLOB SOURCES "test/minimumdistance-test.cpp" "src/minimum.cpp" "src/vec3d.cpp" "src/boundary_axissymmetric.cpp" "src/particle.cpp" "src/vector.cpp" "src/boundingbox.cpp")
 add_executable(minimumdistance-test ${SOURCES} )
-target_include_directories(minimumdistance-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS} "./include")
+target_include_directories(minimumdistance-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 target_link_libraries(minimumdistance-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
+add_unit_test(minimumdistance-test)
+
+
+############
+# running tests automatically after build:
+add_custom_target( all_tests ALL DEPENDS ${UNIT_TEST_TARGETS})
+add_custom_command(
+      TARGET all_tests
+      COMMENT "Run tests"
+      POST_BUILD 
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+      COMMAND ${CMAKE_CTEST_COMMAND} ARGS --output-on-failure
+)
+
+endif(TESTS)
