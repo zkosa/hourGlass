@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE( parabola_minimum_distance_test )
 }
 
 float X0 = -0.999;
-float a = 0.1;
+float a = 0.2;
 float b = 0.5;
 
 // contour to be rotated around the axis
@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE( line_minimum_distance_test )
 
 	MinimumDistance minimum_distance(contour, point);
 
-	//float tolerance = Minimum::getTolerance();
+	float tolerance = Minimum::getTolerance();
 	float min_dist = minimum_distance.getDistance();
 	float min_dist_from_vector = abs(minimum_distance.getDistanceVectorFromClosestPointOfContour());
 	// calculate the exact point by intersecting:
@@ -60,9 +60,13 @@ BOOST_AUTO_TEST_CASE( line_minimum_distance_test )
 	VecAxiSym point_curve(X_curve, Y_curve);
 	float truth = abs( point_curve - point.toYAxial() );
 
-	BOOST_TEST_REQUIRE( min_dist == truth, boost::test_tools::tolerance(5e-3f) ); // TODO: check the reason for the large difference!
+	BOOST_TEST_REQUIRE( min_dist == truth, boost::test_tools::tolerance(tolerance) );
 	// check whether the two different calculation gives the same result:
-	BOOST_TEST_REQUIRE( min_dist == min_dist_from_vector, boost::test_tools::tolerance(5e-3f) );
+	BOOST_TEST_REQUIRE( min_dist == min_dist_from_vector, boost::test_tools::tolerance(tolerance) );
+	// check whether the two different calculation gives the same result:
+	BOOST_TEST_REQUIRE( minimum_distance.getNormal().x == minimum_distance.getNormal2().x );
+	BOOST_TEST_REQUIRE( minimum_distance.getNormal().y == minimum_distance.getNormal2().y );
+	BOOST_TEST_REQUIRE( minimum_distance.getNormal().z == minimum_distance.getNormal2().z );
 }
 
 BOOST_AUTO_TEST_CASE( wrapped_hourglass_test ) {

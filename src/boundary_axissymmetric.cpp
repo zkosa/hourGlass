@@ -8,7 +8,7 @@ float Boundary_axissymmetric::distance(const Particle &particle) const {
 
 	MinimumDistance minimum_distance(*this, particle);
 
-	minimum_distance.setInitualGuess(start_X);
+	minimum_distance.setInitialGuess(start_X);
 
 	return minimum_distance.getDistance();
 }
@@ -21,7 +21,7 @@ Vec3d Boundary_axissymmetric::getNormal(const Particle &particle) const {
 
 	MinimumDistance minimum_distance(*this, particle);
 
-	minimum_distance.setInitualGuess(start_X);
+	minimum_distance.setInitialGuess(start_X);
 
 	return minimum_distance.getNormal();
 }

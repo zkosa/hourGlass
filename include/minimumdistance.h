@@ -15,7 +15,7 @@ class MinimumDistance {
 	float point_X0 = point.toYAxial().axial;
 	float point_R0 = point.toYAxial().radial;
 
-	Vec3d axis;
+	Vec3d axis = Vec3d::j; // default axis
 
 	std::function<float(float)> contour;
 
@@ -102,7 +102,28 @@ public:
 		return getNormalizedDistanceVectorFromClosestPointOfContour();
 	}
 
-	void setInitualGuess(float guess) {
+	Vec3d getNormal2() {
+		// legacy implementation for testing
+		// TODO: clarify the misleading name!
+		float curve_X = minimum.findRoot(); // location of minimum distance point on the curve
+		float curve_R = contour(curve_X); // radius of axisymmetric shape at curve_X
+
+		VecAxiSym closestPointInRadialCoord(curve_X, curve_R);
+
+		Vec3d radial = point - (point * axis) * axis; // radial vector. it becomes zero, when the point is on the axis!
+
+		// pick a "random" unit vector, when it would be a null vector:
+		if ( radial.isSmall() ) {
+			radial = Vec3d::i;
+		}
+
+		Vec3d contactPoint = axis * closestPointInRadialCoord.axial
+					+ norm(radial) * closestPointInRadialCoord.radial;
+
+		return norm(point - contactPoint);
+	}
+
+	void setInitialGuess(float guess) {
 		minimum.setInitialGuess(guess);
 	}
 
