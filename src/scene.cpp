@@ -218,7 +218,7 @@ void Scene::resolveConstraintsCells(int max_sweeps) {
 		}
 		std::cout << " (" << collision_counter << ") " << std::flush;
 		if (sweep % 10 == 0) {
-			std::cout << "\n" << std::flush;
+			std::cout << std::endl << std::flush;
 		}
 		populateCells();
 
