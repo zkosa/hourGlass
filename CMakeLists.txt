@@ -108,12 +108,30 @@ target_include_directories(minimumdistance-test PUBLIC ${CMAKE_CURRENT_SOURCE_DI
 target_link_libraries(minimumdistance-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
 add_unit_test(minimumdistance-test)
 
+# passing-test
+file(GLOB SOURCES "test/passing-test.cpp")
+add_executable(passing-test ${SOURCES} )
+target_include_directories(passing-test PUBLIC ${Boost_INCLUDE_DIRS})
+target_link_libraries(passing-test ${Boost_LIBRARIES})
+add_unit_test(passing-test)
+
+# failing-test
+set(ADD_FAILING_TEST OFF)
+if(ADD_FAILING_TEST)
+	file(GLOB SOURCES "test/failing-test.cpp")
+	add_executable(failing-test ${SOURCES} )
+	target_include_directories(failing-test PUBLIC ${Boost_INCLUDE_DIRS})
+	target_link_libraries(failing-test ${Boost_LIBRARIES})
+	add_unit_test(failing-test)
+endif(ADD_FAILING_TEST)
+
 
 ############
 # running tests automatically after build:
-add_custom_target( all_tests ALL DEPENDS ${UNIT_TEST_TARGETS})
+set(UNIT_TEST_COLLECTOR all_tests)
+add_custom_target( ${UNIT_TEST_COLLECTOR} ALL DEPENDS ${UNIT_TEST_TARGETS})
 add_custom_command(
-      TARGET all_tests
+      TARGET ${UNIT_TEST_COLLECTOR}
       COMMENT "Run tests"
       POST_BUILD 
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
