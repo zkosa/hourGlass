@@ -1,15 +1,27 @@
+# ignore everything:
 *
+
+# then allow explicitly:
+
+# git:
+!.gitignore
+
+# sources:
 !include
 !src
 !test
-!img
-!CMakeLists.txt
-!.gitignore
-!.project
-!.cprojiect
 !include/*.h
 !src/*.cpp
-!test/*.h
-!test/*.cpp
+!test/*.[h,cpp]
+
+# CMake:
+!CMakeLists.txt
+
+# Eclipse:
+!.project
+!.cproject
+
+# documentation:
+!img
 !img/*
 !README.md
