@@ -245,8 +245,6 @@ void Scene::calculatePhysics() {
 	populateCells();
 	//std::cout << "before collision..." << std::endl;
 	//veloCheck();
-	//resolveConstraintsCells(5);
-	//collide_boundaries();
 	collideWithBoundariesCells();
 	populateCells();
 	collideParticlesCells();
