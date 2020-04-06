@@ -119,15 +119,15 @@ void Particle::collideToParticle(Particle &other) {
 
 	float distance = abs(n);
 
-	// does not do anything with distant particles:
+	// do not do anything with distant particles:
 	if (distance > this->getR() + other.getR()) {
 		return;
 	}
 
 	n = norm(n); // normalize
 
+	// move back to the positions where they just touched the other:
 	Vec3d pos_corr = -0.5 * n * (this->getR() + other.getR() - distance);
-	// move back to the position when it touched the other:
 	pos = pos + pos_corr;
 	other.setPos(other.getPos() - pos_corr);
 
@@ -143,7 +143,7 @@ void Particle::collideToParticle_checkBoundary(Particle &other) {
 
 	float distance = abs(n);
 
-	// does not do anything with distant particles:
+	// do not do anything with distant particles:
 	if (distance > this->getR() + other.getR()) {
 		return;
 	}
