@@ -4,11 +4,7 @@
 
 float Boundary_axissymmetric::distance(const Particle &particle) const {
 
-	float start_X = particle.getPos() * axis; // use the axial coordinate as guess
-
 	MinimumDistance minimum_distance(*this, particle);
-
-	minimum_distance.setInitialGuess(start_X);
 
 	return minimum_distance.getDistance();
 }
@@ -17,11 +13,7 @@ Vec3d Boundary_axissymmetric::getNormal(const Particle &particle) const {
 	// provides a normalized direction vector from the closest surface point to the particle
 	// TODO: check, if this is what we really want and what we really do
 
-	float start_X = particle.getPos() * axis; // use the axial coordinate as guess
-
 	MinimumDistance minimum_distance(*this, particle);
-
-	minimum_distance.setInitialGuess(start_X);
 
 	return minimum_distance.getNormal();
 }

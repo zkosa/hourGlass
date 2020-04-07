@@ -30,6 +30,11 @@ class MinimumDistance {
 
 	Vec3d closest_point_on_the_contour;
 
+	// private, because it would not take effect, when called externally, after construction
+	void setInitialGuess(float guess) {
+		minimum.setInitialGuess(guess);
+	}
+
 public:
 	MinimumDistance(std::function<float(float)> contour, const Vec3d& point) :
 		point(point),
@@ -37,7 +42,8 @@ public:
 		function( std::bind(&MinimumDistance::distance2, this, std::placeholders::_1) ),
 		minimum(function)
 	{
-		// axis?
+		// use the axial coordinate of the point as starting value for the Newton iteration
+		setInitialGuess(point * axis);
 		findClosestPointOnContour();
 	}; // TODO: test it
 
@@ -48,6 +54,8 @@ public:
 		function( std::bind(&MinimumDistance::distance2, this, std::placeholders::_1) ),
 		minimum(function)
 	{
+		// use the axial coordinate of the point as starting value for the Newton iteration
+		setInitialGuess(point * axis);
 		findClosestPointOnContour();
 	};
 
@@ -121,10 +129,6 @@ public:
 					+ norm(radial) * closestPointInRadialCoord.radial;
 
 		return norm(point - contactPoint);
-	}
-
-	void setInitialGuess(float guess) {
-		minimum.setInitialGuess(guess);
 	}
 
 };
