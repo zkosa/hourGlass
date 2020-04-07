@@ -66,3 +66,34 @@ BOOST_AUTO_TEST_CASE( distance_in_the_orifice_hourglass_test )
 	float res = glass.distance(point2);
 	BOOST_REQUIRE_EQUAL( res, abs(point2 - point_root) );
 }
+
+BOOST_AUTO_TEST_CASE( collide_hourglass_test )
+{
+	// check a point where particle loss occurs
+
+	Boundary_axissymmetric glass; // hardcoded shape, orifice diameter 0.14 [m]
+
+	float tolerance = 1e-6f;
+	float x = 0.45; // location of particle loss
+	float y = std::sqrt(x - 0.07); // inverse of the contour function
+	// check the inversion (y is the rotation axis!)
+	BOOST_REQUIRE( abs(glass.getContourFun()(y) - x) < tolerance );
+
+	Vec3d point(x, y, 0);
+	Vec3d vel(0, -3, 0);
+
+	Particle p(point, vel);
+
+	// check that the point and the particle are really on the curve before collision:
+	BOOST_REQUIRE( glass.distance(point) < tolerance );
+	BOOST_REQUIRE( glass.distance(p) < tolerance );
+
+	glass.getNormal(p).print();
+	std::cout << glass.distance(p) << std::endl;
+	p.collideToWall(glass);
+	std::cout << glass.distance(p) << std::endl;
+
+	// check that the point is at touching distance (radius) after collision:
+	BOOST_REQUIRE_EQUAL( glass.distance(p) , p.getR() );
+
+}
