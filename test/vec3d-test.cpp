@@ -8,6 +8,7 @@
 
 BOOST_AUTO_TEST_CASE( vec3d_test, * boost::unit_test::tolerance(1e-6f) )
 {
+	Vec3d nullv{0,0,0};
 	Vec3d i{1,0,0};
 	i = Vec3d::i;
 	Vec3d j{0,1,0};
@@ -36,7 +37,9 @@ BOOST_AUTO_TEST_CASE( vec3d_test, * boost::unit_test::tolerance(1e-6f) )
 	BOOST_REQUIRE_EQUAL( v2.isSmall(), false );
 	BOOST_REQUIRE_EQUAL( (1e-25*v2).isSmall(), true );
 
-
+	BOOST_REQUIRE_EQUAL( abs(nullv), 0 );
+	BOOST_REQUIRE_EQUAL( norm(nullv), nullv );
+	BOOST_REQUIRE_EQUAL( abs(norm(nullv)), 0 );
 	BOOST_REQUIRE_EQUAL( abs(Vec3d{1,0,0}), 1 );
 	BOOST_REQUIRE_EQUAL( crossProduct(i,j), k );
 
