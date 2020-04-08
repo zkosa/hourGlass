@@ -26,7 +26,7 @@ public:
 
 	void draw2D() override;
 
-	Vec3d getNormal(const Particle &particle) const override;
+	Vec3d getNormal(const Particle &particle) const override; // TODO: wrap the numerical one
 	Vec3d getNormalNumDiff(const Vec3d &curve_point) const;
 
 	const Vec3d& getAxis() const {

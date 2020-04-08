@@ -34,13 +34,18 @@ Vec3d Boundary_axissymmetric::getNormalNumDiff(const Vec3d &curve_point) const {
 	// assuming that the particle is still inside
 	//  TODO: try to use it as a check for particle loss!
 	float slope_normal;
+
+	Vec3d normal;
 	if ( abs(slope_tangent) < SMALL ) {
-		slope_normal = 0;
+		normal = Vec3d(-1,0,0);
 	} else {
 		slope_normal = 1 / slope_tangent;
+		 // no need to normalize, and 2D only!
+		// TODO: check in all quadrants, consider atan2 as well!
+		normal = Vec3d(sin(atan(slope_normal)), cos(atan(slope_normal)), 0);
 	}
-
-	return norm(Vec3d(slope_normal, 1, 0)); // 2D only! TODO: generalize for 3D, check for negative y
+// TODO: figure out, how to rotate in the right azimuthal direction
+	return normal; // 2D only! TODO: generalize for 3D, check for negative y
 }
 
 void Boundary_axissymmetric::draw2D() {
