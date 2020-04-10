@@ -26,24 +26,17 @@ Vec3d Boundary_axissymmetric::getNormalNumDiff(const Vec3d &curve_point) const {
 	float dax = 1e-5f;
 	// axial coordinate of the point where the normal is needed
 	float ax = curve_point.toYAxial().axial;
-	// slope of the tangent at the point (with respect to the axis)
-	float slope_tangent = (contour(ax + dax) - contour(ax - dax)) / (2*dax);
-	// slope of the normal at the point (with respect to the axis)
-	// result of 90 deg rotation
 	// must point inside, conforming to other definition (from surface to particle),
-	// assuming that the particle is still inside
-	//  TODO: try to use it as a check for particle loss!
-	float slope_normal;
+	// assuming that the particle is still inside!!!
+	// TODO: try to use it as a check for particle loss!
+	// TODO: check in all quadrants
+	// rotate the tangent by 90 deg, to get normal:
+	// swap x and y, and change sign of x
+	Vec3d normal = norm(Vec3d(
+			-dax,
+			contour(ax + dax/2) - contour(ax - dax/2),
+			0));
 
-	Vec3d normal;
-	if ( abs(slope_tangent) < SMALL ) {
-		normal = Vec3d(-1,0,0);
-	} else {
-		slope_normal = 1 / slope_tangent;
-		 // no need to normalize, and 2D only!
-		// TODO: check in all quadrants, consider atan2 as well!
-		normal = Vec3d(sin(atan(slope_normal)), cos(atan(slope_normal)), 0);
-	}
 // TODO: figure out, how to rotate in the right azimuthal direction
 	return normal; // 2D only! TODO: generalize for 3D, check for negative y
 }
