@@ -125,6 +125,15 @@ if(ADD_FAILING_TEST)
 	add_unit_test(failing-test)
 endif(ADD_FAILING_TEST)
 
+# boosttest-test
+set(TEST_THE_TEST OFF)
+if(TEST_THE_TEST)
+	file(GLOB SOURCES "test/boosttest-test.cpp")
+	add_executable(boosttest-test ${SOURCES} )
+	target_include_directories(boosttest-test PUBLIC ${Boost_INCLUDE_DIRS})
+	target_link_libraries(boosttest-test ${Boost_LIBRARIES})
+	add_unit_test(boosttest-test)
+endif(TEST_THE_TEST)
 
 ############
 # running tests automatically after build:

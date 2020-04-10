@@ -12,7 +12,8 @@
 !test
 !include/*.h
 !src/*.cpp
-!test/*.[h,cpp]
+!test/*.h
+!test/*.cpp
 
 # CMake:
 !CMakeLists.txt
