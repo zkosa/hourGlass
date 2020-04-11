@@ -11,11 +11,10 @@ float Boundary_axissymmetric::distance(const Particle &particle) const {
 
 Vec3d Boundary_axissymmetric::getNormal(const Particle &particle) const {
 	// provides a normalized direction vector from the closest surface point to the particle
-	// TODO: check, if this is what we really want and what we really do
 
 	MinimumDistance minimum_distance(*this, particle);
 
-	return minimum_distance.getNormal();
+	return getNormalNumDiff(minimum_distance.getClosestPointOnTheContour());
 }
 
 Vec3d Boundary_axissymmetric::getNormalNumDiff(const Vec3d &curve_point) const {
