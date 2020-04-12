@@ -1,5 +1,6 @@
 #include <iostream>
 
+//#define BOOST_TEST_TOOLS_UNDER_DEBUGGER // it can deactivate the tolerance!!!
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE boosttest-TEST
 #include <boost/test/unit_test.hpp>
@@ -7,6 +8,8 @@
 // these are rather "experiments", than tests
 // fails do not necessarily indicate a problem
 // disable the test by default
+
+std::ostream& printer = std::cout << "BOOST_LIB_VERSION: " << BOOST_LIB_VERSION << std::endl;
 
 // looking for the default tolerance
 BOOST_AUTO_TEST_CASE( float_test_test )
@@ -53,7 +56,7 @@ BOOST_AUTO_TEST_CASE( float_test_tolerance_types_test, * boost::unit_test::toler
 	BOOST_TEST( 1.0  == 1.0  + 1.2e-6  ); // fails
 	BOOST_TEST( 1    == 1.0  + 1.2e-6  ); // fails
 	BOOST_TEST( 1    == 1    + 1.2e-6  ); // fails
-	BOOST_TEST( 1.0f == 1   + 1.2e-6f  ); // passes
+	BOOST_TEST( 1.0f == 1    + 1.2e-6f ); // passes
 }
 
 // test with zero
