@@ -1,3 +1,4 @@
+#include "devtools.h"
 #include "boundary.h"
 #include "boundary_axissymmetric.h"
 #include "boundary_planar.h"
@@ -11,7 +12,6 @@
 #include <boost/array.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 
-#define watch(x) std::cout << (#x) << "= " << (x) << std::endl
 
 // TODO: add tests in planes other than (x,y)
 
