@@ -11,11 +11,13 @@ class Minimum {
 	float guess = 0;
 	// result tolerance:
 	static float tolerance;
-	// max number of Newton iterations:
-	static constexpr int max_iter = 2000;
 	// step size for numerical differentiation
 	// limits of float are reached with values smaller than 1e-3
 	static constexpr float delta = 1e-3;
+	// max number of Newton iterations:
+	static constexpr int max_iter = 100;
+	// number of actually performed iterations
+	int performed_iterations = 0;
 
 public:
 
@@ -23,7 +25,7 @@ public:
 			function(_function) {
 	}
 
-	float findRoot(float starting_value = 0) const;
+	float findRoot(float starting_value = 0);
 	static float getTolerance() {
 		return tolerance;
 	}
@@ -33,6 +35,10 @@ public:
 	void setInitialGuess(float guess) {
 		this->guess = guess;
 	}
+	int getPerformedIterations() {
+		return performed_iterations;
+	}
+	bool numberOfIterReached();
 };
 
 #endif /* MINIMUM_H_ */
