@@ -24,10 +24,12 @@ public:
 
 	float distance(const Vec3d &point) const;
 	float distance(const Particle &particle) const override;
+	float distanceSigned(const Vec3d &point) const;
+	float distanceSigned(const Particle &particle) const override;
 
 	void draw2D() override;
 
-	Vec3d getNormal(const Particle &particle) const override; // TODO: wrap the numerical one
+	Vec3d getNormal(const Particle &particle) const override;
 	Vec3d getNormalNumDiff(const Vec3d &curve_point) const;
 
 	const Vec3d& getAxis() const {

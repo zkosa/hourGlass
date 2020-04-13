@@ -13,6 +13,22 @@ float Boundary_axissymmetric::distance(const Vec3d &point) const {
 	return minimum_distance.getDistance();
 }
 
+float Boundary_axissymmetric::distanceSigned(const Particle &particle) const {
+	return 	distanceSigned(particle.getPos());
+}
+
+float Boundary_axissymmetric::distanceSigned(const Vec3d &point) const {
+	// Returns a signed distance between the contour and the particle.
+	// Negative value indicates that the particle is on the outer side.
+	// TODO: add tests
+	// TODO: optimize
+	MinimumDistance minimum_distance(*this, point);
+
+	Vec3d contact_point = minimum_distance.getClosestPointOnTheContour();
+
+	return (point - contact_point) * getNormal(point);
+}
+
 Vec3d Boundary_axissymmetric::getNormal(const Particle &particle) const {
 	// provides a normalized direction vector from the closest surface point to the particle
 
