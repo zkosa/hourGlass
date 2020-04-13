@@ -3,8 +3,12 @@
 #include <QOpenGLWidget>
 
 float Boundary_axissymmetric::distance(const Particle &particle) const {
+	return distance(particle.getPos());
+}
 
-	MinimumDistance minimum_distance(*this, particle);
+float Boundary_axissymmetric::distance(const Vec3d &point) const {
+
+	MinimumDistance minimum_distance(*this, point);
 
 	return minimum_distance.getDistance();
 }

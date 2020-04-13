@@ -22,6 +22,7 @@ class Boundary_axissymmetric: public Boundary {
 
 public:
 
+	float distance(const Vec3d &point) const;
 	float distance(const Particle &particle) const override;
 
 	void draw2D() override;

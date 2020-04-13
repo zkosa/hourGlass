@@ -45,7 +45,19 @@ public:
 		// use the axial coordinate of the point as starting value for the Newton iteration
 		setInitialGuess(point * axis);
 		findClosestPointOnContour();
-	}; // TODO: test it
+	};
+
+	MinimumDistance(const Boundary_axissymmetric& boundary, const Vec3d& point) :
+		point(point),
+		axis(boundary.getAxis()),
+		contour(boundary.getContourFun()),
+		function( std::bind(&MinimumDistance::distance2, this, std::placeholders::_1) ),
+		minimum(function)
+	{
+		// use the axial coordinate of the point as starting value for the Newton iteration
+		setInitialGuess(point * axis);
+		findClosestPointOnContour();
+	};
 
 	MinimumDistance(const Boundary_axissymmetric& boundary, const Particle& particle) :
 		point(particle.getPos()),

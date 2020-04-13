@@ -1,5 +1,6 @@
 #include <iostream>
 #include "minimumdistance.h"
+#include "boundary_axissymmetric.h"
 
 //#define BOOST_TEST_TOOLS_UNDER_DEBUGGER
 #define BOOST_TEST_DYN_LINK
@@ -12,6 +13,41 @@ float X_offset = 0.0;
 // contour to be rotated around the axis
 float parabola(float X) {
 	return (X - X_offset)*(X - X_offset) + vertex_height;
+}
+
+BOOST_AUTO_TEST_CASE( hourglass_closest_point_test )
+{
+	Boundary_axissymmetric glass;
+
+	std::function<float(float)> contour = glass.getContourFun();
+	float vertex_height_glass = 0.07f;
+	Vec3d point(vertex_height_glass - 1e-3f, 0.0f, 0.0f); // point at the bottleneck, close to the vertex
+
+	MinimumDistance minimum_distance_boundary(glass, point);
+	MinimumDistance minimum_distance_contour(contour, point);
+
+	float tolerance = 1e-5f;
+
+	// same results are expected, independently from construction method:
+	BOOST_TEST_REQUIRE( minimum_distance_boundary.getClosestPointOnTheContour() ==
+						minimum_distance_contour.getClosestPointOnTheContour() );
+	// check, if really the vertex is found
+	BOOST_TEST_REQUIRE( minimum_distance_boundary.getClosestPointOnTheContour() ==
+						Vec3d(vertex_height_glass, 0.0f, 0.0f),
+						boost::test_tools::tolerance(tolerance) );
+}
+
+BOOST_AUTO_TEST_CASE( parabola_closest_point_test )
+{
+	std::function<float(float)> contour = parabola;
+	Vec3d point(vertex_height - 1e-3f, 0.0f, 0.0f); // point at the bottleneck, close to the vertex
+
+	//MinimumDistance minimum_distance(parabola, point);
+	MinimumDistance minimum_distance(contour, point);
+
+	float tolerance = 1e-5f;
+
+	BOOST_TEST_REQUIRE( minimum_distance.getClosestPointOnTheContour() == Vec3d(vertex_height, 0.0f, 0.0f), boost::test_tools::tolerance(tolerance) );
 }
 
 BOOST_AUTO_TEST_CASE( parabola_minimum_distance_test )
