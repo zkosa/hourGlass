@@ -98,9 +98,12 @@ void Particle::collideToWall(const Boundary &wall) {
 
 	Vec3d pos_corr { 0, 0, 0 };
 	if (std::abs(n * vel) > SMALL) { // not parallel, and moving
-		pos_corr = (radius - wall.distance(*this)) / std::abs(n * vel) * vel * (-1); // move along the OLD! velocity vector
+		 // move outwards along the incoming velocity vector
+		pos_corr = (radius - wall.distanceSigned(*this)) / std::abs(n * vel) * vel * (-1);
 	} else {
-		pos_corr = (radius - wall.distance(*this)) * n; // move in surface normal direction
+		// if there is no wall normal movement,
+		// move in surface normal direction to the touching position
+		pos_corr = (radius - wall.distanceSigned(*this)) * n;
 	}
 
 	// move back to the position when it touched the boundary:
