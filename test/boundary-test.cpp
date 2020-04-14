@@ -38,6 +38,38 @@ BOOST_AUTO_TEST_CASE( distance_origin_test )
 	BOOST_REQUIRE_EQUAL( glass.distance(p), 0.07f );
 }
 
+BOOST_AUTO_TEST_CASE( distance_external_planar_test )
+{
+	// check that the signed distance is the inverse of the signed
+	// for external particles
+	float corner = 1;
+	Boundary_planar ground(
+			Vec3d(-1, -corner, 0),
+			Vec3d(1, -corner, 0),
+			Vec3d(-1, -corner, 1)
+			);
+
+	Vec3d point(0,-1.5,0);
+	Particle p(point);
+
+	BOOST_REQUIRE_EQUAL( ground.distance(point), -ground.distanceSigned(point) );
+	BOOST_REQUIRE_EQUAL( ground.distance(p), -ground.distanceSigned(p) );
+}
+
+BOOST_AUTO_TEST_CASE( distance_external_glass_test )
+{
+	// check that the signed distance is the inverse of the signed
+	// for external particles
+
+	Boundary_axissymmetric glass; // hardcoded shape, orifice diameter 0.014 [m]
+
+	Vec3d point(0.071,0,0);
+	Particle p(point);
+
+	BOOST_REQUIRE_EQUAL( glass.distance(point), -glass.distanceSigned(point) );
+	BOOST_REQUIRE_EQUAL( glass.distance(p), -glass.distanceSigned(p) );
+}
+
 BOOST_AUTO_TEST_CASE( distance_on_the_axis_hourglass_test )
 {
 	// check a point on the axis, check the normals too
