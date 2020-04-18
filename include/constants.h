@@ -1,7 +1,7 @@
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
-const float pi = 3.14159f;
+const float pi = 3.14159265358979323846f;
 
 const float g = 9.81f;
 
