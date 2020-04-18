@@ -25,7 +25,12 @@ public:
 			function(_function) {
 	}
 
-	float findRoot(float starting_value = 0);
+	float findRoot(float starting_value);
+	float findRoot() {
+		// use the default, or previously user specified starting value
+		return findRoot(guess);
+	};
+
 	static float getTolerance() {
 		return tolerance;
 	}
