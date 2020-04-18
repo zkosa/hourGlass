@@ -27,7 +27,7 @@ BOOST_DATA_TEST_CASE( parabola_minimum_test, guess_data, guess_ )
 	Minimum curve_minimum(parabola);
 
 	//auto tolerance = boost::test_tools::tolerance( float(3.0f * Minimum::getTolerance()) );
-	auto tolerance = boost::test_tools::tolerance( float(3 * 1e-05f) );
+	auto tolerance = boost::test_tools::tolerance( float(3e-05f) );
 	// changing the tolerance does not effect the result, only the number of iterations. hmmm...
 	//curve_minimum.setTolerance(1e-9f);
 	float guess = guess_;
@@ -58,19 +58,80 @@ BOOST_DATA_TEST_CASE( cos_minimum_test, guess_data_cos, guess_ )
 
 	Minimum curve_minimum(negCosine);
 
-	auto tolerance = boost::test_tools::tolerance( float(3 * 1e-05f) );
+	auto tolerance = boost::test_tools::tolerance( float(3e-05f) );
 	// changing the tolerance does not effect the result, only the number of iterations. hmmm...
 	//curve_minimum.setTolerance(1e-9f);
 	float guess = guess_;
 	float root = curve_minimum.findRoot(guess);
 	float truth = 0.0f;
 
-	//std::cout << guess_ << "  "; watch(root);
-	//watch( curve_minimum.getPerformedIterations() );
-
 	BOOST_TEST_REQUIRE( root == truth, tolerance );
 
 	// check repeated execution:
 	root = curve_minimum.findRoot(guess);
 	BOOST_TEST_REQUIRE( root == truth, tolerance );
+}
+
+// checking for the minimum in next period
+BOOST_DATA_TEST_CASE( cos_minimum_offset_test, guess_data_cos, guess_ )
+{
+	// find the minimum of the -cosine function
+
+	Minimum curve_minimum(negCosine);
+
+	float offset = 2.0f * pi;
+	auto tolerance = boost::test_tools::tolerance( float(3e-05f) );
+	float guess = guess_ + offset;
+	float root = curve_minimum.findRoot(guess);
+	float truth = 0.0f + offset;
+
+	BOOST_TEST_REQUIRE( root == truth, tolerance );
+}
+
+// checking for the minimum in next period, with specifying the guess via method
+BOOST_DATA_TEST_CASE( cos_minimum_offset_setGuess_test, guess_data_cos, guess_ )
+{
+	// find the minimum of the -cosine function
+
+	Minimum curve_minimum(negCosine);
+
+	float offset = 2.0f * pi;
+	auto tolerance = boost::test_tools::tolerance( float(3e-05f) );
+	float guess = guess_ + offset;
+	curve_minimum.setInitialGuess(guess);
+	curve_minimum.setTolerance(1e-5f);
+	float root = curve_minimum.findRoot(); // TODO: find the reason for Eclipse ambiguous error
+	float truth = 0.0f + offset;
+
+	BOOST_TEST_REQUIRE( root == truth, tolerance );
+}
+
+
+// check if the specified tolerance can is reached
+BOOST_DATA_TEST_CASE( cos_minimum_setTolerance_test, guess_data_cos, guess_ )
+{
+
+	std::cout << "-------------------------" << std::endl;
+	Minimum curve_minimum(negCosine);
+
+	curve_minimum.setInitialGuess(guess_);
+	float truth = 0.0f;
+	float root;
+
+	curve_minimum.setTolerance(1e-3f);
+	root = curve_minimum.findRoot();
+	watch( curve_minimum.getPerformedIterations() );
+	BOOST_TEST_REQUIRE( root == truth, boost::test_tools::tolerance( float(curve_minimum.getTolerance()) ) );
+
+	curve_minimum.setTolerance(1e-5f);
+	root = curve_minimum.findRoot();
+	watch( curve_minimum.getPerformedIterations() );
+	BOOST_TEST_REQUIRE( root == truth, boost::test_tools::tolerance( float(curve_minimum.getTolerance()) ) );
+/*
+	// precision limit is reached, the new X_new is the same as the old one
+	curve_minimum.setTolerance(1e-7f);
+	root = curve_minimum.findRoot();
+	watch( curve_minimum.getPerformedIterations() );
+	BOOST_TEST_REQUIRE( root == truth, boost::test_tools::tolerance( float(curve_minimum.getTolerance()) ) );
+*/
 }
