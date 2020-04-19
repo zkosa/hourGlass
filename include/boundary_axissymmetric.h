@@ -6,13 +6,13 @@
 #include <unordered_map>
 
 class Boundary_axissymmetric: public Boundary {
-	Vec3d p1_axis { 0, -1, 0 };
-	Vec3d p2_axis { 0, 1, 0 };
+	Vec3d p1_axis { 0.0f, -1.0f, 0.0f };
+	Vec3d p2_axis { 0.0f,  1.0f, 0.0f };
 	Vec3d axis = norm(p2_axis - p1_axis);
 	std::unordered_map<int, Vec3d> normals_to_particles;
 
 	float hourGlassShape(float X) const {
-		float min_height = 0.07;
+		float min_height = 0.07f;
 		return X * X + min_height;
 	}
 

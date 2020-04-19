@@ -53,7 +53,7 @@ Vec3d Boundary_axissymmetric::getNormalNumDiff(const Vec3d &curve_point) const {
 	// swap x and y, and change sign of x
 	Vec3d normal = norm(Vec3d(
 			-dax,
-			contour(ax + dax/2) - contour(ax - dax/2),
+			contour(ax + dax/2.0f) - contour(ax - dax/2.0f),
 			0));
 
 // TODO: figure out, how to rotate in the right azimuthal direction
