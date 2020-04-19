@@ -7,6 +7,10 @@
 class Boundary {
 
 	bool temporary = false;
+
+protected:
+	bool planar = false; // for type checking: set to true in constructor of planar
+
 public:
 
 	virtual void draw2D() = 0;
@@ -19,6 +23,9 @@ public:
 	}
 	void setTemporary() {
 		temporary = true;
+	}
+	bool isPlanar() const {
+		return planar;
 	}
 
 };
