@@ -132,7 +132,7 @@ public:
 
 		Vec3d radial = point - (point * axis) * axis; // radial vector. it becomes zero, when the point is on the axis!
 
-		// pick a "random" unit vector, when it would be a null vector:
+		// pick an arbitrary unit vector, when it would be a null vector:
 		if ( radial.isSmall() ) {
 			radial = Vec3d::i;
 		}
