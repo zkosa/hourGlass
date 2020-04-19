@@ -97,11 +97,14 @@ void Particle::collideToWall(const Boundary &wall) {
 	Vec3d n = wall.getNormal(*this);
 
 	Vec3d pos_corr { 0, 0, 0 };
-	if (std::abs(n * vel) > SMALL) { // not parallel, and moving
-		 // move outwards along the incoming velocity vector
+	if (std::abs(n * vel) > SMALL && wall.isPlanar()) { // not parallel, and moving
+		// Move outwards along the incoming velocity vector so,
+		// that the normal correction component equals to the overlap,
+		// This doesn't ensure overlap-less corrected position for curved surfaces,
+		// so it is performed only for planar boundaries
 		pos_corr = (radius - wall.distanceSigned(*this)) / std::abs(n * vel) * vel * (-1);
 	} else {
-		// if there is no wall normal movement,
+		// If there is no wall normal movement,
 		// move in surface normal direction to the touching position
 		pos_corr = (radius - wall.distanceSigned(*this)) * n;
 	}
