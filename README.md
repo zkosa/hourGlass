@@ -13,4 +13,4 @@ Particle dynamics simulator for sand movement in a hourglass
 
 ###### Installation:
 - CMakeLists.txt is provided, set up for Linux and Windows
-- External dependecies: Qt and OpenGL
+- External dependecies: Qt, OpenGL and Boost.Test
