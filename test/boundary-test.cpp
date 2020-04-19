@@ -4,7 +4,7 @@
 #include "boundary_planar.h"
 #include "particle.h"
 
-//#define BOOST_TEST_TOOLS_UNDER_DEBUGGER
+//#define BOOST_TEST_TOOLS_UNDER_DEBUGGER // it deactivates the tolerance!!!
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE boundary-TEST
 #include <boost/test/unit_test.hpp>
@@ -28,14 +28,14 @@ BOOST_AUTO_TEST_CASE( distance_origin_test )
 	Vec3d point(0,0,0);
 	Particle p(point, radius);
 
-	BOOST_REQUIRE_EQUAL( ground.distance(point), 1.0f );
-	BOOST_REQUIRE_EQUAL( ground.distance(p), 1.0f );
+	BOOST_TEST_REQUIRE( ground.distance(point) == 1.0f );
+	BOOST_TEST_REQUIRE( ground.distance(p) == 1.0f );
 
 
 	Boundary_axissymmetric glass; // hardcoded shape, orifice diameter 0.014 [m]
 
-	BOOST_REQUIRE_EQUAL( glass.distance(point), 0.07f );
-	BOOST_REQUIRE_EQUAL( glass.distance(p), 0.07f );
+	BOOST_TEST_REQUIRE( glass.distance(point) == 0.07f );
+	BOOST_TEST_REQUIRE( glass.distance(p) == 0.07f );
 }
 
 BOOST_AUTO_TEST_CASE( distance_external_planar_test )
@@ -52,8 +52,8 @@ BOOST_AUTO_TEST_CASE( distance_external_planar_test )
 	Vec3d point(0,-1.5,0);
 	Particle p(point);
 
-	BOOST_REQUIRE_EQUAL( ground.distance(point), -ground.distanceSigned(point) );
-	BOOST_REQUIRE_EQUAL( ground.distance(p), -ground.distanceSigned(p) );
+	BOOST_TEST_REQUIRE( ground.distance(point) == -ground.distanceSigned(point) );
+	BOOST_TEST_REQUIRE( ground.distance(p) == -ground.distanceSigned(p) );
 }
 
 BOOST_AUTO_TEST_CASE( distance_external_glass_test )
@@ -66,8 +66,8 @@ BOOST_AUTO_TEST_CASE( distance_external_glass_test )
 	Vec3d point(0.071,0,0);
 	Particle p(point);
 
-	BOOST_REQUIRE_EQUAL( glass.distance(point), -glass.distanceSigned(point) );
-	BOOST_REQUIRE_EQUAL( glass.distance(p), -glass.distanceSigned(p) );
+	BOOST_TEST_REQUIRE( glass.distance(point) == -glass.distanceSigned(point) );
+	BOOST_TEST_REQUIRE( glass.distance(p) == -glass.distanceSigned(p) );
 }
 
 BOOST_AUTO_TEST_CASE( distance_on_the_axis_hourglass_test )
@@ -81,14 +81,12 @@ BOOST_AUTO_TEST_CASE( distance_on_the_axis_hourglass_test )
 
 	// axial coordinate of closest point on the contour
 	// https://www.wolframalpha.com/input/?i=minimize+%28x-0.1%29%5E2+%2B+%28x%5E2%2B0.07-0%29%5E2+
-	float root = 0.1 * pow(25 + 2*sqrt(1871.0), 1.0/3.0) - 19.0/(10.0*pow(25.0 + 2*sqrt(1871.0), 1.0/3.0));
+	float root = 0.1f * pow(25.0f + 2.0f*sqrt(1871.0f), 1.0f/3.0f) - 19.0f/(10.0f*pow(25.0f + 2.0f*sqrt(1871.0f), 1.0f/3.0f));
 	// closes point on the contour
 	Vec3d point_root(glass.getContourFun()(root), root, 0); // axis is the y axis!
 
-	// hmmm, unexpected implicit particle to point conversion is happening TODO: investigate it
-	BOOST_REQUIRE_EQUAL( glass.distance(point2), abs(point2 - point_root) );
-	// not necessary:
-	//BOOST_TEST_REQUIRE( abs(glass.getNormal(point2) - (point2 - point_root)) < 1e-5f );
+	BOOST_TEST_REQUIRE( glass.distance(point2) == abs(point2 - point_root) );
+	BOOST_TEST_REQUIRE( glass.distance(point2) == glass.distanceSigned(point2), boost::test_tools::tolerance(1e-7f) );
 }
 
 BOOST_AUTO_TEST_CASE( distance_in_the_orifice_hourglass_test )
@@ -140,17 +138,16 @@ BOOST_DATA_TEST_CASE( hourglass_numdiff_normal_test,
 
 	Boundary_axissymmetric glass; // hardcoded shape, orifice diameter 0.14 [m]
 
-	float tol = 1e-6f;
 	float rad = rad_;
-	float ax = std::sqrt(rad - 0.07); // inverse of the contour function (one of the two solutions)
+	float ax = std::sqrt(rad - 0.07f); // inverse of the contour function (one of the two solutions)
 	// check the inversion (y is the rotation axis!)
-	BOOST_REQUIRE( abs(glass.getContourFun()(ax) - rad) < tol );
+	BOOST_TEST_REQUIRE( glass.getContourFun()(ax) == rad );
 
 	Vec3d point(rad, ax, 0);
 
 	// check that the point and the particle are really on the curve before collision:
 	// the tests may loose their sense when distance check is implemented
-	BOOST_REQUIRE( glass.distance(point) < tol );
+	BOOST_TEST_REQUIRE( glass.distance(point) == 0.0f,  boost::test_tools::tolerance(1e-6f) );
 
 	glass.getNormalNumDiff(point).print();
 
@@ -167,9 +164,51 @@ BOOST_DATA_TEST_CASE( hourglass_numdiff_normal_test,
 	BOOST_TEST_REQUIRE( glass.getNormalNumDiff(point).z == normal_target_data[data_index].z, tol_normal );
 }
 
-static const boost::array< float, 3 > rad_data2{0.07f, 0.071f, 0.45f};
+static const boost::array< float, 6 > rad_data2{0.07f, 0.071f, 0.32f, 0.45f, 0.571f, 0.9f};
 
-BOOST_DATA_TEST_CASE( collide_hourglass_test, rad_data2, rad_ )
+BOOST_DATA_TEST_CASE( collide_hourglass_zerovel_test, rad_data2, rad_ )
+{
+	watch(rad_);
+	// Check if a particle on the contour is properly moved back to the domain
+	// Motivation: particles cross the walls ( e.g. at x=0.45) 0.571
+	// This test is performed with steady particles
+
+	Boundary_axissymmetric glass; // hardcoded shape, orifice diameter 0.14 [m]
+
+	auto tolerance = boost::test_tools::tolerance(1e-6f);
+	float rad = rad_;
+	float ax = std::sqrt(rad - 0.07f); // inverse of the contour function (one of the two solutions)
+	// check the inversion
+	BOOST_TEST_REQUIRE( glass.getContourFun()(ax) == rad, tolerance );
+
+	Vec3d point(rad, ax, 0.0f);
+	Vec3d vel(0.0f, 0.0f, 0.0f);
+
+	Particle p(point, vel);
+	glass.distance(point);
+	// check that the point and the particle are really on the curve before collision:
+	// the tests may loose their sense when distance check is implemented
+	BOOST_TEST_REQUIRE( glass.distance(point) == 0.0f, tolerance );
+	BOOST_TEST_REQUIRE( glass.distance(p) == 0.0f, tolerance );
+
+	//watch(glass.getNormal(p));
+	 // only here, where the point is on the curve!
+	//watch(glass.getNormalNumDiff(point));
+
+	// check if no NaNs or Infs occur
+	BOOST_TEST_REQUIRE( boost::math::isfinite( glass.getNormal(p) ) );
+	BOOST_TEST_REQUIRE( boost::math::isfinite( glass.getNormalNumDiff(point) ) );
+
+	p.collideToWall(glass);
+
+	// check that the point is at touching distance (radius) after collision:
+	BOOST_TEST_REQUIRE( glass.distance(p) == p.getR(), boost::test_tools::tolerance(1e-5f) );
+
+}
+
+// when particle is moved backwards along the old velocity vector,
+// it can still interfere with the (curved) wall --> test with planar too!
+BOOST_DATA_TEST_CASE( collide_hourglass_downvel_test, rad_data2, rad_ )
 {
 	watch(rad_);
 	// Check if a particle on the contour is properly moved back to the domain
@@ -177,36 +216,85 @@ BOOST_DATA_TEST_CASE( collide_hourglass_test, rad_data2, rad_ )
 
 	Boundary_axissymmetric glass; // hardcoded shape, orifice diameter 0.14 [m]
 
-	float tolerance = 1e-6f;
+	auto tolerance = boost::test_tools::tolerance(1e-6f);
 	float rad = rad_;
-	float ax = std::sqrt(rad - 0.07); // inverse of the contour function (one of the two solutions)
-	// check the inversion (y is the rotation axis!)
-	BOOST_REQUIRE( abs(glass.getContourFun()(ax) - rad) < tolerance );
+	float ax = std::sqrt(rad - 0.07f); // inverse of the contour function (one of the two solutions)
+	// check the inversion
+	BOOST_TEST_REQUIRE( glass.getContourFun()(ax) == rad, tolerance );
 
-	Vec3d point(rad, ax, 0);
-	Vec3d vel(0, -3, 0);
+	Vec3d point(rad, ax, 0.0f);
+	Vec3d vel(0.0f, -3.0f, 0.0f);
 
 	Particle p(point, vel);
 
 	// check that the point and the particle are really on the curve before collision:
 	// the tests may loose their sense when distance check is implemented
-	BOOST_REQUIRE( glass.distance(point) < tolerance );
-	BOOST_REQUIRE( glass.distance(p) < tolerance );
+	BOOST_TEST_REQUIRE( glass.distance(point) == 0.0f, tolerance );
+	BOOST_TEST_REQUIRE( glass.distance(p) == 0.0f, tolerance );
 
-	glass.getNormal(p).print();
+	//watch(glass.getNormal(p));
 	 // only here, where the point is on the curve!
-	glass.getNormalNumDiff(point).print();
+	//watch(glass.getNormalNumDiff(point));
 
-	// check if no NaNs or Infs occur
-	BOOST_REQUIRE( boost::math::isfinite( glass.getNormal(p) ) );
-	BOOST_REQUIRE( boost::math::isfinite( glass.getNormalNumDiff(point) ) );
+	// check whether NaNs or Infs occur
+	BOOST_TEST_REQUIRE( boost::math::isfinite( glass.getNormal(p) ) );
+	BOOST_TEST_REQUIRE( boost::math::isfinite( glass.getNormalNumDiff(point) ) );
 
-
-	std::cout << glass.distance(p) << std::endl;
 	p.collideToWall(glass);
-	std::cout << glass.distance(p) << std::endl;
-	glass.getNormal(p).print();
-	// check that the point is at touching distance (radius) after collision:
-	BOOST_TEST_REQUIRE( glass.distance(p) == p.getR(), boost::test_tools::tolerance(1e-3f) );
 
+	// check that the point is at touching distance (radius) after collision:
+	BOOST_TEST_REQUIRE( glass.distance(p) == p.getR(), boost::test_tools::tolerance(1e-5f) );
+}
+
+static const boost::array< float, 3 > horizontal_offset_data{-1e-3f, 0.0f, 1e-3f};
+
+BOOST_DATA_TEST_CASE( collide_planar_arbivel_test, horizontal_offset_data, offset_ )
+{
+	// Check if a particle on the wall is properly moved back to the domain
+	// Arbitrary velocity vector
+
+	float midpoint_offset = offset_;
+	float corner = 0.999f;
+	Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, -corner, 0),
+					Vec3d(-1, -corner, 1));
+
+	auto tolerance = boost::test_tools::tolerance(1e-6f);
+	auto tolerance_large = boost::test_tools::tolerance(2e-5f);
+
+	// it failed before adding negative signed
+	Vec3d point(0.0f, -corner + midpoint_offset, 0.0f);
+	Vec3d vel(2.0f, -3.0f, 0.0f);
+
+	Particle p(point, vel);
+
+	// check that the point and the particle are really at the expected distance from the surface before collision:
+	BOOST_TEST_REQUIRE( ground.distance(point) == std::abs(midpoint_offset), tolerance_large );
+	BOOST_TEST_REQUIRE( ground.distance(p) == std::abs(midpoint_offset), tolerance_large );
+	BOOST_TEST_REQUIRE( ground.distanceSigned(point) == midpoint_offset, tolerance_large );
+	BOOST_TEST_REQUIRE( ground.distanceSigned(p) == midpoint_offset, tolerance_large );
+
+	p.collideToWall(ground);
+
+	// check that the point is at touching distance (radius) after collision:
+	BOOST_TEST_REQUIRE( ground.distance(p) == p.getR(), tolerance );
+}
+
+// Check that the default constructor has been deleted.
+/*
+BOOST_AUTO_TEST_CASE( planar_constructor_test )
+{
+	Boundary_planar ground; // it should produce compile error
+}
+*/
+
+BOOST_AUTO_TEST_CASE( planarity_test )
+{
+	float corner = 0.999f;
+	Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, -corner, 0),
+					Vec3d(-1, -corner, 1));
+
+	Boundary_axissymmetric glass;
+
+	BOOST_TEST_REQUIRE( ground.isPlanar() == true );
+	BOOST_TEST_REQUIRE( glass.isPlanar() == false );
 }
