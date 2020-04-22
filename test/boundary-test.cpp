@@ -128,12 +128,17 @@ static const boost::array< Vec3d, 2 > normal_target_data{
 	norm(Vec3d{-1,1,0})
 };
 
+// expected results:
+static const boost::array< Vec3d, 2 > normal_target_data_negative_y{
+	norm(Vec3d{-1,0,0}),
+	norm(Vec3d{-1,-1,0})
+};
+
 BOOST_DATA_TEST_CASE( hourglass_numdiff_normal_test,
 		rad_data, rad_//,
 		//normal_target_data, normal_target_ // user types can not be used unfortunately
 		)
 {
-	watch(rad_);
 	// Check the numerical normal calculation
 
 	Boundary_axissymmetric glass; // hardcoded shape, orifice diameter 0.14 [m]
@@ -149,8 +154,6 @@ BOOST_DATA_TEST_CASE( hourglass_numdiff_normal_test,
 	// the tests may loose their sense when distance check is implemented
 	BOOST_TEST_REQUIRE( glass.distance(point) == 0.0f,  boost::test_tools::tolerance(1e-6f) );
 
-	glass.getNormalNumDiff(point).print();
-
 	BOOST_REQUIRE( boost::math::isfinite( glass.getNormalNumDiff(point)) );
 
 	// smaller tolerance for normal vectors:
@@ -164,11 +167,83 @@ BOOST_DATA_TEST_CASE( hourglass_numdiff_normal_test,
 	BOOST_TEST_REQUIRE( glass.getNormalNumDiff(point).z == normal_target_data[data_index].z, tol_normal );
 }
 
+BOOST_DATA_TEST_CASE( hourglass_numdiff_normal_negative_y_test,
+		rad_data, rad_//,
+		//normal_target_data, normal_target_ // user types can not be used unfortunately
+		)
+{
+	// Check the numerical normal calculation
+
+	Boundary_axissymmetric glass; // hardcoded shape, orifice diameter 0.14 [m]
+
+	float rad = rad_;
+	float ax = -std::sqrt(rad - 0.07f); // inverse of the contour function (one of the two solutions)
+	// check the inversion (y is the rotation axis!)
+	BOOST_TEST_REQUIRE( glass.getContourFun()(ax) == rad );
+
+	Vec3d point(rad, ax, 0);
+
+	// check that the point and the particle are really on the curve before collision:
+	// the tests may loose their sense when distance check is implemented
+	BOOST_TEST_REQUIRE( glass.distance(point) == 0.0f,  boost::test_tools::tolerance(1e-6f) );
+
+	BOOST_REQUIRE( boost::math::isfinite( glass.getNormalNumDiff(point)) );
+
+	// smaller tolerance for normal vectors:
+	auto tol_normal = boost::test_tools::tolerance(1e-3f);
+	// find the index of the current input, and use it to obtain the desired result:
+	auto data_index = std::find(rad_data.begin(), rad_data.end(), rad_) - rad_data.begin();
+	//BOOST_TEST_REQUIRE( glass.getNormalNumDiff(point) == normal_target_data_negative_y[data_index], boost::test_tools::tolerance(1e-3f) ); // type is not recognized, fails
+	//BOOST_TEST_REQUIRE( glass.getNormalNumDiff(point) == normal_target_data_negative_y[data_index], boost::test_tools::tolerance(Vec3d(1e-3f,1e-3f,1e-3f)) ); // compile error
+	BOOST_TEST_REQUIRE( glass.getNormalNumDiff(point).x == normal_target_data_negative_y[data_index].x, tol_normal );
+	BOOST_TEST_REQUIRE( glass.getNormalNumDiff(point).y == normal_target_data_negative_y[data_index].y, tol_normal );
+	BOOST_TEST_REQUIRE( glass.getNormalNumDiff(point).z == normal_target_data_negative_y[data_index].z, tol_normal );
+}
+
+BOOST_AUTO_TEST_CASE( hourglass_normal_in_all_quadrants_test )
+{
+	// Check the numerical normal calculation in all quadrants
+
+	Boundary_axissymmetric glass;
+
+	float ax = 0.5f;
+	float rad = glass.getContourFun()(ax);
+
+	std::vector<Vec3d> curve_points;
+	curve_points.emplace_back(rad, ax, 0);
+	curve_points.emplace_back(rad, -ax, 0);
+	curve_points.emplace_back(-rad, ax, 0);
+	curve_points.emplace_back(-rad, -ax, 0);
+
+	std::vector<Vec3d> normal_targets;
+	normal_targets.push_back( norm(Vec3d{-1,  1, 0}) );
+	normal_targets.push_back( norm(Vec3d{-1, -1, 0}) );
+	normal_targets.push_back( norm(Vec3d{ 1,  1, 0}) );
+	normal_targets.push_back( norm(Vec3d{ 1, -1, 0}) );
+
+	// smaller tolerance for normal vectors:
+	auto tol_normal = boost::test_tools::tolerance(1e-3f);
+
+	Vec3d point;
+	Vec3d normal_target;
+	for (std::size_t i = 0; i < curve_points.size(); i++) {
+
+		point = curve_points[i];
+		normal_target = normal_targets[i];
+
+		// check that the point is really on the curve:
+		BOOST_TEST_REQUIRE( glass.distance(point) == 0.0f,  boost::test_tools::tolerance(1e-6f) );
+
+		BOOST_TEST_REQUIRE( glass.getNormalNumDiff(point).x == normal_target.x, tol_normal );
+		BOOST_TEST_REQUIRE( glass.getNormalNumDiff(point).y == normal_target.y, tol_normal );
+		BOOST_TEST_REQUIRE( glass.getNormalNumDiff(point).z == normal_target.z, tol_normal );
+	}
+}
+
 static const boost::array< float, 6 > rad_data2{0.07f, 0.071f, 0.32f, 0.45f, 0.571f, 0.9f};
 
 BOOST_DATA_TEST_CASE( collide_hourglass_zerovel_test, rad_data2, rad_ )
 {
-	watch(rad_);
 	// Check if a particle on the contour is properly moved back to the domain
 	// Motivation: particles cross the walls ( e.g. at x=0.45) 0.571
 	// This test is performed with steady particles
@@ -210,7 +285,6 @@ BOOST_DATA_TEST_CASE( collide_hourglass_zerovel_test, rad_data2, rad_ )
 // it can still interfere with the (curved) wall --> test with planar too!
 BOOST_DATA_TEST_CASE( collide_hourglass_downvel_test, rad_data2, rad_ )
 {
-	watch(rad_);
 	// Check if a particle on the contour is properly moved back to the domain
 	// Motivation: particles cross the walls ( e.g. at x=0.45)
 
@@ -283,7 +357,7 @@ BOOST_DATA_TEST_CASE( collide_planar_arbivel_test, horizontal_offset_data, offse
 /*
 BOOST_AUTO_TEST_CASE( planar_constructor_test )
 {
-	Boundary_planar ground; // it should produce compile error
+	Boundary_planar ground; // it should produce a compile error
 }
 */
 
