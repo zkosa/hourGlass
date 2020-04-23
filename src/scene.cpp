@@ -18,21 +18,23 @@ void Scene::createGeometry(Geometry geometry) {
 
 	float corner = 0.999;
 
-	if (geometry == hourglass || geometry == hourglass_with_removable_orifice) {
+	if (geometry == Geometry::hourglass ||
+		geometry == Geometry::hourglass_with_removable_orifice)
+	{
 		Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, -corner, 0),
 				Vec3d(-1, -corner, 1));
 		Boundary_axissymmetric glass;
 
 		boundaries_pl.push_back(ground);
 		boundaries_ax.push_back(glass);
-		if (geometry == hourglass_with_removable_orifice) {
+		if (geometry == Geometry::hourglass_with_removable_orifice) {
 			Boundary_planar temporary_orifice(Vec3d(-0.07, 0, 0),
 					Vec3d(0.07, 0, 0), Vec3d(-0.07, 0, 1));
 			temporary_orifice.setTemporary();
 			boundaries_pl.push_back(temporary_orifice);
 		}
 
-	} else if (geometry == box) {
+	} else if (geometry == Geometry::box) {
 		Boundary_planar slope(Vec3d(-corner, -corner, 0), Vec3d(corner, 0, 0),
 				Vec3d(-corner, -corner, 1));
 		Boundary_planar side_wall_left(Vec3d(-corner, -corner, 0),
@@ -44,7 +46,7 @@ void Scene::createGeometry(Geometry geometry) {
 		boundaries_pl.push_back(side_wall_left);
 		boundaries_pl.push_back(side_wall_right);
 
-	} else if (geometry == test) {
+	} else if (geometry == Geometry::test) {
 		Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, -corner, 0),
 						Vec3d(-1, -corner, 1));
 		Boundary_planar side_wall_left(Vec3d(-corner, -corner, 0),
@@ -67,7 +69,7 @@ void Scene::createGeometry(Geometry geometry) {
 
 void Scene::setVeloThreeParticlesTest() {
 	// check, whether the context is appropriate
-	if( geometry == test && getNumberOfParticles() == 3 ) {
+	if( geometry == Geometry::test && getNumberOfParticles() == 3 ) {
 		int particle_diameter_mm = 50;
 		float r = particle_diameter_mm / 1000. / 2.; // int [mm] --> float [m], diameter --> radius
 		Particle::setUniformRadius(r);
@@ -536,7 +538,7 @@ void Scene::addParticle(const Particle &p) {
 
 void Scene::addParticles(int N, float y, float r, bool randomize_y) {
 
-	if (geometry == test) {
+	if (geometry == Geometry::test) {
 		std::cout << "adding particles in test mode..." << std::endl;
 	}
 

@@ -12,7 +12,7 @@
 
 class MainWindow;
 
-enum Geometry {
+enum class Geometry {
 	hourglass = 0, hourglass_with_removable_orifice = 1, box = 2, test = 3
 };
 
@@ -26,7 +26,7 @@ class Scene {
 	std::vector<Boundary_axissymmetric> boundaries_ax;
 	std::vector<Cell> cells;
 
-	Geometry geometry = hourglass;
+	Geometry geometry = Geometry::hourglass;
 	std::string geometry_names[4] = { "hourglass",
 			"hourglass_with_removable_orifice", "box", "test" };
 	int number_of_particles = 0; // it is not a "status", but a "request"
@@ -44,21 +44,10 @@ class Scene {
 	struct Defaults {
 		float time_step = 0.001; // [s]
 		int Nx = 10, Ny = Nx, Nz = 1;
-		Geometry geometry = hourglass;
+		Geometry geometry = Geometry::hourglass;
 		int number_of_particles = 5000;
 		float particle_diameter = 0.005; // [m]
 		float Cd = 0.5;
-
-		void print() const {
-			std::cout << "time_step: " << time_step << " [s]" << std::endl;
-			std::cout << "Nx: " << Nx << std::endl;
-			std::cout << "Ny: " << Ny << std::endl;
-			std::cout << "Nz: " << Nz << std::endl;
-			std::cout << "geometry: " << geometry << std::endl;
-			std::cout << "number_of_particles: " << number_of_particles << std::endl;
-			std::cout << "particle_diameter: " << particle_diameter << " [m]" << std::endl;
-			std::cout << "Cd: " << Cd << std::endl;
-		}
 	};
 
 	Defaults defaults;
@@ -94,7 +83,7 @@ public:
 		return geometry;
 	}
 	std::string getGeometryName() {
-		return geometry_names[geometry];
+		return geometry_names[(int)geometry];
 	}
 	bool benchmarkMode() {
 		return benchmark_mode;

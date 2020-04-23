@@ -64,8 +64,8 @@ BOOST_AUTO_TEST_CASE( scene_drag_test )
 	scene.applyDefaults();
 	//Particle::setCd(0.0f);
 
-	scene.setGeometry(test);
-	scene.createGeometry(test);
+	scene.setGeometry(Geometry::test);
+	scene.createGeometry(Geometry::test);
 	scene.setNumberOfParticles(3);
 	scene.addParticles(scene.getNumberOfParticles());
 
@@ -101,8 +101,8 @@ BOOST_AUTO_TEST_CASE( scene_three_particles_test )
 	scene.applyDefaults();
 	float Cd = 0.5f;
 	Particle::setCd(Cd);
-	scene.setGeometry(test);
-	scene.createGeometry(test);
+	scene.setGeometry(Geometry::test);
+	scene.createGeometry(Geometry::test);
 	scene.setNumberOfParticles(3);
 	scene.addParticles(scene.getNumberOfParticles());
 	scene.setVeloThreeParticlesTest();
@@ -148,8 +148,8 @@ BOOST_AUTO_TEST_CASE( scene_collide_to_wall_test )
 
 	scene.applyDefaults();
 
-	scene.setGeometry(test);
-	scene.createGeometry(test);
+	scene.setGeometry(Geometry::test);
+	scene.createGeometry(Geometry::test);
 
 	float ground_level = -0.999;
 	float r = 0.1;

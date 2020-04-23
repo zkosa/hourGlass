@@ -97,7 +97,7 @@ void MainWindow::on_Particle_number_slider_valueChanged(int particle_number_) {
 	scene.addParticles(scene.getNumberOfParticles());
 	scene.populateCells();  // scene.resolve_constraints_on_init_cells(5);
 
-	if ( scene.getGeometry() == test ) {
+	if ( scene.getGeometry() == Geometry::test ) {
 		scene.setVeloThreeParticlesTest();
 		disableParticleNumberControl();
 	}
@@ -191,7 +191,7 @@ void MainWindow::updateGUIcontrols() {
 				<< std::endl;
 	}
 
-	ui->geometryComboBox->setCurrentIndex(scene.getGeometry());
+	ui->geometryComboBox->setCurrentIndex((int)scene.getGeometry());
 
 	// for SpinBoxes only the values have to be changed:
 	ui->cells_Nx_SpinBox->setValue(Cell::getNx());
@@ -209,7 +209,7 @@ void MainWindow::updateGUIcontrols() {
 	ui->Drag_coefficient_value->setText(QString::number(Particle::getCd()));
 	ui->Drag_coefficient_slider->setValue(int(Particle::getCd() * 100.)); // float internal value is transformed to int on the slider
 
-	if (scene.getGeometry() == hourglass_with_removable_orifice) {
+	if (scene.getGeometry() == Geometry::hourglass_with_removable_orifice) {
 		ui->openOrificeButton->show();
 		if (scene.hasTemporaryGeo()) {
 			ui->openOrificeButton->setEnabled(true);
