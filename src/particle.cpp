@@ -158,24 +158,26 @@ void Particle::collideToParticle_checkBoundary(Particle &other) {
 
 	Vec3d pos_corr = -0.5 * n * (this->getR() + other.getR() - distance);
 
-	// create temporary particles for overlap checking
+	// create temporary particles with the planned correction, for overlap checking
 	Particle tmp_particle(*this);
 	tmp_particle.setPos(pos + pos_corr);
+	bool this_overlaps = tmp_particle.overlapWithWalls();
+
 	Particle tmp_other_particle(other);
 	tmp_other_particle.setPos(other.getPos() - pos_corr);
+	bool other_overlaps = tmp_other_particle.overlapWithWalls();
 
-	// TODO: store overlapping properties (free/bounded by wall)
-	if (!tmp_particle.overlapWithWalls()
-			&& !tmp_other_particle.overlapWithWalls()) {
-		// move back to the position when it touched the other:
+	if (!this_overlaps 	&& !other_overlaps) {
+		// apply the correction to both!
+		// (move back to the positions where they touched each other)
 		pos = pos + pos_corr;
 		other.setPos(other.getPos() - pos_corr);
-	} else if (tmp_particle.overlapWithWalls()
-			&& !tmp_other_particle.overlapWithWalls()) {
-		other.setPos(other.getPos() - 2 * pos_corr); // correct where there is no wall
-	} else if (tmp_other_particle.overlapWithWalls()
-			&& !tmp_particle.overlapWithWalls()) {
-		pos = pos + 2 * pos_corr; // correct where there is no wall
+	} else if (this_overlaps && !other_overlaps) {
+		// move only the non-overlapping particle
+		other.setPos(other.getPos() - 2 * pos_corr);
+	} else if (other_overlaps && !this_overlaps) {
+		// move only the non-overlapping particle
+		pos = pos + 2 * pos_corr;
 	} else { // both particles overlap with walls
 		//return;
 		// TODO: implement correction
