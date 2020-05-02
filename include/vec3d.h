@@ -7,8 +7,9 @@
 #include "constants.h"
 #include "vecaxisym.h"
 
-struct Vec3d {
+class Vec3d {
 
+public:
 	float x;
 	float y;
 	float z;
