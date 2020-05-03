@@ -17,6 +17,7 @@
 
 # CMake:
 !CMakeLists.txt
+!CodeCoverage.cmake
 
 # Eclipse:
 !.project

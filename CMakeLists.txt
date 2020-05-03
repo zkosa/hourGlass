@@ -3,9 +3,15 @@ set(CMAKE_VERBOSE_MAKEFILE On) # enables indexing in eclipse?
 
 project(hourGlass LANGUAGES CXX)
 
+set(TESTS ON) # ON / OFF
+set(CODE_COVERAGE_ANALYSIS ON) # ON / OFF, linux only
+
 set(CMAKE_CXX_STANDARD 17)
 add_compile_options("-Wall")
-add_compile_options("-O3")
+# disabling optimization in order to improve the fidelity of coverage analysis:
+if (NOT CODE_COVERAGE_ANALYSIS)
+	add_compile_options("-O3")
+endif(NOT CODE_COVERAGE_ANALYSIS)
 #add_compile_options("-Wpedantic" "-Wextra" "-fexceptions")
 #string(APPEND CMAKE_CXX_FLAGS "-Wall")
 #string(APPEND CMAKE_CXX_FLAGS_DEBUG " -g3")
@@ -44,8 +50,6 @@ target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets ${OPENGL_L
 ##############################
 # TESTING: ###################
 ##############################
-set(TESTS ON) # ON / OFF
-
 if(TESTS)
 
 find_package(Boost REQUIRED unit_test_framework)
@@ -147,4 +151,22 @@ add_custom_command(
       COMMAND ${CMAKE_CTEST_COMMAND} ARGS --output-on-failure
 )
 
+if(CMAKE_COMPILER_IS_GNUCXX AND CODE_COVERAGE_ANALYSIS)
+	# creating coverage analysis target (for the test):
+	set(COVERAGE_COMPILER_FLAGS "-g -fprofile-arcs -ftest-coverage"
+    	CACHE INTERNAL "")
+    set(COVERAGE_TARGET_NAME "coverage")
+	include(CodeCoverage.cmake)
+	APPEND_COVERAGE_COMPILER_FLAGS()
+	SETUP_TARGET_FOR_COVERAGE_LCOV(
+	        NAME ${COVERAGE_TARGET_NAME}               
+	        EXECUTABLE ${CMAKE_CTEST_COMMAND}
+	        DEPENDENCIES ${UNIT_TEST_COLLECTOR}
+	        )
+	        
+# run the coverage analysis target manually after build:
+# run "make coverage" from bin
+# or build the coverage target from eclipse
+
+endif(CMAKE_COMPILER_IS_GNUCXX AND CODE_COVERAGE_ANALYSIS)
 endif(TESTS)
