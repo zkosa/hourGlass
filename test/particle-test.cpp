@@ -1,4 +1,7 @@
 #include "particle.h"
+#include "boundary_planar.h"
+#include "boundary_axissymmetric.h"
+#include "scene.h"
 
 #define BOOST_TEST_TOOLS_UNDER_DEBUGGER
 #define BOOST_TEST_DYN_LINK
@@ -117,6 +120,41 @@ BOOST_AUTO_TEST_CASE( collision_touching_parallel_test )
 	BOOST_REQUIRE_EQUAL( p2.getPos(), pos2 );
 	BOOST_REQUIRE_EQUAL( p1.getV(), vel );
 	BOOST_REQUIRE_EQUAL( p2.getV(), vel );
+}
+
+BOOST_AUTO_TEST_CASE( overlap_with_wall_test )
+{
+
+	Scene scene;
+	scene.createGeometry(Geometry::hourglass);
+
+	Boundary_axissymmetric glass = scene.getBoundariesAxiSym()[0]; // hardcoded shape, orifice diameter 0.014 [m]
+	Boundary_planar ground = scene.getBoundariesPlanar()[0];
+
+	float radius = 0.005;
+	Vec3d point(0, -0.999f + 0.9* radius, 0); // point close to the ground plane
+	Particle p(point, radius); // particle overlapping with the wall
+
+	BOOST_TEST_REQUIRE( p.overlapWithWall(ground) == true );
+	BOOST_TEST_REQUIRE( p.overlapWithWall(glass) == false );
+
+
+	// BOOST_TEST_REQUIRE( p.overlapWithWalls() == true ); // fails, because scene is not known by p
+
+	Scene *scene_ptr = &scene;
+	Particle::connectScene(scene_ptr);
+
+	BOOST_TEST_REQUIRE( p.overlapWithWalls() == true );
+
+	 // make the particle huge, to overlap with all walls
+	p.setR(1.5f);
+
+	BOOST_TEST_REQUIRE( p.overlapWithWalls() == true );
+
+	// make the particle small, to overlap with none of the walls
+	p.setR(1e-5f);
+
+	BOOST_TEST_REQUIRE( p.overlapWithWalls() == false );
 }
 
 BOOST_AUTO_TEST_CASE( no_drag_first_step_test )

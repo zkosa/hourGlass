@@ -69,9 +69,10 @@ target_link_libraries(vec3d-test ${Boost_LIBRARIES})
 add_unit_test(vec3d-test)
 
 # particle-test
-file(GLOB SOURCES "test/particle-test.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp")
-add_executable(particle-test ${SOURCES})
+file(GLOB SOURCES "test/particle-test.cpp" "src/particle.cpp" "src/scene.cpp" "src/cell.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp")
+add_executable(particle-test ${SOURCES} ${MOC_HEADERS} ${UI})
 target_include_directories(particle-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
+set_target_properties(particle-test PROPERTIES AUTOMOC TRUE)
 target_link_libraries(particle-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
 add_unit_test(particle-test)
 
