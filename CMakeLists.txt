@@ -4,7 +4,7 @@ set(CMAKE_VERBOSE_MAKEFILE On) # enables indexing in eclipse?
 project(hourGlass LANGUAGES CXX)
 
 set(TESTS ON) # ON / OFF
-set(CODE_COVERAGE_ANALYSIS ON) # ON / OFF, linux only
+set(CODE_COVERAGE_ANALYSIS OFF) # ON / OFF, linux only
 
 set(CMAKE_CXX_STANDARD 17)
 add_compile_options("-Wall")
