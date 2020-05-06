@@ -24,10 +24,10 @@
 				<pathentry kind="mac" name="__STDC_UTF_16__" path="" value="1"/>
 				<pathentry kind="mac" name="__STDC_UTF_32__" path="" value="1"/>
 				<pathentry kind="mac" name="__STDC_HOSTED__" path="" value="1"/>
-				<pathentry kind="mac" name="__GNUC__" path="" value="8"/>
-				<pathentry kind="mac" name="__GNUC_MINOR__" path="" value="3"/>
-				<pathentry kind="mac" name="__GNUC_PATCHLEVEL__" path="" value="0"/>
-				<pathentry kind="mac" name="__VERSION__" path="" value="&quot;8.3.0&quot;"/>
+				<pathentry kind="mac" name="__GNUC__" path="" value="9"/>
+				<pathentry kind="mac" name="__GNUC_MINOR__" path="" value="2"/>
+				<pathentry kind="mac" name="__GNUC_PATCHLEVEL__" path="" value="1"/>
+				<pathentry kind="mac" name="__VERSION__" path="" value="&quot;9.2.1 20191008&quot;"/>
 				<pathentry kind="mac" name="__ATOMIC_RELAXED" path="" value="0"/>
 				<pathentry kind="mac" name="__ATOMIC_SEQ_CST" path="" value="5"/>
 				<pathentry kind="mac" name="__ATOMIC_ACQUIRE" path="" value="2"/>
@@ -57,7 +57,7 @@
 				<pathentry kind="mac" name="__BYTE_ORDER__" path="" value="__ORDER_LITTLE_ENDIAN__"/>
 				<pathentry kind="mac" name="__FLOAT_WORD_ORDER__" path="" value="__ORDER_LITTLE_ENDIAN__"/>
 				<pathentry kind="mac" name="__SIZEOF_POINTER__" path="" value="8"/>
-				<pathentry kind="mac" name="__GNUG__" path="" value="8"/>
+				<pathentry kind="mac" name="__GNUG__" path="" value="9"/>
 				<pathentry kind="mac" name="__SIZE_TYPE__" path="" value="long unsigned int"/>
 				<pathentry kind="mac" name="__PTRDIFF_TYPE__" path="" value="long int"/>
 				<pathentry kind="mac" name="__WCHAR_TYPE__" path="" value="int"/>
@@ -366,6 +366,7 @@
 				<pathentry kind="mac" name="__GCC_ATOMIC_LLONG_LOCK_FREE" path="" value="2"/>
 				<pathentry kind="mac" name="__GCC_ATOMIC_TEST_AND_SET_TRUEVAL" path="" value="1"/>
 				<pathentry kind="mac" name="__GCC_ATOMIC_POINTER_LOCK_FREE" path="" value="2"/>
+				<pathentry kind="mac" name="__HAVE_SPECULATION_SAFE_VALUE" path="" value="1"/>
 				<pathentry kind="mac" name="__GCC_HAVE_DWARF2_CFI_ASM" path="" value="1"/>
 				<pathentry kind="mac" name="__PRAGMA_REDEFINE_EXTNAME" path="" value="1"/>
 				<pathentry kind="mac" name="__SSP_STRONG__" path="" value="3"/>
@@ -393,6 +394,7 @@
 				<pathentry kind="mac" name="__SSE2_MATH__" path="" value="1"/>
 				<pathentry kind="mac" name="__SEG_FS" path="" value="1"/>
 				<pathentry kind="mac" name="__SEG_GS" path="" value="1"/>
+				<pathentry kind="mac" name="__CET__" path="" value="3"/>
 				<pathentry kind="mac" name="__gnu_linux__" path="" value="1"/>
 				<pathentry kind="mac" name="__linux" path="" value="1"/>
 				<pathentry kind="mac" name="__linux__" path="" value="1"/>
@@ -407,21 +409,29 @@
 				<pathentry kind="mac" name="__STDC_IEC_559__" path="" value="1"/>
 				<pathentry kind="mac" name="__STDC_IEC_559_COMPLEX__" path="" value="1"/>
 				<pathentry kind="mac" name="__STDC_ISO_10646__" path="" value="201706L"/>
-				<pathentry include="/home/kosaz/work/C++/hourGlass/bin" kind="inc" path="" system="true"/>
+				<pathentry include="/home/kosaz/work/C++/hourGlass/bin/bin" kind="inc" path="" system="true"/>
 				<pathentry include="/home/kosaz/work/C++/hourGlass" kind="inc" path="" system="true"/>
 				<pathentry include="/home/kosaz/work/C++/hourGlass/include" kind="inc" path="" system="true"/>
-				<pathentry include="/home/kosaz/work/C++/hourGlass/bin/hourGlass_autogen/include" kind="inc" path="" system="true"/>
+				<pathentry include="/home/kosaz/work/C++/hourGlass/bin/bin/scene-test_autogen/include" kind="inc" path="" system="true"/>
 				<pathentry include="/usr/include/x86_64-linux-gnu/qt5" kind="inc" path="" system="true"/>
+				<pathentry include="/usr/include/x86_64-linux-gnu/qt5/QtWidgets" kind="inc" path="" system="true"/>
+				<pathentry include="/usr/include/x86_64-linux-gnu/qt5/QtGui" kind="inc" path="" system="true"/>
 				<pathentry include="/usr/include/x86_64-linux-gnu/qt5/QtCore" kind="inc" path="" system="true"/>
 				<pathentry include="/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++" kind="inc" path="" system="true"/>
-				<pathentry include="/usr/include/x86_64-linux-gnu/qt5/QtGui" kind="inc" path="" system="true"/>
-				<pathentry include="/usr/include/x86_64-linux-gnu/qt5/QtWidgets" kind="inc" path="" system="true"/>
-				<pathentry include="/usr/include/c++/8" kind="inc" path="" system="true"/>
-				<pathentry include="/usr/include/x86_64-linux-gnu/c++/8" kind="inc" path="" system="true"/>
-				<pathentry include="/usr/include/c++/8/backward" kind="inc" path="" system="true"/>
-				<pathentry include="/usr/lib/gcc/x86_64-linux-gnu/8/include" kind="inc" path="" system="true"/>
+				<pathentry include="/home/kosaz/work/C++/hourGlass/bin/bin/minimum-test_autogen/include" kind="inc" path="" system="true"/>
+				<pathentry include="/home/kosaz/work/C++/hourGlass/bin/bin/cell-test_autogen/include" kind="inc" path="" system="true"/>
+				<pathentry include="/home/kosaz/work/C++/hourGlass/bin/bin/minimumdistance-test_autogen/include" kind="inc" path="" system="true"/>
+				<pathentry include="/home/kosaz/work/C++/hourGlass/bin/bin/hourGlass_autogen/include" kind="inc" path="" system="true"/>
+				<pathentry include="/home/kosaz/work/C++/hourGlass/bin/bin/boundary-test_autogen/include" kind="inc" path="" system="true"/>
+				<pathentry include="/home/kosaz/work/C++/hourGlass/bin/bin/particle-test_autogen/include" kind="inc" path="" system="true"/>
+				<pathentry include="/home/kosaz/work/C++/hourGlass/bin/bin/passing-test_autogen/include" kind="inc" path="" system="true"/>
+				<pathentry include="/home/kosaz/work/C++/hourGlass/bin/bin/vec3d-test_autogen/include" kind="inc" path="" system="true"/>
+				<pathentry include="/usr/include/c++/9" kind="inc" path="" system="true"/>
+				<pathentry include="/usr/include/x86_64-linux-gnu/c++/9" kind="inc" path="" system="true"/>
+				<pathentry include="/usr/include/c++/9/backward" kind="inc" path="" system="true"/>
+				<pathentry include="/usr/lib/gcc/x86_64-linux-gnu/9/include" kind="inc" path="" system="true"/>
 				<pathentry include="/usr/local/include" kind="inc" path="" system="true"/>
-				<pathentry include="/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed" kind="inc" path="" system="true"/>
+				<pathentry include="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed" kind="inc" path="" system="true"/>
 				<pathentry include="/usr/include/x86_64-linux-gnu" kind="inc" path="" system="true"/>
 				<pathentry include="/usr/include" kind="inc" path="" system="true"/>
 			</storageModule>
@@ -429,63 +439,357 @@
 				<buildTargets>
 					<target name=": rebuild_cache" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 						<buildCommand>/usr/bin/make</buildCommand>
-						<buildArguments>-C bin// -j4</buildArguments>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
 						<buildTarget>rebuild_cache</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="[exe] scene-test" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>scene-test</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="[exe] scene-test/fast" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>scene-test/fast</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="Build" path="[Targets]/[exe] scene-test" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C "/home/kosaz/work/C++/hourGlass/bin/bin" -C bin/bin/ -j4</buildArguments>
+						<buildTarget>scene-test</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="Clean" path="[Targets]/[exe] scene-test" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/cmake</buildCommand>
+						<buildArguments>-E chdir "/home/kosaz/work/C++/hourGlass/bin/bin" "/usr/bin/cmake" -P "CMakeFiles/scene-test.dir/cmake_clean.cmake"</buildArguments>
+						<buildTarget></buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="[exe] minimum-test" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>minimum-test</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="[exe] minimum-test/fast" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>minimum-test/fast</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="Build" path="[Targets]/[exe] minimum-test" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C "/home/kosaz/work/C++/hourGlass/bin/bin" -C bin/bin/ -j4</buildArguments>
+						<buildTarget>minimum-test</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="Clean" path="[Targets]/[exe] minimum-test" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/cmake</buildCommand>
+						<buildArguments>-E chdir "/home/kosaz/work/C++/hourGlass/bin/bin" "/usr/bin/cmake" -P "CMakeFiles/minimum-test.dir/cmake_clean.cmake"</buildArguments>
+						<buildTarget></buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="[exe] cell-test" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>cell-test</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="[exe] cell-test/fast" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>cell-test/fast</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="Build" path="[Targets]/[exe] cell-test" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C "/home/kosaz/work/C++/hourGlass/bin/bin" -C bin/bin/ -j4</buildArguments>
+						<buildTarget>cell-test</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="Clean" path="[Targets]/[exe] cell-test" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/cmake</buildCommand>
+						<buildArguments>-E chdir "/home/kosaz/work/C++/hourGlass/bin/bin" "/usr/bin/cmake" -P "CMakeFiles/cell-test.dir/cmake_clean.cmake"</buildArguments>
+						<buildTarget></buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="[exe] minimumdistance-test" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>minimumdistance-test</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="[exe] minimumdistance-test/fast" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>minimumdistance-test/fast</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="Build" path="[Targets]/[exe] minimumdistance-test" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C "/home/kosaz/work/C++/hourGlass/bin/bin" -C bin/bin/ -j4</buildArguments>
+						<buildTarget>minimumdistance-test</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="Clean" path="[Targets]/[exe] minimumdistance-test" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/cmake</buildCommand>
+						<buildArguments>-E chdir "/home/kosaz/work/C++/hourGlass/bin/bin" "/usr/bin/cmake" -P "CMakeFiles/minimumdistance-test.dir/cmake_clean.cmake"</buildArguments>
+						<buildTarget></buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>false</useDefaultCommand>
 					</target>
 					<target name="[exe] hourGlass" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 						<buildCommand>/usr/bin/make</buildCommand>
-						<buildArguments>-C bin// -j4</buildArguments>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
 						<buildTarget>hourGlass</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>false</useDefaultCommand>
 					</target>
 					<target name="[exe] hourGlass/fast" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 						<buildCommand>/usr/bin/make</buildCommand>
-						<buildArguments>-C bin// -j4</buildArguments>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
 						<buildTarget>hourGlass/fast</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>false</useDefaultCommand>
 					</target>
 					<target name="Build" path="[Targets]/[exe] hourGlass" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 						<buildCommand>/usr/bin/make</buildCommand>
-						<buildArguments>-C "/home/kosaz/work/C++/hourGlass/bin" -C bin// -j4</buildArguments>
+						<buildArguments>-C "/home/kosaz/work/C++/hourGlass/bin/bin" -C bin/bin/ -j4</buildArguments>
 						<buildTarget>hourGlass</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>false</useDefaultCommand>
 					</target>
 					<target name="Clean" path="[Targets]/[exe] hourGlass" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 						<buildCommand>/usr/bin/cmake</buildCommand>
-						<buildArguments>-E chdir "/home/kosaz/work/C++/hourGlass/bin" "/usr/bin/cmake" -P "CMakeFiles/hourGlass.dir/cmake_clean.cmake"</buildArguments>
+						<buildArguments>-E chdir "/home/kosaz/work/C++/hourGlass/bin/bin" "/usr/bin/cmake" -P "CMakeFiles/hourGlass.dir/cmake_clean.cmake"</buildArguments>
+						<buildTarget></buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="[exe] boundary-test" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>boundary-test</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="[exe] boundary-test/fast" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>boundary-test/fast</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="Build" path="[Targets]/[exe] boundary-test" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C "/home/kosaz/work/C++/hourGlass/bin/bin" -C bin/bin/ -j4</buildArguments>
+						<buildTarget>boundary-test</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="Clean" path="[Targets]/[exe] boundary-test" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/cmake</buildCommand>
+						<buildArguments>-E chdir "/home/kosaz/work/C++/hourGlass/bin/bin" "/usr/bin/cmake" -P "CMakeFiles/boundary-test.dir/cmake_clean.cmake"</buildArguments>
+						<buildTarget></buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="[exe] particle-test" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>particle-test</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="[exe] particle-test/fast" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>particle-test/fast</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="Build" path="[Targets]/[exe] particle-test" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C "/home/kosaz/work/C++/hourGlass/bin/bin" -C bin/bin/ -j4</buildArguments>
+						<buildTarget>particle-test</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="Clean" path="[Targets]/[exe] particle-test" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/cmake</buildCommand>
+						<buildArguments>-E chdir "/home/kosaz/work/C++/hourGlass/bin/bin" "/usr/bin/cmake" -P "CMakeFiles/particle-test.dir/cmake_clean.cmake"</buildArguments>
 						<buildTarget></buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>false</useDefaultCommand>
 					</target>
 					<target name=": edit_cache" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 						<buildCommand>/usr/bin/make</buildCommand>
-						<buildArguments>-C bin// -j4</buildArguments>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
 						<buildTarget>edit_cache</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="[exe] passing-test" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>passing-test</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="[exe] passing-test/fast" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>passing-test/fast</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="Build" path="[Targets]/[exe] passing-test" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C "/home/kosaz/work/C++/hourGlass/bin/bin" -C bin/bin/ -j4</buildArguments>
+						<buildTarget>passing-test</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="Clean" path="[Targets]/[exe] passing-test" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/cmake</buildCommand>
+						<buildArguments>-E chdir "/home/kosaz/work/C++/hourGlass/bin/bin" "/usr/bin/cmake" -P "CMakeFiles/passing-test.dir/cmake_clean.cmake"</buildArguments>
+						<buildTarget></buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="[exe] vec3d-test" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>vec3d-test</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="[exe] vec3d-test/fast" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>vec3d-test/fast</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="Build" path="[Targets]/[exe] vec3d-test" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C "/home/kosaz/work/C++/hourGlass/bin/bin" -C bin/bin/ -j4</buildArguments>
+						<buildTarget>vec3d-test</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name="Clean" path="[Targets]/[exe] vec3d-test" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/cmake</buildCommand>
+						<buildArguments>-E chdir "/home/kosaz/work/C++/hourGlass/bin/bin" "/usr/bin/cmake" -P "CMakeFiles/vec3d-test.dir/cmake_clean.cmake"</buildArguments>
+						<buildTarget></buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name=": all_tests" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>all_tests</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name=": test" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>test</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name=": scene-test_autogen" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>scene-test_autogen</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name=": minimum-test_autogen" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>minimum-test_autogen</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name=": cell-test_autogen" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>cell-test_autogen</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name=": minimumdistance-test_autogen" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>minimumdistance-test_autogen</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>false</useDefaultCommand>
 					</target>
 					<target name=": hourGlass_autogen" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 						<buildCommand>/usr/bin/make</buildCommand>
-						<buildArguments>-C bin// -j4</buildArguments>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
 						<buildTarget>hourGlass_autogen</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name=": boundary-test_autogen" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>boundary-test_autogen</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name=": particle-test_autogen" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>particle-test_autogen</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name=": passing-test_autogen" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>passing-test_autogen</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+					</target>
+					<target name=": vec3d-test_autogen" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+						<buildCommand>/usr/bin/make</buildCommand>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
+						<buildTarget>vec3d-test_autogen</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>false</useDefaultCommand>
 					</target>
 					<target name=": all" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 						<buildCommand>/usr/bin/make</buildCommand>
-						<buildArguments>-C bin// -j4</buildArguments>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
 						<buildTarget>all</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>false</useDefaultCommand>
 					</target>
 					<target name=": clean" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 						<buildCommand>/usr/bin/make</buildCommand>
-						<buildArguments>-C bin// -j4</buildArguments>
+						<buildArguments>-C bin/bin/ -j4</buildArguments>
 						<buildTarget>clean</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>false</useDefaultCommand>
