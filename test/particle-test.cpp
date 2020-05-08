@@ -3,7 +3,7 @@
 #include "boundary_axissymmetric.h"
 #include "scene.h"
 
-#define BOOST_TEST_TOOLS_UNDER_DEBUGGER
+//#define BOOST_TEST_TOOLS_UNDER_DEBUGGER // it can deactivate the tolerance!!!
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE particle-TEST
 #include <boost/test/unit_test.hpp>
@@ -19,6 +19,7 @@ BOOST_AUTO_TEST_CASE( construction_test )
 
 	Particle p1(pos - r*Vec3d::i, vel, r);
 	Particle p2(p1);
+	p2.size();
 
 	BOOST_REQUIRE_EQUAL( p1.getPos(), p2.getPos() );
 	BOOST_REQUIRE_EQUAL( p1.getV(), p2.getV() );
@@ -132,12 +133,18 @@ BOOST_AUTO_TEST_CASE( overlap_with_wall_test )
 	Boundary_planar ground = scene.getBoundariesPlanar()[0];
 
 	float radius = 0.005;
-	Vec3d point(0, -0.999f + 0.9* radius, 0); // point close to the ground plane
+	float offset = 0.9*radius;
+	Vec3d point(0, -0.999f + offset, 0); // point close to the ground plane
 	Particle p(point, radius); // particle overlapping with the wall
 
 	BOOST_TEST_REQUIRE( p.overlapWithWall(ground) == true );
 	BOOST_TEST_REQUIRE( p.overlapWithWall(glass) == false );
 
+	// tolerance does not work for user defined types
+	//BOOST_TEST_REQUIRE( p.overlapVectorWithWall(ground) == Vec3d(0.0f, -1*(radius - offset), 0.0f), boost::test_tools::tolerance(Vec3d(1e-4f, 1e-4f, 1e-4f)) );
+	BOOST_TEST_REQUIRE( p.overlapVectorWithWall(ground).x == Vec3d(0.0f, -1*(radius - offset), 0.0f).x, boost::test_tools::tolerance(1e-4f) );
+	BOOST_TEST_REQUIRE( p.overlapVectorWithWall(ground).y == Vec3d(0.0f, -1*(radius - offset), 0.0f).y, boost::test_tools::tolerance(1e-4f) );
+	BOOST_TEST_REQUIRE( p.overlapVectorWithWall(ground).z == Vec3d(0.0f, -1*(radius - offset), 0.0f).z, boost::test_tools::tolerance(1e-4f) );
 
 	// BOOST_TEST_REQUIRE( p.overlapWithWalls() == true ); // fails, because scene is not known by p
 
