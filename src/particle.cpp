@@ -29,10 +29,6 @@ void Particle::advance(float dt) {
 	acc = new_acc;
 }
 
-void Particle::move(const Vec3d &movement) {
-	pos += movement;
-}
-
 float Particle::kineticEnergy() {
 	return vel * vel * (mass() / 2);
 }
@@ -114,7 +110,7 @@ void Particle::collideToWall(const Boundary &wall) {
 	}
 
 	// move back to the position when it touched the boundary:
-	pos = pos + pos_corr;
+	this->move(pos_corr);
 
 	// correct the velocity to conserve energy (dissipation work is not considered!)
 	correctVelocity(pos_corr);
@@ -138,8 +134,8 @@ void Particle::collideToParticle(Particle &other) {
 
 	// move back to the positions where they just touched the other:
 	Vec3d pos_corr = -0.5 * n * (this->getR() + other.getR() - distance);
-	pos = pos + pos_corr;
-	other.setPos(other.getPos() - pos_corr);
+	this->move(pos_corr);
+	other.move(-pos_corr);
 
 	correctVelocity(pos_corr);
 	other.correctVelocity(-pos_corr);
@@ -160,6 +156,7 @@ void Particle::collideToParticle_checkBoundary(Particle &other) {
 
 	n = norm(n); // normalize
 
+	// necessary correction to reach touching position
 	Vec3d pos_corr = -0.5 * n * (this->getR() + other.getR() - distance);
 
 	// create temporary particles with the planned correction, for overlap checking
@@ -174,19 +171,19 @@ void Particle::collideToParticle_checkBoundary(Particle &other) {
 	if (!this_overlaps 	&& !other_overlaps) {
 		// apply the correction to both!
 		// (move back to the positions where they touched each other)
-		pos = pos + pos_corr;
-		other.setPos(other.getPos() - pos_corr);
+		this->move(pos_corr);
+		other.move(-pos_corr);
 	} else if (this_overlaps && !other_overlaps) {
 		// move only the non-overlapping particle
-		other.setPos(other.getPos() - 2 * pos_corr);
+		other.move(-2*pos_corr);
 	} else if (other_overlaps && !this_overlaps) {
 		// move only the non-overlapping particle
-		pos = pos + 2 * pos_corr;
+		this->move(2*pos_corr);
 	} else { // both particles overlap with walls
 		//return;
 		// TODO: implement correction
-		pos = pos + pos_corr;
-		other.setPos(other.getPos() - pos_corr);
+		this->move(pos_corr);
+		other.move(-pos_corr);
 	}
 
 	correctVelocity(pos_corr); // TODO: use the actually used one! (0/1/2)

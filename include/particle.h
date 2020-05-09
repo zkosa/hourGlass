@@ -59,7 +59,9 @@ public:
 	~Particle();
 
 	void advance(float dt);
-	void move(const Vec3d &movement);
+	inline void move(const Vec3d &movement) {
+		pos += movement;
+	}
 	float kineticEnergy();
 	float potentialEnergy();
 	float energy();
