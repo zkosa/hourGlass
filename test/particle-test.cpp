@@ -1,3 +1,4 @@
+#include "devtools.h"
 #include "particle.h"
 #include "boundary_planar.h"
 #include "boundary_axissymmetric.h"
@@ -175,6 +176,37 @@ BOOST_AUTO_TEST_CASE( overlap_with_wall_test )
 	p.setR(1e-5f);
 
 	BOOST_TEST_REQUIRE( p.overlapWithWalls() == false );
+}
+
+BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_test )
+{
+	// Two overlapping particles collide,
+	// while one of them overlaps with a wall too.
+	// We expect them to be touching each other after collision
+	Scene scene;
+	Scene *scene_ptr = &scene;
+	Particle::connectScene(scene_ptr); // TODO add to constructor, or at least a getPointer
+	scene.createGeometry(Geometry::test); // box
+	Boundary_planar ground = scene.getBoundariesPlanar()[0];
+
+	double r = Particle::getUniformRadius();
+	Particle p1( Vec3d(0.0f, -0.999f + r*0.9, 0.0f), Vec3d(0.0f, 0.0f, 0.0f) );
+	Particle p2(p1);
+	p2.move(Vec3d(0.0f, 1.5f*r, 0.0f));
+
+//	watch(p1.getPos());
+//	watch(p2.getPos());
+//	watch(p1.distance(p2));
+
+	p1.collideToParticle_checkBoundary(p2);
+
+//	watch(p1.getPos());
+//	watch(p2.getPos());
+//	watch(p1.distance(p2));
+
+	BOOST_TEST_REQUIRE( ground.distance(p1) == r );
+	BOOST_TEST_REQUIRE( ground.distance(p2) == 2.0f*r );
+	BOOST_TEST_REQUIRE( p1.distance(p2) == 2.0f*r );
 }
 
 BOOST_AUTO_TEST_CASE( no_drag_first_step_test )
