@@ -29,6 +29,10 @@ void Particle::advance(float dt) {
 	acc = new_acc;
 }
 
+void Particle::move(const Vec3d &movement) {
+	pos += movement;
+}
+
 float Particle::kineticEnergy() {
 	return vel * vel * (mass() / 2);
 }

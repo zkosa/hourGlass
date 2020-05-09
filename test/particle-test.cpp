@@ -31,6 +31,19 @@ BOOST_AUTO_TEST_CASE( construction_test )
 	BOOST_REQUIRE_EQUAL( p1.getV(), 2*vel );
 }
 
+BOOST_AUTO_TEST_CASE( move_test )
+{
+	Vec3d pos(0,0,0);
+	Vec3d movement(-1,0,0);
+
+	Particle p1(pos);
+	Particle p2(p1);
+	p2.move(movement);
+
+	BOOST_REQUIRE_EQUAL( p2.getPos() - p1.getPos(), movement );
+
+}
+
 BOOST_AUTO_TEST_CASE( self_collision_test )
 {
 	// Nothing should change when the particle collides to itself
