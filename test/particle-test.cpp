@@ -189,24 +189,18 @@ BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_test )
 	scene.createGeometry(Geometry::test); // box
 	Boundary_planar ground = scene.getBoundariesPlanar()[0];
 
-	double r = Particle::getUniformRadius();
+	float r = Particle::getUniformRadius();
 	Particle p1( Vec3d(0.0f, -0.999f + r*0.9, 0.0f), Vec3d(0.0f, 0.0f, 0.0f) );
 	Particle p2(p1);
 	p2.move(Vec3d(0.0f, 1.5f*r, 0.0f));
 
-//	watch(p1.getPos());
-//	watch(p2.getPos());
-//	watch(p1.distance(p2));
-
 	p1.collideToParticle_checkBoundary(p2);
 
-//	watch(p1.getPos());
-//	watch(p2.getPos());
-//	watch(p1.distance(p2));
+	auto tol = boost::test_tools::tolerance(float(1e-6f));
 
-	BOOST_TEST_REQUIRE( ground.distance(p1) == r );
-	BOOST_TEST_REQUIRE( ground.distance(p2) == 2.0f*r );
-	BOOST_TEST_REQUIRE( p1.distance(p2) == 2.0f*r );
+	BOOST_TEST_REQUIRE( p1.distance(p2) == 2.0f*r, tol );
+	BOOST_TEST_REQUIRE( ground.distance(p1) == r, tol );
+	BOOST_TEST_REQUIRE( ground.distance(p2) == 3.0f*r, tol );
 }
 
 BOOST_AUTO_TEST_CASE( no_drag_first_step_test )
