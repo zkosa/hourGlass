@@ -85,4 +85,20 @@ BOOST_AUTO_TEST_CASE( vec3d_test, * boost::unit_test::tolerance(1e-6f) )
 	// TODO: implement test
 	v3.toYAxial().print(); // TODO: fix
 	// TODO: implement test
+
+	Vec3d v5 = v3;
+	Vec3d v6 = v5;
+	v6 += v5;
+	BOOST_TEST_REQUIRE( 2*v5 == v6 );
+
+	v6 -= v5;
+	BOOST_TEST_REQUIRE( v5 == v6 );
+
+	v6 *= 2;
+	BOOST_TEST_REQUIRE( 2*v5 == v6 );
+
+	v6 /= 2;
+	BOOST_TEST_REQUIRE( v5 == v6 );
+
+	BOOST_CHECK_THROW( v6 /= 0;, std::invalid_argument );
 }

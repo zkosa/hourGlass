@@ -19,6 +19,11 @@ public:
 	Vec3d(float x, float y, float z) :
 			x(x), y(y), z(z) {}
 
+	Vec3d& operator+=(const Vec3d &other);
+	Vec3d& operator-=(const Vec3d &other);
+	Vec3d& operator*=(const float m);
+	Vec3d& operator/=(const float div);
+
 	std::ostream& print() const;
 	bool isLarge() const;
 	bool isSmall() const;
@@ -65,8 +70,23 @@ inline Vec3d operator+(const Vec3d &a, const Vec3d &b) {
 	return Add(a, b);
 }
 
+inline Vec3d& Vec3d::operator+=(const Vec3d &other)
+{
+    x += other.x;
+    y += other.y;
+    z += other.z;
+    return *this;
+}
+
 inline Vec3d operator-(const Vec3d &a, const Vec3d &b) {
 	return Substract(a, b);
+}
+
+inline Vec3d& Vec3d::operator-=(const Vec3d &other) {
+    x -= other.x;
+    y -= other.y;
+    z -= other.z;
+    return *this;
 }
 
 inline Vec3d operator*(const float m, const Vec3d &a) {
@@ -75,6 +95,13 @@ inline Vec3d operator*(const float m, const Vec3d &a) {
 
 inline Vec3d operator*(const Vec3d &a, const float m) {
 	return Multiply(a, m);
+}
+
+inline Vec3d& Vec3d::operator*=(const float m) {
+	x *= m;
+	y *= m;
+	z *= m;
+	return *this;
 }
 
 inline Vec3d operator-(const Vec3d &a) {
@@ -92,6 +119,16 @@ inline Vec3d crossProduct(const Vec3d &a, const Vec3d &b) {
 
 inline Vec3d operator/(const Vec3d &a, const float m) {
 	return Divide(a, m);
+}
+
+inline Vec3d& Vec3d::operator/=(const float div) {
+	if (std::abs(div) < VSMALL) {
+		throw std::invalid_argument("Division by very small number.");
+	}
+	x /= div;
+	y /= div;
+	z /= div;
+	return *this;
 }
 
 inline float abs(const Vec3d &a) {
