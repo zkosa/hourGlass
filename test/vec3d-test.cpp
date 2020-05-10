@@ -37,6 +37,7 @@ BOOST_AUTO_TEST_CASE( vec3d_test, * boost::unit_test::tolerance(1e-6f) )
 	BOOST_REQUIRE_EQUAL( v2.isSmall(), false );
 	BOOST_REQUIRE_EQUAL( (1e-25*v2).isSmall(), true );
 
+	BOOST_REQUIRE_EQUAL( nullv, Vec3d::null );
 	BOOST_REQUIRE_EQUAL( abs(nullv), 0 );
 	BOOST_REQUIRE_EQUAL( norm(nullv), nullv );
 	BOOST_REQUIRE_EQUAL( abs(norm(nullv)), 0 );

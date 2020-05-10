@@ -32,6 +32,7 @@ public:
 		return VecAxiSym(y, sqrt(x*x + z*z));
 	}
 
+	const static Vec3d null;
 	const static Vec3d i, j, k;
 
 };
