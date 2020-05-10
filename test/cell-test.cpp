@@ -28,8 +28,11 @@ BOOST_AUTO_TEST_CASE( construction_test, * boost::unit_test::tolerance(FLOAT_TES
 
 	Cell c(center);
 
+	// prints the size of a cell object
+	c.size();
+
 	BOOST_REQUIRE_EQUAL( c.getCenter(), center );
-	BOOST_REQUIRE_EQUAL( c.getHalfDiagonal(),  abs(dX)/2.0 );
+	BOOST_REQUIRE_EQUAL( c.getHalfDiagonal(),  abs(dX)/2.0f );
 	BOOST_REQUIRE_EQUAL( abs(c.getCorners()[0] - c.getCorners()[7]),  abs(dX) );
 
 }
