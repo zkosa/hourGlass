@@ -174,11 +174,15 @@ void Particle::collideToParticle_checkBoundary(Particle &other) {
 		this->move(pos_corr);
 		other.move(-pos_corr);
 	} else if (this_overlaps && !other_overlaps) {
-		// move only the non-overlapping particle
-		other.move(-2*pos_corr);
+		// resolve first the overlap with the wall,
+		// then apply all correction on the non-overlapping particle
+		Vec3d overlap = overlapVectorWithWalls();
+		this->move(-overlap);
+		other.move(-2*pos_corr - overlap);
 	} else if (other_overlaps && !this_overlaps) {
-		// move only the non-overlapping particle
-		this->move(2*pos_corr);
+		Vec3d overlap = other.overlapVectorWithWalls();
+		other.move(-overlap);
+		this->move(-2*pos_corr - overlap);
 	} else { // both particles overlap with walls
 		//return;
 		// TODO: implement correction
@@ -246,6 +250,25 @@ bool Particle::overlapWithWalls() const {
 Vec3d Particle::overlapVectorWithWall(const Boundary &wall) {
 	// TODO: simplify
 	return (wall.distance(*this) - radius) * wall.getNormal(*this);
+}
+
+Vec3d Particle::overlapVectorWithWalls() {
+	// returns the overlapVector to the first boundary that is overlapped
+	// start with planar boundaries, because those are cheaper to be checked
+
+	for(auto b: scene->getBoundariesPlanar()) {
+		if (overlapWithWall(b)) {
+			return overlapVectorWithWall(b);
+		}
+	}
+	for(auto b: scene->getBoundariesAxiSym()) {
+		if (overlapWithWall(b)) {
+			return overlapVectorWithWall(b);
+		}
+	}
+
+	// if no overlapping boundary has been found:
+	return Vec3d::null;
 }
 
 void Particle::size() const {

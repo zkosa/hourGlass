@@ -83,6 +83,7 @@ public:
 	bool overlapWithWall(const Boundary &wall) const;
 	bool overlapWithWalls() const;
 	Vec3d overlapVectorWithWall(const Boundary &wall);
+	Vec3d overlapVectorWithWalls();
 	void size() const;
 
 	void setX(float x) {

@@ -166,17 +166,23 @@ BOOST_AUTO_TEST_CASE( overlap_with_wall_test )
 	Particle::connectScene(scene_ptr);
 
 	BOOST_TEST_REQUIRE( p.overlapWithWalls() == true );
+	BOOST_TEST_REQUIRE( p.overlapVectorWithWalls() == p.overlapVectorWithWall(ground) );
 
 	 // make the particle huge, to overlap with all walls
 	p.setR(1.5f);
 
 	BOOST_TEST_REQUIRE( p.overlapWithWalls() == true );
+	// it finds the ground, because overlap check is started with the planars
+	BOOST_TEST_REQUIRE( p.overlapVectorWithWalls() == p.overlapVectorWithWall(ground) );
 
 	// make the particle small, to overlap with none of the walls
 	p.setR(1e-5f);
 
 	BOOST_TEST_REQUIRE( p.overlapWithWalls() == false );
+	BOOST_TEST_REQUIRE( p.overlapVectorWithWalls() == Vec3d::null );
 }
+
+
 
 BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_test )
 {
