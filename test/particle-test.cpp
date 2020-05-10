@@ -10,6 +10,7 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/test/data/test_case.hpp>
 #include <boost/array.hpp>
+#include <boost/math/special_functions/fpclassify.hpp>
 
 
 BOOST_AUTO_TEST_CASE( construction_test )
@@ -240,7 +241,7 @@ BOOST_AUTO_TEST_CASE( no_drag_fall_test )
 {
 	float time_step = 0.001; // [s]
 	float r = 0.005;
-	float height = 1;
+	float height = 1.999;
 	Vec3d pos(0,height,0);
 	Vec3d vel(0,0,0);
 
@@ -257,8 +258,28 @@ BOOST_AUTO_TEST_CASE( no_drag_fall_test )
 	float simulated_height = height - p.getPos().y;
 	float calculated_time = std::sqrt(2*simulated_height/g);
 
-	float tolerance = 0.001; // [%]
-	BOOST_REQUIRE_CLOSE( calculated_time, elapsed_time, tolerance );
+	auto tol = boost::test_tools::tolerance(float(1e-5));
+	BOOST_TEST_REQUIRE( calculated_time == elapsed_time, tol );
+
+	// connect scene, otherwise maxFreeFallVelocity gives nan
+	Scene scene;
+	auto* scene_ptr = &scene;
+	Particle::connectScene(scene_ptr);
+	scene.createGeometry(Geometry::test); // box with level ground
+
+	tol = boost::test_tools::tolerance(float(1e-3));
+	BOOST_TEST_REQUIRE( std::abs(p.getV().y) == p.maxFreeFallVelocity(), tol );
+
+
+	BOOST_TEST_REQUIRE( !boost::math::isfinite(p.terminalVelocity()) );
+
+	// when there is no drag, the limit is the domain max free fall velocity
+	BOOST_TEST_REQUIRE( p.maxVelocity() == p.maxFreeFallVelocity() );
+
+	watch(p.terminalVelocity());
+	watch(p.maxFreeFallVelocity());
+	watch(p.maxVelocity());
+
 }
 
 static const boost::array< float, 6 > Cd_data{0.01, 0.1, 0.5, 5.0, 25.0, 100.0}; // it would fail with 0, because there the terminal velocity is infinite
