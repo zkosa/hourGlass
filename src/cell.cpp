@@ -47,14 +47,14 @@ pointData Cell::getCorners() const {
 	pointData corners;
 	corners.reserve(8);
 
-	corners.push_back(Vec3d { bounds.x1, bounds.y1, bounds.z1 });
-	corners.push_back(Vec3d { bounds.x1, bounds.y1, bounds.z2 });
-	corners.push_back(Vec3d { bounds.x1, bounds.y2, bounds.z1 });
-	corners.push_back(Vec3d { bounds.x1, bounds.y2, bounds.z2 });
-	corners.push_back(Vec3d { bounds.x2, bounds.y1, bounds.z1 });
-	corners.push_back(Vec3d { bounds.x2, bounds.y1, bounds.z2 });
-	corners.push_back(Vec3d { bounds.x2, bounds.y2, bounds.z1 });
-	corners.push_back(Vec3d { bounds.x2, bounds.y2, bounds.z2 });
+	corners.emplace_back( bounds.x1, bounds.y1, bounds.z1 );
+	corners.emplace_back( bounds.x1, bounds.y1, bounds.z2 );
+	corners.emplace_back( bounds.x1, bounds.y2, bounds.z1 );
+	corners.emplace_back( bounds.x1, bounds.y2, bounds.z2 );
+	corners.emplace_back( bounds.x2, bounds.y1, bounds.z1 );
+	corners.emplace_back( bounds.x2, bounds.y1, bounds.z2 );
+	corners.emplace_back( bounds.x2, bounds.y2, bounds.z1 );
+	corners.emplace_back( bounds.x2, bounds.y2, bounds.z2 );
 
 	return corners;
 }
