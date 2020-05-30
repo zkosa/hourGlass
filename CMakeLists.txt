@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_compile_options("-Wall")
 # disabling optimization in order to improve the fidelity of coverage analysis:
 if (NOT CODE_COVERAGE_ANALYSIS)
-	add_compile_options("-O3")
+	#add_compile_options("-O3")
 endif(NOT CODE_COVERAGE_ANALYSIS)
 #add_compile_options("-Wpedantic" "-Wextra" "-fexceptions")
 #string(APPEND CMAKE_CXX_FLAGS "-Wall")
