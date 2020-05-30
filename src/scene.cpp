@@ -596,6 +596,8 @@ void Scene::veloCheck() {
 
 	std::vector<float> vels(sizeof(particles));
 	std::vector<float> max_vels(sizeof(particles));
+	vels.reserve(particles.size());
+	max_vels.reserve(particles.size());
 	for (const auto &p : particles) {
 		vels.emplace_back(abs(p.getV()));
 		max_vels.emplace_back(p.maxVelocity());

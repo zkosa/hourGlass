@@ -45,6 +45,7 @@ Cell::Cell(const Vec3d &center) {
 
 pointData Cell::getCorners() const {
 	pointData corners;
+	corners.reserve(8);
 
 	corners.push_back(Vec3d { bounds.x1, bounds.y1, bounds.z1 });
 	corners.push_back(Vec3d { bounds.x1, bounds.y1, bounds.z2 });
@@ -60,6 +61,7 @@ pointData Cell::getCorners() const {
 
 pointData Cell::getFaceCenters() const {
 	pointData face_centers;
+	face_centers.reserve(6);
 
 	face_centers.push_back(center + dX / 2. * Vec3d::i * Vec3d::i);
 	face_centers.push_back(center + dX / 2. * Vec3d::j * Vec3d::j);
@@ -73,6 +75,7 @@ pointData Cell::getFaceCenters() const {
 
 pointData Cell::getEdgeCenters() const {
 	pointData edge_centers;
+	edge_centers.reserve(12);
 
 	edge_centers.push_back(
 			center + 0.5 * dX * Vec3d::i * Vec3d::i
@@ -116,6 +119,7 @@ pointData Cell::getEdgeCenters() const {
 
 pointData Cell::getAllPoints() const {
 	pointData all;
+	all.reserve(27);
 	all.push_back(center);
 
 	pointData corners = getCorners();
