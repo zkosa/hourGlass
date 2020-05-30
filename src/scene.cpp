@@ -541,6 +541,8 @@ void Scene::addParticle(Particle p) {
 
 void Scene::addParticles(int N, float y, float r, bool randomize_y) {
 
+	particles.reserve( particles.size() + N );
+
 	if (geometry == Geometry::test) {
 		std::cout << "adding particles in test mode..." << std::endl;
 	}

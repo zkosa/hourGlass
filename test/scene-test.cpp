@@ -16,7 +16,6 @@ void print(const std::vector<Particle>& particles) {
 	}
 }
 
-
 BOOST_AUTO_TEST_CASE( scene_cell_external_test )
 {
 	Scene scene;
@@ -256,4 +255,33 @@ BOOST_AUTO_TEST_CASE( scene_collideParticlesCells_test ) {
 	auto P1 = scene.getParticles()[0];
 	auto P2 = scene.getParticles()[1];
 	BOOST_TEST_REQUIRE( P1.distance(P2) == 2.0f *r, boost::test_tools::tolerance(1e-5f) );
+}
+
+BOOST_AUTO_TEST_CASE( scene_createCells_performance_test )
+{
+	Scene scene;
+
+	Timer timer;
+	double duration;
+
+	timer.start();
+	Cell::setNx(100);
+	Cell::setNy(100);
+	Cell::setNz(1);
+	scene.createCells();
+	duration = timer.milliSeconds();
+	watch(duration);
+}
+
+BOOST_AUTO_TEST_CASE( scene_addParticles_performance_test )
+{
+	Scene scene;
+
+	Timer timer;
+	double duration;
+
+	timer.start();
+	scene.addParticles(1e5);
+	duration = timer.milliSeconds();
+	watch(duration);
 }
