@@ -369,6 +369,8 @@ void Scene::createCells() {
 	// during e.g. the initial geometric constraint resolution
 	int extra_layers_on_top = 1;
 
+	cells.reserve(Nx * (Ny + extra_layers_on_top) * Nz);
+
 	std::cout << "Creating cells..." << std::endl;
 	Vec3d corner1 = bounding_box.getCorner1();
 	Vec3d cell_center;
