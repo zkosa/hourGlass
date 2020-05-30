@@ -19,6 +19,7 @@ private:
 	static Vec3d force_field;
 	static Scene *scene;
 
+	static int last_ID;
 	static constexpr float density = 2700.0; // kg/m3
 	static constexpr float density_medium = 1.0; // air kg/m3
 	static constexpr float restitution_coeff = 0.5;
@@ -44,8 +45,7 @@ private:
 	Vec3d apply_forces();
 
 public:
-	Particle();
-	//Particle(const Particle& other) ;
+
 	Particle(Vec3d _pos, float _r = Particle::uniform_radius) :
 			pos(_pos), radius(_r) {
 	}
@@ -56,7 +56,6 @@ public:
 			Particle::uniform_radius) :
 			pos(_pos), vel(_vel), ID(_ID), radius(_r) {
 	}
-	~Particle();
 
 	void advance(float dt);
 	inline void move(const Vec3d &movement) {
@@ -86,6 +85,9 @@ public:
 	Vec3d overlapVectorWithWalls();
 	void size() const;
 
+	void setID(int ID) {
+		this->ID = ID;
+	}
 	void setX(float x) {
 		this->pos.x = x;
 	}
@@ -107,6 +109,12 @@ public:
 	}
 	static void setUniformRadius(float _uniform_radius) {
 		uniform_radius = _uniform_radius;
+	}
+	static void resetLastID() {
+		last_ID = -1;
+	}
+	static void incrementLastID() {
+		last_ID += 1;
 	}
 
 	int getID() const {
@@ -148,6 +156,9 @@ public:
 	}
 	static float getUniformRadius() {
 		return uniform_radius;
+	}
+	static int getLastID() {
+		return last_ID;
 	}
 
 };

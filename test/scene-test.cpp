@@ -1,6 +1,7 @@
 #include "scene.h"
+#include "devtools.h"
 
-#define BOOST_TEST_TOOLS_UNDER_DEBUGGER
+//#define BOOST_TEST_TOOLS_UNDER_DEBUGGER // it deactivates the tolerance!!!
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE scene-TEST
 #include <boost/test/unit_test.hpp>
@@ -148,7 +149,7 @@ BOOST_AUTO_TEST_CASE( scene_collide_to_wall_test )
 
 	scene.applyDefaults();
 
-	scene.setGeometry(Geometry::test);
+	scene.setGeometry(Geometry::test); // TODO: combine setGeometry and createGeometry?
 	scene.createGeometry(Geometry::test);
 
 	float ground_level = -0.999;
@@ -185,3 +186,74 @@ BOOST_AUTO_TEST_CASE( scene_collide_to_wall_test )
 	BOOST_REQUIRE_EQUAL( p.getY(), ground_level + r );
 }
 
+BOOST_AUTO_TEST_CASE( scene_collideParticles_test ) {
+
+	Scene scene;
+
+	Scene *scene_ptr = &scene; // TODO: check
+	Particle::connectScene(scene_ptr);
+	Cell::connectScene(scene_ptr);
+
+	scene.applyDefaults();
+
+	scene.setGeometry(Geometry::test); // TODO: combine setGeometry and createGeometry?
+	scene.createGeometry(Geometry::test);
+
+	float r = Particle::getUniformRadius();
+	Particle p1(Vec3d::null, Vec3d::null, r);
+	Particle p2(p1);
+
+	Vec3d half_dist{r/2, 0, 0};
+
+	p1.move(-half_dist);
+	p2.move(half_dist);
+
+	BOOST_TEST_REQUIRE( p1.distance(p2) == abs(2.0f * half_dist) );
+
+	scene.addParticle(p1);
+	scene.addParticle(p2);
+
+	scene.collideParticles();
+
+	auto P1 = scene.getParticles()[0];
+	auto P2 = scene.getParticles()[1];
+	BOOST_TEST_REQUIRE( P1.distance(P2) == 2.0f *r, boost::test_tools::tolerance(1e-5f) );
+}
+
+BOOST_AUTO_TEST_CASE( scene_collideParticlesCells_test ) {
+
+	Scene scene;
+
+	Scene *scene_ptr = &scene;
+	Particle::connectScene(scene_ptr);
+	Cell::connectScene(scene_ptr);
+
+	scene.applyDefaults();
+
+	scene.setGeometry(Geometry::test);
+	scene.createGeometry(Geometry::test);
+
+	float r = Particle::getUniformRadius();
+	Particle p1(Vec3d::null, Vec3d::null, r);
+	Particle p2(p1);
+
+	Vec3d half_dist{r/2, 0, 0};
+
+	p1.move(-half_dist);
+	p2.move(half_dist);
+
+	BOOST_TEST_REQUIRE( p1.distance(p2) == abs(2.0f * half_dist) );
+
+	scene.addParticle(p1);
+	scene.addParticle(p2);
+
+	// cellwise collision requires cells
+	scene.createCells();
+	scene.populateCells();
+
+	scene.collideParticlesCells();
+
+	auto P1 = scene.getParticles()[0];
+	auto P2 = scene.getParticles()[1];
+	BOOST_TEST_REQUIRE( P1.distance(P2) == 2.0f *r, boost::test_tools::tolerance(1e-5f) );
+}

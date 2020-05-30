@@ -4,7 +4,7 @@
 #include "boundary_axissymmetric.h"
 #include "scene.h"
 
-//#define BOOST_TEST_TOOLS_UNDER_DEBUGGER // it can deactivate the tolerance!!!
+//#define BOOST_TEST_TOOLS_UNDER_DEBUGGER // it deactivates the tolerance!!!
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE particle-TEST
 #include <boost/test/unit_test.hpp>
@@ -23,14 +23,50 @@ BOOST_AUTO_TEST_CASE( construction_test )
 	Particle p2(p1);
 	p2.size();
 
-	BOOST_REQUIRE_EQUAL( p1.getPos(), p2.getPos() );
-	BOOST_REQUIRE_EQUAL( p1.getV(), p2.getV() );
-	BOOST_REQUIRE_EQUAL( p1.getAcceleration(), p2.getAcceleration() );
-	BOOST_REQUIRE_EQUAL( p1.getCd(), p2.getCd() );
-	BOOST_REQUIRE_EQUAL( p1.getID(), p2.getID() );
+	BOOST_TEST_REQUIRE( p1.getPos() == p2.getPos() );
+	BOOST_TEST_REQUIRE( p1.getV() == p2.getV() );
+	BOOST_TEST_REQUIRE( p1.getAcceleration() == p2.getAcceleration() );
+	BOOST_TEST_REQUIRE( p1.getCd() == p2.getCd() );
+	BOOST_TEST_REQUIRE( p1.getID() == p2.getID() );
 
 	p1.setV(2*vel);
-	BOOST_REQUIRE_EQUAL( p1.getV(), 2*vel );
+	BOOST_TEST_REQUIRE( p1.getV() == 2*vel );
+}
+
+BOOST_AUTO_TEST_CASE( ID_test )
+{
+	Particle::resetLastID();
+
+	float r = 0.005;
+	Vec3d pos(0,0,0);
+	Vec3d vel(-1,0,0);
+/*
+	Particle p0();
+	// it has the default ID:
+	BOOST_TEST_REQUIRE( p0.getID() == -1 );
+*/
+	Particle p1{pos, vel, 1, r};
+	BOOST_TEST_REQUIRE( p1.getID() == 1 );
+	p1.setID(2);
+	BOOST_TEST_REQUIRE( p1.getID() == 2 );
+
+	Scene scene;
+	scene.addParticles(2, 0.0f, r);
+	auto ps = scene.getParticles();
+	for (std::size_t i = 0; i < ps.size(); i++) {
+		BOOST_TEST_REQUIRE( ps[i].getID() == int(i) );
+	}
+
+	Particle p0{pos, vel, r};
+	scene.addParticle(p0);
+	watch(ps.size());
+	int i = 0;
+	for (const auto& p : scene.getParticles()) {
+		watch(i++);
+		watch(p.getID());
+	}
+	ps = scene.getParticles();
+	BOOST_TEST_REQUIRE( ps[2].getID() == 2 );
 }
 
 BOOST_AUTO_TEST_CASE( move_test )
@@ -42,8 +78,7 @@ BOOST_AUTO_TEST_CASE( move_test )
 	Particle p2(p1);
 	p2.move(movement);
 
-	BOOST_REQUIRE_EQUAL( p2.getPos() - p1.getPos(), movement );
-
+	BOOST_TEST_REQUIRE( p2.getPos() - p1.getPos() == movement );
 }
 
 BOOST_AUTO_TEST_CASE( self_collision_test )
@@ -57,8 +92,8 @@ BOOST_AUTO_TEST_CASE( self_collision_test )
 
 	p1.collideToParticle(p1);
 
-	BOOST_REQUIRE_EQUAL( p1.getPos(), pos );
-	BOOST_REQUIRE_EQUAL( p1.getV(), vel );
+	BOOST_TEST_REQUIRE( p1.getPos() == pos );
+	BOOST_TEST_REQUIRE( p1.getV() == vel );
 }
 
 BOOST_AUTO_TEST_CASE( collision_touching_test )
@@ -72,8 +107,8 @@ BOOST_AUTO_TEST_CASE( collision_touching_test )
 
 	p1.collideToParticle(p2);
 
-	BOOST_REQUIRE_EQUAL( p1.getPos(), -p2.getPos() );
-	BOOST_REQUIRE_EQUAL( p1.getV(), -p2.getV() );
+	BOOST_TEST_REQUIRE( p1.getPos() == -p2.getPos() );
+	BOOST_TEST_REQUIRE( p1.getV() == -p2.getV() );
 }
 
 BOOST_AUTO_TEST_CASE( collision_overlapping_test )
@@ -91,8 +126,8 @@ BOOST_AUTO_TEST_CASE( collision_overlapping_test )
 
 	p1.collideToParticle(p2);
 
-	BOOST_REQUIRE_EQUAL( p1.getPos(), -p2.getPos() );
-	BOOST_REQUIRE_EQUAL( p1.getV(), -p2.getV() );
+	BOOST_TEST_REQUIRE( p1.getPos() == -p2.getPos() );
+	BOOST_TEST_REQUIRE( p1.getV() == -p2.getV() );
 }
 
 BOOST_AUTO_TEST_CASE( collision_distant_test )
@@ -111,10 +146,10 @@ BOOST_AUTO_TEST_CASE( collision_distant_test )
 
 	p1.collideToParticle(p2);
 
-	BOOST_REQUIRE_EQUAL( p1.getPos(), pos1 );
-	BOOST_REQUIRE_EQUAL( p1.getV(), vel1 );
-	BOOST_REQUIRE_EQUAL( p2.getPos(), pos2 );
-	BOOST_REQUIRE_EQUAL( p2.getV(), vel2 );
+	BOOST_TEST_REQUIRE( p1.getPos() == pos1 );
+	BOOST_TEST_REQUIRE( p1.getV() == vel1 );
+	BOOST_TEST_REQUIRE( p2.getPos() == pos2 );
+	BOOST_TEST_REQUIRE( p2.getV() == vel2 );
 }
 
 BOOST_AUTO_TEST_CASE( collision_touching_parallel_test )
@@ -132,10 +167,10 @@ BOOST_AUTO_TEST_CASE( collision_touching_parallel_test )
 
 	p1.collideToParticle(p2);
 
-	BOOST_REQUIRE_EQUAL( p1.getPos(), pos1 );
-	BOOST_REQUIRE_EQUAL( p2.getPos(), pos2 );
-	BOOST_REQUIRE_EQUAL( p1.getV(), vel );
-	BOOST_REQUIRE_EQUAL( p2.getV(), vel );
+	BOOST_TEST_REQUIRE( p1.getPos() == pos1 );
+	BOOST_TEST_REQUIRE( p2.getPos() == pos2 );
+	BOOST_TEST_REQUIRE( p1.getV() == vel );
+	BOOST_TEST_REQUIRE( p2.getV() == vel );
 }
 
 BOOST_AUTO_TEST_CASE( overlap_with_wall_test )

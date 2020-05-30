@@ -4,11 +4,9 @@
 #include "scene.h"
 #include <QOpenGLWidget>
 
-Particle::Particle() {
-}
+// static members:
 
-Particle::~Particle() {
-}
+int Particle::last_ID = -1;
 
 Vec3d Particle::force_field = gravity;
 

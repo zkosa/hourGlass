@@ -530,9 +530,12 @@ void Scene::deleteCells() {
 void Scene::clearParticles() {
 	//particles[0].size();
 	particles.clear();
+	Particle::resetLastID();
 }
 
-void Scene::addParticle(const Particle &p) {
+void Scene::addParticle(Particle p) {
+	Particle::incrementLastID();
+	p.setID(Particle::getLastID());
 	particles.push_back(p);
 }
 
@@ -562,7 +565,7 @@ void Scene::addParticles(int N, float y, float r, bool randomize_y) {
 
 		Vec3d pos(x, y * (1 + random_y / 200.), 0);
 		Vec3d vel(0,0,0);
-		Particle p(pos, vel, i, r);
+		Particle p(pos, vel, r);
 
 		addParticle(p);
 	}
@@ -645,6 +648,7 @@ void Scene::reset() {
 	boundaries_ax.clear();
 	boundaries_pl.clear();
 	particles.clear();
+	Particle::resetLastID();
 	cells.clear();
 
 	applyDefaults();
