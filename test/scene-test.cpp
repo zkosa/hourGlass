@@ -261,6 +261,9 @@ BOOST_AUTO_TEST_CASE( scene_createCells_performance_test )
 {
 	Scene scene;
 
+	// create a geometry, because createCells marks and delete cells based on the geometry
+	scene.createGeometry(Geometry::hourglass);
+
 	Timer timer;
 	double duration;
 
