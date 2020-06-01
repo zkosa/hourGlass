@@ -166,31 +166,36 @@ void Particle::collideToParticle_checkBoundary(Particle &other) {
 	tmp_other_particle.setPos(other.getPos() - pos_corr);
 	bool other_overlaps = tmp_other_particle.overlapWithWalls();
 
-	if (!this_overlaps 	&& !other_overlaps) {
+	if (!this_overlaps && !other_overlaps) {
 		// apply the correction to both!
 		// (move back to the positions where they touched each other)
 		this->move(pos_corr);
 		other.move(-pos_corr);
 	} else if (this_overlaps && !other_overlaps) {
-		// resolve first the overlap with the wall,
-		// then apply all correction on the non-overlapping particle
-		Vec3d overlap = overlapVectorWithWalls();
-		this->move(-overlap);
-		other.move(-2*pos_corr - overlap);
+		// move both particles also with the value of the overlap of the overlapping particle
+		// mutual overlap of the particles becomes resolved, but
+		// the non-overlapping particle can become overlapping with a wall in narrow channels and corners!
+		Vec3d overlap = tmp_particle.overlapVectorWithWalls(); // prospected overlap after correction with pos_corr
+		this->move(pos_corr - overlap);
+		other.move(-pos_corr - overlap);
 	} else if (other_overlaps && !this_overlaps) {
-		Vec3d overlap = other.overlapVectorWithWalls();
-		other.move(-overlap);
-		this->move(-2*pos_corr - overlap);
+		// move both particles also with the value of the overlap of the overlapping particle
+		// mutual overlap of the particles becomes resolved, but
+		// the non-overlapping particle can become overlapping with a wall in narrow channels and corners
+		Vec3d overlap = tmp_other_particle.overlapVectorWithWalls(); // prospected overlap after correction with pos_corr
+		this->move(pos_corr - overlap);
+		other.move(-pos_corr - overlap);
 	} else { // both particles overlap with walls
-		//return;
-		// TODO: implement correction
-		this->move(pos_corr);
-		other.move(-pos_corr);
+		// move both particles also with the value of their prospected overlap with the all
+		// mutual overlap is not necessarily resolved
+		this->move(pos_corr - this->overlapVectorWithWalls());
+		other.move(-pos_corr - other.overlapVectorWithWalls());
 	}
 
 	correctVelocity(pos_corr); // TODO: use the actually used one! (0/1/2)
 	other.correctVelocity(-pos_corr);
 
+	// perform the actual collision after the positions and velocities are corrected to touching position
 	exchangeImpulse(other);
 }
 
