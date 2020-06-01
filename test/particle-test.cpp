@@ -218,12 +218,72 @@ BOOST_AUTO_TEST_CASE( overlap_with_wall_test )
 	BOOST_TEST_REQUIRE( p.overlapVectorWithWalls() == Vec3d::null );
 }
 
-
-
-BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_test )
+BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_noneTouches_test )
 {
 	// Two overlapping particles collide,
-	// while one of them overlaps with a wall too.
+	// while NONE of them overlaps with a wall BEFORE collision.
+	// We expect them to be touching each other after collision, and
+	//
+	Scene scene;
+	Scene *scene_ptr = &scene;
+	Particle::connectScene(scene_ptr); // TODO add to constructor, or at least a getPointer
+	scene.createGeometry(Geometry::test); // box
+	Boundary_planar ground = scene.getBoundariesPlanar()[0];
+
+	float r = Particle::getUniformRadius();
+	Particle p1( Vec3d(0.0f, -0.999f + r*1.6f, 0.0f), Vec3d(0.0f, 0.0f, 0.0f) );
+	Particle p2(p1);
+	p2.move(Vec3d(0.0f, 1.5f*r, 0.0f));
+
+
+	watch(ground.distance(p1));
+	watch(ground.distance(p2));
+	p1.collideToParticle_checkBoundary(p2);
+
+	auto tol = boost::test_tools::tolerance(float(2e-5f));
+
+	BOOST_TEST_REQUIRE( p1.distance(p2) == 2.0f*r, tol );
+	BOOST_TEST_REQUIRE( ground.distance(p1) > r, tol ); // TODO: expect touch?
+	BOOST_TEST_REQUIRE( ground.distance(p2) > r, tol );
+	watch(ground.distance(p1));
+	watch(ground.distance(p2));
+}
+
+BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_noneTouches_butWouldAfterColl_test )
+{
+	// Two overlapping particles collide,
+	// while NONE of them overlaps with a wall BEFORE collision.
+	// We expect them to be touching each other after collision, and
+	//
+	Scene scene;
+	Scene *scene_ptr = &scene;
+	Particle::connectScene(scene_ptr); // TODO add to constructor, or at least a getPointer
+	scene.createGeometry(Geometry::test); // box
+	Boundary_planar ground = scene.getBoundariesPlanar()[0];
+
+	float r = Particle::getUniformRadius();
+	Particle p1( Vec3d(0.0f, -0.999f + r*1.1, 0.0f), Vec3d(0.0f, 0.0f, 0.0f) );
+	Particle p2(p1);
+	p2.move(Vec3d(0.0f, 1.5f*r, 0.0f));
+
+
+	watch(ground.distance(p1));
+	watch(ground.distance(p2));
+	p1.collideToParticle_checkBoundary(p2);
+
+	auto tol = boost::test_tools::tolerance(float(1e-6f));
+
+	BOOST_TEST_REQUIRE( p1.distance(p2) == 2.0f*r, tol );
+	BOOST_TEST_REQUIRE( ground.distance(p1) > r, tol ); // TODO: expect touch?
+	BOOST_TEST_REQUIRE( ground.distance(p2) > r, tol );
+	watch(ground.distance(p1));
+	watch(ground.distance(p2));
+}
+
+BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_oneTouches_test )
+{
+	// Two overlapping particles collide,
+	// while ONE of them overlaps with a wall too.
 	// We expect them to be touching each other after collision
 	Scene scene;
 	Scene *scene_ptr = &scene;
@@ -238,11 +298,62 @@ BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_test )
 
 	p1.collideToParticle_checkBoundary(p2);
 
-	auto tol = boost::test_tools::tolerance(float(1e-6f));
+	auto tol = boost::test_tools::tolerance(float(2e-5f));
 
 	BOOST_TEST_REQUIRE( p1.distance(p2) == 2.0f*r, tol );
 	BOOST_TEST_REQUIRE( ground.distance(p1) == r, tol );
 	BOOST_TEST_REQUIRE( ground.distance(p2) == 3.0f*r, tol );
+}
+
+BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_otherTouches_test )
+{
+	// Two overlapping particles collide,
+	// while ONE of them overlaps with a wall too.
+	// We expect them to be touching each other after collision
+	Scene scene;
+	Scene *scene_ptr = &scene;
+	Particle::connectScene(scene_ptr); // TODO add to constructor, or at least a getPointer
+	scene.createGeometry(Geometry::test); // box
+	Boundary_planar ground = scene.getBoundariesPlanar()[0];
+
+	float r = Particle::getUniformRadius();
+	Particle p1( Vec3d(0.0f, -0.999f + r*0.9, 0.0f), Vec3d(0.0f, 0.0f, 0.0f) );
+	Particle p2(p1);
+	p2.move(Vec3d(0.0f, 1.5f*r, 0.0f));
+
+	// now p2 becomes the "other" particle
+	p2.collideToParticle_checkBoundary(p1);
+
+	auto tol = boost::test_tools::tolerance(float(2e-5f));
+
+	BOOST_TEST_REQUIRE( p1.distance(p2) == 2.0f*r, tol );
+	BOOST_TEST_REQUIRE( ground.distance(p1) == r, tol );
+	BOOST_TEST_REQUIRE( ground.distance(p2) == 3.0f*r, tol );
+}
+
+BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_twoTouch_test )
+{
+	// Two overlapping particles collide,
+	// while BOTH of them overlap with a wall too.
+	// We expect them to be touching each other and the walls after collision
+	Scene scene;
+	Scene *scene_ptr = &scene;
+	Particle::connectScene(scene_ptr); // TODO add to constructor, or at least a getPointer
+	scene.createGeometry(Geometry::test); // box
+	Boundary_planar ground = scene.getBoundariesPlanar()[0];
+
+	float r = Particle::getUniformRadius();
+	Particle p1( Vec3d(0.0f, -0.999f + r*0.9, 0.0f), Vec3d(0.0f, 0.0f, 0.0f) );
+	Particle p2(p1);
+	p2.move(Vec3d(1.5f*r, 0.0f, 0.0f));
+
+	p1.collideToParticle_checkBoundary(p2);
+
+	auto tol = boost::test_tools::tolerance(float(1e-6f));
+
+	BOOST_TEST_REQUIRE( p1.distance(p2) == 2.0f*r, tol );
+	BOOST_TEST_REQUIRE( ground.distance(p1) == r, tol );
+	BOOST_TEST_REQUIRE( ground.distance(p2) == r, tol );
 }
 
 BOOST_AUTO_TEST_CASE( no_drag_first_step_test )
