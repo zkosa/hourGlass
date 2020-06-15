@@ -16,6 +16,8 @@ BOOST_AUTO_TEST_CASE( vec3d_test, * boost::unit_test::tolerance(1e-6f) )
 	Vec3d v1{1,1,1};
 	Vec3d v2{2,2,2};
 
+	std::cout << "Vec3d size: " << sizeof(v1) << std::endl;
+
 	BOOST_REQUIRE_EQUAL( v1+v2, Vec3d(3,3,3) );
 	BOOST_REQUIRE_EQUAL( v2+v1, Vec3d(3,3,3) );
 

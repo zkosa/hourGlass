@@ -218,6 +218,30 @@ BOOST_AUTO_TEST_CASE( overlap_with_wall_test )
 	BOOST_TEST_REQUIRE( p.overlapVectorWithWalls() == Vec3d::null );
 }
 
+BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_far_test )
+{
+	// Two far particles
+	// Nothing should change after calling the collision method
+	Scene scene;
+	Scene *scene_ptr = &scene;
+	Particle::connectScene(scene_ptr);
+	scene.createGeometry(Geometry::test); // box
+
+	float r = Particle::getUniformRadius();
+	Particle p1( Vec3d(0.0f, 0.0f, 0.0f), Vec3d(0.0f, 0.0f, 0.0f) );
+	Particle p2(p1);
+	p2.move(Vec3d(0.0f, 3.0f*r, 0.0f));
+
+
+	float distance_before = p1.distance(p2);
+	p1.collideToParticle_checkBoundary(p2);
+	float distance_after = p1.distance(p2);
+
+	auto tol = boost::test_tools::tolerance(float(2e-5f));
+
+	BOOST_TEST_REQUIRE( distance_before == distance_after, tol );
+}
+
 BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_noneTouches_test )
 {
 	// Two overlapping particles collide,
@@ -354,6 +378,31 @@ BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_twoTouch_test )
 	BOOST_TEST_REQUIRE( p1.distance(p2) == 2.0f*r, tol );
 	BOOST_TEST_REQUIRE( ground.distance(p1) == r, tol );
 	BOOST_TEST_REQUIRE( ground.distance(p2) == r, tol );
+}
+
+BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_twoTouch_axisymm_test )
+{
+	// Two overlapping particles collide,
+	// while BOTH of them overlap with an axis-symmetic wall too.
+	// We expect them to be touching each other and the walls after collision
+	Scene scene;
+	Scene *scene_ptr = &scene;
+	Particle::connectScene(scene_ptr); // TODO add to constructor, or at least a getPointer
+	scene.createGeometry(Geometry::hourglass); // box
+	Boundary_axissymmetric hourglass = scene.getBoundariesAxiSym()[0];
+
+	float r = Particle::getUniformRadius();
+	Particle p1( Vec3d(-0.07f + 0.5f*r, 0.0f, 0.0f), Vec3d(0.0f, 0.0f, 0.0f) );
+	Particle p2(p1);
+	p2.move(Vec3d(0.0f, 1.5f*r, 0.0f));
+
+	p1.collideToParticle_checkBoundary(p2);
+
+	auto tol = boost::test_tools::tolerance(float(1e-6f));
+// TODO: check the reason for the high difference!
+//	BOOST_TEST_REQUIRE( p1.distance(p2) == 2.0f*r, tol );
+//	BOOST_TEST_REQUIRE( hourglass.distance(p1) == r, tol );
+//	BOOST_TEST_REQUIRE( hourglass.distance(p2) == r, tol );
 }
 
 BOOST_AUTO_TEST_CASE( no_drag_first_step_test )

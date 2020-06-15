@@ -257,6 +257,80 @@ BOOST_AUTO_TEST_CASE( scene_collideParticlesCells_test ) {
 	BOOST_TEST_REQUIRE( P1.distance(P2) == 2.0f *r, boost::test_tools::tolerance(1e-5f) );
 }
 
+BOOST_AUTO_TEST_CASE( scene_collideWithBoundariesCells_planar_test ) {
+
+	Scene scene;
+
+	Scene *scene_ptr = &scene;
+	Particle::connectScene(scene_ptr);
+	Cell::connectScene(scene_ptr);
+
+	scene.applyDefaults();
+
+	scene.setGeometry(Geometry::test);
+	scene.createGeometry(Geometry::test);
+
+	// taking the appropriate (nearest) wall, knowing the order of walls from createGeometry
+	auto side_wall_left = scene.getBoundariesPlanar()[1];
+
+	float r = Particle::getUniformRadius();
+	float y = Cell::getDX().y * 0.5; // at cell mid, when the number of cells is even // TODO: add variation
+	float vx = -10.0f;
+	Particle p1(Vec3d{-0.999f + 0.7f*r, y, 0.0f}, Vec3d{vx, 0.0f, 0.0f}, r);
+
+	Particle::setRestitutionCoefficient(1.0f);
+
+	scene.addParticle(p1);
+
+	// cellwise collision requires cells
+	scene.createCells();
+	scene.populateCells();
+
+	scene.collideWithBoundariesCells();
+
+	auto P1 = scene.getParticles()[0];
+	BOOST_TEST_REQUIRE( side_wall_left.distance(P1) == r, boost::test_tools::tolerance(1e-5f) );
+	BOOST_TEST_REQUIRE( P1.getV().x == -vx, boost::test_tools::tolerance(1e-5f) );
+}
+
+BOOST_AUTO_TEST_CASE( scene_collideWithBoundariesCells_axisymm_test ) {
+
+	Scene scene;
+
+	Scene *scene_ptr = &scene;
+	Particle::connectScene(scene_ptr);
+	Cell::connectScene(scene_ptr);
+
+	scene.applyDefaults();
+
+	scene.setGeometry(Geometry::hourglass);
+	scene.createGeometry(Geometry::hourglass);
+
+	auto hourglass = scene.getBoundariesAxiSym()[0];
+
+	float r = Particle::getUniformRadius();
+	float y = Cell::getDX().y * 0.0; // TODO: add variation
+	float vx = -10.0f;
+	Particle p1(Vec3d{-0.07f + 0.7f*r, y, 0.0f}, Vec3d{vx, 0.0f, 0.0f}, r);
+
+	Particle::setRestitutionCoefficient(1.0f);
+
+	scene.addParticle(p1);
+
+	// cellwise collision requires cells
+	scene.createCells();
+	scene.populateCells();
+
+	auto& P1 = scene.getParticles()[0];
+
+	watch(P1.getPos());
+	scene.collideWithBoundariesCells();
+	watch(P1.getPos());
+
+	BOOST_TEST_REQUIRE( hourglass.distance(P1) == r, boost::test_tools::tolerance(1e-5f) );
+	BOOST_TEST_REQUIRE( P1.getV().x == -vx, boost::test_tools::tolerance(1e-5f) );
+}
+
 BOOST_AUTO_TEST_CASE( scene_createCells_performance_test )
 {
 	Scene scene;
