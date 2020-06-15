@@ -36,8 +36,8 @@ class Cell {
 	static Vec3d dX; // cell edge sizes
 
 	std::vector<int> particle_IDs;
-	std::vector<int> boundary_IDs_planar;
-	std::vector<int> boundary_IDs_axis_symmetric;
+	//std::vector<int> boundary_IDs_planar;
+	//std::vector<int> boundary_IDs_axis_symmetric;
 
 	bool cell_with_boundary = false;
 	bool cell_is_external = false;
@@ -58,13 +58,13 @@ public:
 
 	void size() const;
 	void draw2D();
-
+/*
 	const std::vector<int>& getBoundaryIDsAxisSymmetric() const {
 		return boundary_IDs_axis_symmetric;
 	}
 	const std::vector<int>& getBoundaryIDsPlanar() const {
 		return boundary_IDs_planar;
-	}
+	}*/
 	const Bounds& getBounds() const {
 		return bounds;
 	}
