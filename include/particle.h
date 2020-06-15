@@ -22,7 +22,7 @@ private:
 	static int last_ID;
 	static constexpr float density = 2700.0; // kg/m3
 	static constexpr float density_medium = 1.0; // air kg/m3
-	static constexpr float restitution_coeff = 0.5;
+	static float restitution_coeff;
 	static float drag_coefficient; // non-const can not be initialized in the declaration
 	static float uniform_radius;
 	float radius = uniform_radius;
@@ -106,6 +106,9 @@ public:
 
 	static void setCd(const float _drag_coefficient) {
 		drag_coefficient = _drag_coefficient;
+	}
+	static void setRestitutionCoefficient(const float restitution_coefficient) {
+		restitution_coeff = restitution_coefficient;
 	}
 	static void setUniformRadius(float _uniform_radius) {
 		uniform_radius = _uniform_radius;

@@ -14,6 +14,8 @@ Scene *Particle::scene = nullptr;
 
 float Particle::drag_coefficient = 0.5; // non-constexpr static members must be initialized in the definition
 
+float Particle::restitution_coeff = 0.5;
+
 float Particle::uniform_radius = 0.005;
 
 void Particle::advance(float dt) {
