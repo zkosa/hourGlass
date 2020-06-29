@@ -1,20 +1,20 @@
 cmake_minimum_required(VERSION 3.13)
 set(CMAKE_VERBOSE_MAKEFILE On) # enables indexing in eclipse?
 
-project(hourGlass LANGUAGES CXX)
+project(hourGlass LANGUAGES CXX CUDA)
 
 set(TESTS ON) # ON / OFF
 set(BENCHMARKS ON) # ON / OFF
 set(CODE_COVERAGE_ANALYSIS OFF) # ON / OFF, linux only
 
 set(CMAKE_CXX_STANDARD 20)
-add_compile_options("-Wall")
+# add_compile_options("-Wall") # it would be passed to nvcc too!
 # disabling optimization in order to improve the fidelity of coverage analysis:
 if (NOT CODE_COVERAGE_ANALYSIS)
 	#add_compile_options("-O3")
 endif(NOT CODE_COVERAGE_ANALYSIS)
 #add_compile_options("-Wpedantic" "-Wextra" "-fexceptions")
-#string(APPEND CMAKE_CXX_FLAGS "-Wall")
+string(APPEND CMAKE_CXX_FLAGS "-Wall")
 #string(APPEND CMAKE_CXX_FLAGS_DEBUG " -g3")
 #string(APPEND CMAKE_CXX_FLAGS_RELEASE " -O3")
 
@@ -36,13 +36,25 @@ message(STATUS "OPENGL_LIBRARIES:= ${OPENGL_LIBRARIES}")
 
 
 file(GLOB SOURCES "src/*.cpp")
+file(GLOB CUDA_SOURCES "src/*.cu")
 file(GLOB HEADERS "include/*.h")
 file(GLOB MOC_HEADERS "include/mainwindow.h")
 set(UI "src/mainwindow.ui") # ui must be placed alongside the cpp file!
 
 include_directories("include")
 
-add_executable(${PROJECT_NAME} ${SOURCES} ${MOC_HEADERS} ${UI}) # the MOC headers are needed
+# workaround because of cmake/Qt bug before Qt 5.14.1 and 5.15 Alpha
+# https://gitlab.kitware.com/cmake/cmake/-/issues/16915
+if ( TARGET Qt5::Core )
+	get_property( core_options TARGET Qt5::Core PROPERTY INTERFACE_COMPILE_OPTIONS )
+	string( REPLACE "-fPIC" "" new_core_options "${core_options}" )
+	set_property( TARGET Qt5::Core PROPERTY INTERFACE_COMPILE_OPTIONS ${new_core_options} )
+	set_property( TARGET Qt5::Core PROPERTY INTERFACE_POSITION_INDEPENDENT_CODE "ON" )
+	set( CMAKE_CXX_COMPILE_OPTIONS_PIE "-fPIC" )
+endif()
+
+
+add_executable(${PROJECT_NAME} ${SOURCES} ${CUDA_SOURCES} ${MOC_HEADERS} ${UI}) # the MOC headers are needed
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${OPENGL_INCLUDE_DIR})
 set_target_properties(${PROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets ${OPENGL_LIBRARIES}) # OpenMP::OpenMP_CXX
@@ -113,6 +125,12 @@ add_executable(minimumdistance-test ${SOURCES} )
 target_include_directories(minimumdistance-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 target_link_libraries(minimumdistance-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
 add_unit_test(minimumdistance-test)
+
+# cuda-test
+add_executable(cuda-test ${CUDA_SOURCES} "test/cuda-test.cpp")
+target_include_directories(cuda-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
+target_link_libraries(cuda-test ${Boost_LIBRARIES})
+add_unit_test(cuda-test)
 
 # passing-test
 file(GLOB SOURCES "test/passing-test.cpp")
