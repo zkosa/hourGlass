@@ -3,7 +3,7 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE vec3d-TEST
 #include <boost/test/unit_test.hpp>
-#include <boost/test/output_test_stream.hpp>
+#include <boost/test/tools/output_test_stream.hpp>
 
 
 BOOST_AUTO_TEST_CASE( vec3d_test, * boost::unit_test::tolerance(1e-6f) )

@@ -6,7 +6,7 @@ project(hourGlass LANGUAGES CXX)
 set(TESTS ON) # ON / OFF
 set(CODE_COVERAGE_ANALYSIS OFF) # ON / OFF, linux only
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 add_compile_options("-Wall")
 # disabling optimization in order to improve the fidelity of coverage analysis:
 if (NOT CODE_COVERAGE_ANALYSIS)
