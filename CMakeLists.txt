@@ -4,6 +4,7 @@ set(CMAKE_VERBOSE_MAKEFILE On) # enables indexing in eclipse?
 project(hourGlass LANGUAGES CXX)
 
 set(TESTS ON) # ON / OFF
+set(BENCHMARKS ON) # ON / OFF
 set(CODE_COVERAGE_ANALYSIS OFF) # ON / OFF, linux only
 
 set(CMAKE_CXX_STANDARD 20)
@@ -171,3 +172,16 @@ if(CMAKE_COMPILER_IS_GNUCXX AND CODE_COVERAGE_ANALYSIS)
 
 endif(CMAKE_COMPILER_IS_GNUCXX AND CODE_COVERAGE_ANALYSIS)
 endif(TESTS)
+
+if(BENCHMARKS)
+	find_package(benchmark REQUIRED)
+	file(GLOB SOURCES "test/benchmark.cpp")
+	add_executable(${PROJECT_NAME}_benchmark ${SOURCES}) # the MOC headers are needed
+	#target_include_directories(${PROJECT_NAME}_benchmark PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${OPENGL_INCLUDE_DIR})
+	target_link_libraries(${PROJECT_NAME}_benchmark benchmark::benchmark)
+endif(BENCHMARKS)
+
+# run the benchmark with constant CPU frequency:
+# sudo cpupower frequency-set --governor performance
+# ./bin/bin/hourGlass_benchmark
+# sudo cpupower frequency-set --governor powersave
