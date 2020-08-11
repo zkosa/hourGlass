@@ -175,10 +175,12 @@ endif(TESTS)
 
 if(BENCHMARKS)
 	find_package(benchmark REQUIRED)
-	file(GLOB SOURCES "test/benchmark.cpp")
-	add_executable(${PROJECT_NAME}_benchmark ${SOURCES}) # the MOC headers are needed
-	#target_include_directories(${PROJECT_NAME}_benchmark PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${OPENGL_INCLUDE_DIR})
-	target_link_libraries(${PROJECT_NAME}_benchmark benchmark::benchmark)
+	file(GLOB SOURCES "test/benchmark.cpp" "src/*.cpp")
+	list(FILTER SOURCES EXCLUDE REGEX "src/main.cpp") # exclude main
+	add_executable(${PROJECT_NAME}_benchmark ${SOURCES} ${MOC_HEADERS} ${UI}) # the MOC headers are needed
+	target_include_directories(${PROJECT_NAME}_benchmark PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${OPENGL_INCLUDE_DIR})
+	set_target_properties(${PROJECT_NAME}_benchmark PROPERTIES AUTOMOC TRUE)
+	target_link_libraries(${PROJECT_NAME}_benchmark benchmark::benchmark Qt5::Core Qt5::Gui Qt5::Widgets ${OPENGL_LIBRARIES})
 endif(BENCHMARKS)
 
 # run the benchmark with constant CPU frequency:
