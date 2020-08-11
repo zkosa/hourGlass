@@ -39,7 +39,7 @@ class Scene {
 	float benchmark_simulation_time = 1.; // [s]
 
 	int loop_counter = 0;
-	float duration = 0.;
+	float duration = 0.;  // [ms]
 
 	struct Defaults {
 		float time_step = 0.001; // [s]
