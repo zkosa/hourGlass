@@ -56,11 +56,6 @@ BOOST_AUTO_TEST_CASE( scene_drag_test )
 	// left particle
 
 	Scene scene;
-
-	Scene *scene_ptr = &scene; // TODO: check
-	Particle::connectScene(scene_ptr);
-	Cell::connectScene(scene_ptr);
-
 	scene.applyDefaults();
 	//Particle::setCd(0.0f);
 
@@ -93,12 +88,8 @@ BOOST_AUTO_TEST_CASE( scene_three_particles_test )
 	// left particle
 
 	Scene scene;
-
-	Scene *scene_ptr = &scene; // TODO: check
-	Particle::connectScene(scene_ptr);
-	Cell::connectScene(scene_ptr);
-
 	scene.applyDefaults();
+
 	float Cd = 0.5f;
 	Particle::setCd(Cd);
 	scene.setGeometry(Geometry::test);
@@ -141,13 +132,7 @@ BOOST_AUTO_TEST_CASE( scene_three_particles_test )
 BOOST_AUTO_TEST_CASE( scene_collide_to_wall_test )
 {
 	Scene scene;
-
-	Scene *scene_ptr = &scene; // TODO: check
-	Particle::connectScene(scene_ptr);
-	Cell::connectScene(scene_ptr);
-
 	scene.applyDefaults();
-
 	scene.setGeometry(Geometry::test); // TODO: combine setGeometry and createGeometry?
 	scene.createGeometry(Geometry::test);
 
@@ -188,11 +173,6 @@ BOOST_AUTO_TEST_CASE( scene_collide_to_wall_test )
 BOOST_AUTO_TEST_CASE( scene_collideParticles_test ) {
 
 	Scene scene;
-
-	Scene *scene_ptr = &scene; // TODO: check
-	Particle::connectScene(scene_ptr);
-	Cell::connectScene(scene_ptr);
-
 	scene.applyDefaults();
 
 	scene.setGeometry(Geometry::test); // TODO: combine setGeometry and createGeometry?
@@ -222,11 +202,6 @@ BOOST_AUTO_TEST_CASE( scene_collideParticles_test ) {
 BOOST_AUTO_TEST_CASE( scene_collideParticlesCells_test ) {
 
 	Scene scene;
-
-	Scene *scene_ptr = &scene;
-	Particle::connectScene(scene_ptr);
-	Cell::connectScene(scene_ptr);
-
 	scene.applyDefaults();
 
 	scene.setGeometry(Geometry::test);
@@ -260,11 +235,6 @@ BOOST_AUTO_TEST_CASE( scene_collideParticlesCells_test ) {
 BOOST_AUTO_TEST_CASE( scene_collideWithBoundariesCells_planar_test ) {
 
 	Scene scene;
-
-	Scene *scene_ptr = &scene;
-	Particle::connectScene(scene_ptr);
-	Cell::connectScene(scene_ptr);
-
 	scene.applyDefaults();
 
 	scene.setGeometry(Geometry::test);
@@ -296,11 +266,6 @@ BOOST_AUTO_TEST_CASE( scene_collideWithBoundariesCells_planar_test ) {
 BOOST_AUTO_TEST_CASE( scene_collideWithBoundariesCells_axisymm_test ) {
 
 	Scene scene;
-
-	Scene *scene_ptr = &scene;
-	Particle::connectScene(scene_ptr);
-	Cell::connectScene(scene_ptr);
-
 	scene.applyDefaults();
 
 	scene.setGeometry(Geometry::hourglass);

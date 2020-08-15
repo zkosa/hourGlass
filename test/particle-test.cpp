@@ -196,12 +196,7 @@ BOOST_AUTO_TEST_CASE( overlap_with_wall_test )
 	BOOST_TEST_REQUIRE( p.overlapVectorWithWall(ground).y == Vec3d(0.0f, -1*(radius - offset), 0.0f).y, boost::test_tools::tolerance(1e-4f) );
 	BOOST_TEST_REQUIRE( p.overlapVectorWithWall(ground).z == Vec3d(0.0f, -1*(radius - offset), 0.0f).z, boost::test_tools::tolerance(1e-4f) );
 
-	// BOOST_TEST_REQUIRE( p.overlapWithWalls() == true ); // fails, because scene is not known by p
-
-	Scene *scene_ptr = &scene;
-	Particle::connectScene(scene_ptr);
-
-	BOOST_TEST_REQUIRE( p.overlapWithWalls() == true );
+	BOOST_TEST_REQUIRE( p.overlapWithWalls() == true );  // failed before adding particle connection to constructor, because scene is not known by p
 	BOOST_TEST_REQUIRE( p.overlapVectorWithWalls() == p.overlapVectorWithWall(ground) );
 
 	 // make the particle huge, to overlap with all walls
@@ -223,8 +218,6 @@ BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_far_test )
 	// Two far particles
 	// Nothing should change after calling the collision method
 	Scene scene;
-	Scene *scene_ptr = &scene;
-	Particle::connectScene(scene_ptr);
 	scene.createGeometry(Geometry::test); // box
 
 	float r = Particle::getUniformRadius();
@@ -249,8 +242,6 @@ BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_noneTouches_test )
 	// We expect them to be touching each other after collision, and
 	//
 	Scene scene;
-	Scene *scene_ptr = &scene;
-	Particle::connectScene(scene_ptr); // TODO add to constructor, or at least a getPointer
 	scene.createGeometry(Geometry::test); // box
 	Boundary_planar ground = scene.getBoundariesPlanar()[0];
 
@@ -280,8 +271,6 @@ BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_noneTouches_butWouldAfterC
 	// We expect them to be touching each other after collision, and
 	//
 	Scene scene;
-	Scene *scene_ptr = &scene;
-	Particle::connectScene(scene_ptr); // TODO add to constructor, or at least a getPointer
 	scene.createGeometry(Geometry::test); // box
 	Boundary_planar ground = scene.getBoundariesPlanar()[0];
 
@@ -310,8 +299,6 @@ BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_oneTouches_test )
 	// while ONE of them overlaps with a wall too.
 	// We expect them to be touching each other after collision
 	Scene scene;
-	Scene *scene_ptr = &scene;
-	Particle::connectScene(scene_ptr); // TODO add to constructor, or at least a getPointer
 	scene.createGeometry(Geometry::test); // box
 	Boundary_planar ground = scene.getBoundariesPlanar()[0];
 
@@ -335,8 +322,6 @@ BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_otherTouches_test )
 	// while ONE of them overlaps with a wall too.
 	// We expect them to be touching each other after collision
 	Scene scene;
-	Scene *scene_ptr = &scene;
-	Particle::connectScene(scene_ptr); // TODO add to constructor, or at least a getPointer
 	scene.createGeometry(Geometry::test); // box
 	Boundary_planar ground = scene.getBoundariesPlanar()[0];
 
@@ -361,8 +346,6 @@ BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_twoTouch_test )
 	// while BOTH of them overlap with a wall too.
 	// We expect them to be touching each other and the walls after collision
 	Scene scene;
-	Scene *scene_ptr = &scene;
-	Particle::connectScene(scene_ptr); // TODO add to constructor, or at least a getPointer
 	scene.createGeometry(Geometry::test); // box
 	Boundary_planar ground = scene.getBoundariesPlanar()[0];
 
@@ -386,8 +369,6 @@ BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_twoTouch_axisymm_test )
 	// while BOTH of them overlap with an axis-symmetic wall too.
 	// We expect them to be touching each other and the walls after collision
 	Scene scene;
-	Scene *scene_ptr = &scene;
-	Particle::connectScene(scene_ptr); // TODO add to constructor, or at least a getPointer
 	scene.createGeometry(Geometry::hourglass); // box
 	Boundary_axissymmetric hourglass = scene.getBoundariesAxiSym()[0];
 
@@ -458,8 +439,6 @@ BOOST_AUTO_TEST_CASE( no_drag_fall_test )
 
 	// connect scene, otherwise maxFreeFallVelocity gives nan
 	Scene scene;
-	auto* scene_ptr = &scene;
-	Particle::connectScene(scene_ptr);
 	scene.createGeometry(Geometry::test); // box with level ground
 
 	tol = boost::test_tools::tolerance(float(1e-3));

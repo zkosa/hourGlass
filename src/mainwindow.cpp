@@ -13,8 +13,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	// connecting the simulation scene to the window:
 	Scene *scene_ptr = &scene; // TODO: check
-	Particle::connectScene(scene_ptr);
-	Cell::connectScene(scene_ptr);
 	ui->openGLWidget->connectScene(scene_ptr);
 	ui->openGLWidget->connectMainWindow(this);
 

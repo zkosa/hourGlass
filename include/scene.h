@@ -17,6 +17,7 @@ enum class Geometry {
 };
 
 class Scene {
+	// TODO: allow only a single instant!
 
 	MainWindow *viewer = nullptr;
 	float time_step = 0.001; // [s]
@@ -54,6 +55,8 @@ class Scene {
 
 public:
 	Timer timer_all, timer;
+
+	Scene(); // TODO: consider the rule of 0/3/5 after adding a constructor!
 
 	void connectViewer(MainWindow *window) {
 		viewer = window;

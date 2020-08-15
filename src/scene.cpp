@@ -5,6 +5,11 @@
 //#include <omp.h>
 #include "mainwindow.h"
 
+Scene::Scene() {
+	Particle::connectScene(this);
+	Cell::connectScene(this);
+}
+
 void Scene::createGeometry(int geo) {
 
 	createGeometry(static_cast<Geometry>(geo));

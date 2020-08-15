@@ -24,12 +24,7 @@ void benchMark_hourGlass(benchmark::State& state) {
 void benchMark_hourGlass_calculatePhysics(benchmark::State& state) {
 	for (auto _ : state) {
 		Scene scene;
-
-		// TODO: wrap these into a single command:
-		// TODO: create and connect a MainWindow too, or eliminate it
-		Scene *scene_ptr = &scene;
-		Particle::connectScene(scene_ptr);
-		Cell::connectScene(scene_ptr);
+		// TODO: create and connect a MainWindow, or eliminate it (it is a nullptr currently)
 		scene.setBenchmarkMode(true);
 
 		scene.applyDefaults();
