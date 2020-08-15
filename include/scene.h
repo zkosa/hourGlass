@@ -20,7 +20,7 @@ class Scene {
 
 	MainWindow *viewer = nullptr;
 	float time_step = 0.001; // [s]
-	float time = 0;
+	float simulation_time = 0;
 	std::vector<Particle> particles;
 	std::vector<Boundary_planar> boundaries_pl;
 	std::vector<Boundary_axissymmetric> boundaries_ax;
@@ -39,7 +39,7 @@ class Scene {
 	float benchmark_simulation_time = 1.; // [s]
 
 	int loop_counter = 0;
-	float duration = 0.;
+	float duration = 0.;  // [ms]
 
 	struct Defaults {
 		float time_step = 0.001; // [s]
@@ -70,6 +70,9 @@ public:
 	void collideParticles();
 	void collideParticlesCells();
 
+	float getSimulationTime() {
+		return simulation_time;
+	}
 	std::vector<Particle>& getParticles() {
 		return particles;
 	}

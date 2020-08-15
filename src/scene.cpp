@@ -258,11 +258,11 @@ void Scene::calculatePhysics() {
 }
 
 void Scene::advance() {
-	if (benchmark_mode && time >= benchmark_simulation_time) { // in benchmark mode the simulation time is fixed
+	if (benchmark_mode && simulation_time >= benchmark_simulation_time) { // in benchmark mode the simulation time is fixed
 		viewer->wrapStopButtonClicked();
 		std::cout << "The benchmark has been finished." << std::endl;
 	} else {
-		time += time_step;
+		simulation_time += time_step;
 		for (auto &p : particles) {
 			p.advance(time_step);
 		}
@@ -636,9 +636,9 @@ void Scene::setFinished() {
 	finished = true;
 	std::cout << "Finishing..." << std::endl;
 
-	std::cout << "Execution time of physics loop: " << duration << std::endl;
+	std::cout << "Execution time of physics loop: " << duration << " ms" << std::endl;
 	std::cout << "Execution time of physics loop / loop: "
-			<< duration / getCounter() << std::endl;
+			<< duration / getCounter() << " ms/loop" << std::endl;
 	resetCounter();
 	resetDuration();
 }
@@ -649,7 +649,7 @@ void Scene::reset() {
 	finished = false;
 	std::cout << "Resetting..." << std::endl;
 
-	time = 0;
+	simulation_time = 0;
 
 	boundaries_ax.clear();
 	boundaries_pl.clear();
