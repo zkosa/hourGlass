@@ -144,7 +144,7 @@ public:
 	Vec3d getPos() const {
 		return pos;
 	}
-	Vec3d getAcceleration() {
+	Vec3d getAcceleration() const {
 		return acc;
 	}
 	float terminalVelocity() const;
@@ -165,5 +165,15 @@ public:
 	}
 
 };
+
+inline bool operator==(const Particle& a, const Particle& b) {
+	return (
+			a.getPos() == b.getPos() &&
+			a.getV() == b.getV() &&
+			a.getAcceleration() == b.getAcceleration() &&
+			a.getID() == b.getID() &&
+			a.getR() == b.getR()
+			);
+}
 
 #endif /* PARTICLE_H_ */
