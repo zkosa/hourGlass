@@ -6,6 +6,7 @@
 #include "mainwindow.h"
 
 Scene::Scene() {
+	Particle::resetLastID();
 	Particle::connectScene(this);
 	Cell::connectScene(this);
 }
