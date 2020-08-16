@@ -2,6 +2,22 @@
 #include "minimumdistance.h"
 #include <QOpenGLWidget>
 
+
+bool Boundary_axissymmetric::operator==(const Boundary &other) const {
+	const Boundary_axissymmetric* other_boundary_casted_to_this = dynamic_cast< const Boundary_axissymmetric* >( &other );
+	if ( other_boundary_casted_to_this == nullptr ) {
+		return false; // they have different derived type
+	} else {
+		if (axis == other_boundary_casted_to_this->axis
+			// && contour == other_boundary_casted_to_this->contour // TODO: resolve it later
+			) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+}
+
 float Boundary_axissymmetric::distance(const Particle &particle) const {
 	return distance(particle.getPos());
 }

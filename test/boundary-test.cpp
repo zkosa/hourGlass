@@ -378,3 +378,40 @@ BOOST_AUTO_TEST_CASE( planarity_test )
 	BOOST_TEST_REQUIRE( ground.isPlanar() == true );
 	BOOST_TEST_REQUIRE( glass.isPlanar() == false );
 }
+
+BOOST_AUTO_TEST_CASE( boundary_casting_test )
+{
+	float corner = 0.999f;
+	Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, -corner, 0),
+					Vec3d(-1, -corner, 1));
+	Boundary_axissymmetric glass;
+
+	BOOST_TEST_REQUIRE( dynamic_cast< const Boundary_planar* >( &ground ) != nullptr );
+	BOOST_TEST_REQUIRE( dynamic_cast< const Boundary_axissymmetric* >( &glass ) != nullptr );
+
+	BOOST_TEST_REQUIRE( dynamic_cast< const Boundary_axissymmetric* >( &ground ) == nullptr );
+	BOOST_TEST_REQUIRE( dynamic_cast< const Boundary_planar* >( &glass ) == nullptr );
+}
+
+BOOST_AUTO_TEST_CASE( boundary_equality_test )
+{
+	float corner = 0.999f;
+	Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, -corner, 0),
+					Vec3d(-1, -corner, 1));
+	Boundary_planar slope(Vec3d(-corner, -corner, 0), Vec3d(corner, 0, 0),
+			Vec3d(-corner, -corner, 1));
+	Boundary_axissymmetric glass;
+	// Boundary_axissymmetric glass_with_different_shape; // no constructor supporting it
+
+	BOOST_TEST_REQUIRE( (ground == ground) == true );
+	BOOST_TEST_REQUIRE( (slope == slope) == true );
+	BOOST_TEST_REQUIRE( (glass == glass) == true );
+	// BOOST_TEST_REQUIRE( (glass == glass_with_different_shape) == false );
+
+	BOOST_TEST_REQUIRE( (glass == slope) == false );
+	BOOST_TEST_REQUIRE( (glass == ground) == false );
+	BOOST_TEST_REQUIRE( (ground == glass) == false );
+	BOOST_TEST_REQUIRE( (ground == slope) == false );
+	BOOST_TEST_REQUIRE( (slope == ground) == false );
+	BOOST_TEST_REQUIRE( (slope == glass) == false );
+}

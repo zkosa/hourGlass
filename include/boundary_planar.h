@@ -17,6 +17,8 @@ public:
 		planar = true;
 	}
 
+	bool operator==(const Boundary &other) const override;
+
 	float distance(const Vec3d &point) const;
 	float distance(const Particle &particle) const override;
 	float distanceSigned(const Vec3d &point) const;

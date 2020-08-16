@@ -13,6 +13,7 @@ protected:
 
 public:
 
+	virtual bool operator==(const Boundary &other) const = 0; // TODO: add tests!
 	virtual void draw2D() = 0;
 	virtual float distance(const Particle &particle) const = 0;
 	virtual float distanceSigned(const Particle &particle) const = 0;
