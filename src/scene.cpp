@@ -295,22 +295,35 @@ void Scene::collideWithBoundaries() {
 
 void Scene::collideWithBoundariesCells() {
 
+	// collect them into vector to avoid execution of collision in different cells
+	std::vector<std::pair<Particle&, Boundary&>> to_be_collided;
+
+	// although particles may be contained in multiple cells at the same time,
+	// we can still save time via a cell-wise approach, by excluding cells without boundaries
 	for (auto &c : cells) {
 		if (c.hasBoundary()) {
 			for (int pID : c.getParticleIDs()) {
 				auto &p = particles[pID];
 				for (auto &b : boundaries_pl) {
 					if (b.distance(p) < p.getR()) {
-						p.collideToWall(b);
+						//p.collideToWall(b);
+						to_be_collided.emplace_back(p, b);
 					}
 				}
 				for (auto &b : boundaries_ax) {
 					if (b.distance(p) < p.getR()) {
-						p.collideToWall(b);
+						//p.collideToWall(b);
+						to_be_collided.emplace_back(p, b);
 					}
 				}
 			}
 		}
+	}
+
+	removeDuplicates(to_be_collided);
+
+	for (auto [particle, boundary] : to_be_collided) {
+		particle.collideToWall(boundary);
 	}
 }
 

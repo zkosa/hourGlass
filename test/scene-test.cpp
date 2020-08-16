@@ -282,15 +282,20 @@ BOOST_AUTO_TEST_CASE( scene_collideWithBoundariesCells_axisymm_test ) {
 
 	scene.addParticle(p1);
 
+	// specify the number of the cells explicitly,
+	// because the issue occured earlier when a particle
+	// was part of odd number of cells:
+	// (colliding odd number of times has undone the velocity reversion)
+	Cell::setNx(10);
+	Cell::setNy(Cell::getNx());
+
 	// cellwise collision requires cells
 	scene.createCells();
 	scene.populateCells();
 
 	auto& P1 = scene.getParticles()[0];
 
-	watch(P1.getPos());
 	scene.collideWithBoundariesCells();
-	watch(P1.getPos());
 
 	BOOST_TEST_REQUIRE( hourglass.distance(P1) == r, boost::test_tools::tolerance(1e-5f) );
 	BOOST_TEST_REQUIRE( P1.getV().x == -vx, boost::test_tools::tolerance(1e-5f) );
