@@ -681,3 +681,17 @@ void Scene::applyDefaults() {
 	Particle::setUniformRadius(0.5 * defaults.particle_diameter);
 	Particle::setCd(defaults.Cd);
 }
+
+template <class T>
+void Scene::removeDuplicates(std::vector<T> &vector) {
+
+//	unique and unordered_set does not work with std::pair, thats why it is not used
+//  (sorting would require relational operators)
+
+	auto end = vector.end();
+	for (auto it = vector.begin(); it != end; ++it) {
+		end = std::remove(it + 1, end, *it);
+	}
+
+	vector.erase(end, vector.end());
+}

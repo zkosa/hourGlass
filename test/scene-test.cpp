@@ -296,6 +296,28 @@ BOOST_AUTO_TEST_CASE( scene_collideWithBoundariesCells_axisymm_test ) {
 	BOOST_TEST_REQUIRE( P1.getV().x == -vx, boost::test_tools::tolerance(1e-5f) );
 }
 
+BOOST_AUTO_TEST_CASE ( scene_removeDuplicates_test )
+{
+	Particle p1(Vec3d::null, 0.005f);
+	Particle p2 = p1;
+	Particle p3 = p1;
+	p3.move(Vec3d::i);
+
+	Boundary_axissymmetric b_ax;
+
+	std::vector<particle_boundary_pair> pb_pairs;
+	//std::vector<std::pair<Particle&, Boundary&>> pb_pairs;
+	pb_pairs.emplace_back(p1, b_ax);
+	pb_pairs.emplace_back(p2, b_ax);  // this is a duplicate
+	pb_pairs.emplace_back(p3, b_ax);
+
+	BOOST_TEST_REQUIRE( pb_pairs.size() == 3);
+	Scene::removeDuplicates(pb_pairs);
+	BOOST_TEST_REQUIRE( pb_pairs.size() == 2);
+	BOOST_TEST_REQUIRE( (pb_pairs[0] == particle_boundary_pair{p1, b_ax}) );
+	BOOST_TEST_REQUIRE( (pb_pairs[1] == particle_boundary_pair{p3, b_ax}) ); // check whether the last was simply skipped
+}
+
 BOOST_AUTO_TEST_CASE( scene_createCells_performance_test )
 {
 	Scene scene;

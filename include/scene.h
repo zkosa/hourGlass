@@ -16,6 +16,8 @@ enum class Geometry {
 	hourglass = 0, hourglass_with_removable_orifice = 1, box = 2, test = 3
 };
 
+using particle_boundary_pair = std::pair<Particle&, Boundary&>;
+
 class Scene {
 	// TODO: allow only a single instant!
 
@@ -195,6 +197,9 @@ public:
 		return number_of_particles;
 	}
 	void applyDefaults();
+
+	template <class T>
+	static void removeDuplicates(std::vector<T> &vector);
 
 };
 
