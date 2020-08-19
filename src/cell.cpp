@@ -170,18 +170,16 @@ void Cell::size() const {
 
 void Cell::draw2D() {
 	glBegin(GL_LINE_LOOP);
-//	glEnable( GL_BLEND ); // alpha seems to have no effect
-//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	if (hasBoundary()) {
 		glColor4f(1, 0, 0, 1);
 	} else {
 		glColor4f(0, 1, 0, 0.1);
 	}
-	/*	 if (isExternal()) {
-	 glColor4f(0, 0, 1, 1);
-	 } else {
-	 glColor4f(1, 1, 0, 0.1);
-	 } */
+//	if (isExternal()) {
+//		glColor4f(0, 0, 1, 1);
+//	} else {
+//		glColor4f(1, 1, 0, 1);
+//	}
 	glVertex2f(float(bounds_for_display.x1), float(bounds_for_display.y1));
 	glVertex2f(float(bounds_for_display.x2), float(bounds_for_display.y1));
 	glVertex2f(float(bounds_for_display.x2), float(bounds_for_display.y2));
