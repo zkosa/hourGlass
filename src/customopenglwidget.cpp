@@ -12,6 +12,9 @@ CustomOpenGLWidget::CustomOpenGLWidget(QWidget *parent) :
 
 void CustomOpenGLWidget::initializeGL() {
 	std::cout << "Initializing OpenGL..." << std::endl;
+	// enabling transparency:
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
 	glClearColor(0, 0, 0, 1);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHT0);
