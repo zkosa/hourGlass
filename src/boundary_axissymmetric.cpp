@@ -95,6 +95,7 @@ Vec3d Boundary_axissymmetric::getNormalNumDiff(const Vec3d &curve_point) const {
 void Boundary_axissymmetric::draw2D() {
 	// hardcoded for x= 0 axis
 	// TODO: generalize
+	glLineWidth(2.0f);
 	glColor4f(0.6, 0.8, 0.8, 1);
 
 	float X;
@@ -116,4 +117,5 @@ void Boundary_axissymmetric::draw2D() {
 	}
 	glEnd();
 	glColor4f(1, 1, 1, 1);
+	glLineWidth(1.0f);
 }
