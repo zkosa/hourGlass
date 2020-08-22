@@ -708,3 +708,9 @@ void Scene::removeDuplicates(std::vector<T> &vector) {
 
 	vector.erase(end, vector.end());
 }
+
+// Explicitly instantiating template methods, in order to
+// avoid undefined reference problems in calls from other units:
+template void Scene::removeDuplicates<particle_boundary_pair>(std::vector<particle_boundary_pair> &vector);
+// this is used only for testing purposes, can be excluded from production variant:
+template void Scene::removeDuplicates<int>(std::vector<int> &vector);
