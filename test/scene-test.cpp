@@ -301,6 +301,37 @@ BOOST_AUTO_TEST_CASE( scene_collideWithBoundariesCells_axisymm_test ) {
 	BOOST_TEST_REQUIRE( P1.getV().x == -vx, boost::test_tools::tolerance(1e-5f) );
 }
 
+BOOST_AUTO_TEST_CASE ( scene_removeDuplicates_int_test )
+{
+	// test with ints because it is easier
+	std::vector<int> vecti {
+								1,
+								2,
+								1,  // this is a duplicate
+								3,
+								3,  // this is a duplicate
+								3,  // this is a duplicate
+								4
+	};
+
+	std::vector<int> res {
+								1,
+								2,
+								3,
+								4
+	};
+
+	BOOST_TEST_REQUIRE( vecti.size() == 7);
+	Scene::removeDuplicates(vecti);
+	BOOST_TEST_REQUIRE( vecti.size() == 4);
+
+	BOOST_TEST_REQUIRE( (vecti[0] == res[0]) );
+	BOOST_TEST_REQUIRE( (vecti[1] == res[1]) );
+	BOOST_TEST_REQUIRE( (vecti[2] == res[2]) );
+	BOOST_TEST_REQUIRE( (vecti[3] == res[3]) );
+	BOOST_TEST_REQUIRE( (vecti[4] == res[4]) );
+}
+
 BOOST_AUTO_TEST_CASE ( scene_removeDuplicates_test )
 {
 	Particle p1(Vec3d::null, 0.005f);
