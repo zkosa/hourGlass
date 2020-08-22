@@ -19,10 +19,6 @@
 !CMakeLists.txt
 !CodeCoverage.cmake
 
-# Eclipse:
-!.project
-!.cproject
-
 # documentation:
 !img
 !img/*
