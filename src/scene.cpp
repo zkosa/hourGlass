@@ -695,7 +695,7 @@ void Scene::applyDefaults() {
 	Particle::setCd(defaults.Cd);
 }
 
-template <class T>
+template <typename T>
 void Scene::removeDuplicates(std::vector<T> &vector) {
 
 //	unique and unordered_set does not work with std::pair, thats why it is not used

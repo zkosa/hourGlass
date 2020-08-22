@@ -198,7 +198,7 @@ public:
 	}
 	void applyDefaults();
 
-	template <class T>
+	template <typename T>
 	static void removeDuplicates(std::vector<T> &vector);
 
 };
