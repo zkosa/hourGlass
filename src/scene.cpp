@@ -265,7 +265,11 @@ void Scene::calculatePhysics() {
 
 void Scene::advance() {
 	if (benchmark_mode && simulation_time >= benchmark_simulation_time) { // in benchmark mode the simulation time is fixed
-		viewer->wrapStopButtonClicked();
+		if (viewer != nullptr) {
+			viewer->wrapStopButtonClicked();
+		} else { // do not call the GUI stuff when we are GUI-less
+			setFinished();
+		}
 		std::cout << "The benchmark has been finished." << std::endl;
 	} else {
 		simulation_time += time_step;
