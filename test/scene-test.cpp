@@ -329,7 +329,6 @@ BOOST_AUTO_TEST_CASE ( scene_removeDuplicates_int_test )
 	BOOST_TEST_REQUIRE( (vecti[1] == res[1]) );
 	BOOST_TEST_REQUIRE( (vecti[2] == res[2]) );
 	BOOST_TEST_REQUIRE( (vecti[3] == res[3]) );
-	BOOST_TEST_REQUIRE( (vecti[4] == res[4]) );
 }
 
 BOOST_AUTO_TEST_CASE ( scene_removeDuplicates_test )
