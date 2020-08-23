@@ -53,7 +53,7 @@ class Scene {
 		float Cd = 0.5;
 	};
 
-	Defaults defaults;
+	const Defaults defaults;
 
 public:
 	Timer timer_all, timer;

@@ -38,9 +38,9 @@ float Boundary_axissymmetric::distanceSigned(const Vec3d &point) const {
 	// Negative value indicates that the particle is on the outer side.
 	// TODO: add tests
 	// TODO: optimize
-	MinimumDistance minimum_distance(*this, point);
+	const MinimumDistance minimum_distance(*this, point);
 
-	Vec3d contact_point = minimum_distance.getClosestPointOnTheContour();
+	const Vec3d contact_point = minimum_distance.getClosestPointOnTheContour();
 
 	return (point - contact_point) * getNormal(point);
 }
@@ -48,7 +48,7 @@ float Boundary_axissymmetric::distanceSigned(const Vec3d &point) const {
 Vec3d Boundary_axissymmetric::getNormal(const Particle &particle) const {
 	// provides a normalized direction vector from the closest surface point to the particle
 
-	MinimumDistance minimum_distance(*this, particle);
+	const MinimumDistance minimum_distance(*this, particle);
 
 	return getNormalNumDiff(minimum_distance.getClosestPointOnTheContour());
 }
@@ -75,16 +75,16 @@ Vec3d Boundary_axissymmetric::getNormalNumDiff(const Vec3d &curve_point) const {
 	// the first coordinate is the radial one.
 
 	// step size for numerical derivative (axial direction)
-	float dax = 1e-5f;
+	constexpr float dax = 1e-5f;
 	// axial coordinate of the point where the normal is needed
-	float ax = curve_point.toYAxial().axial;
+	const float ax = curve_point.toYAxial().axial;
 	float dax_signed;
 	if (curve_point.x >= 0.0f) {
 		dax_signed = -dax;
 	} else {
 		dax_signed = dax;
 	}
-	Vec3d normal = norm(Vec3d(
+	const Vec3d normal = norm(Vec3d(
 			dax_signed,
 			contour(ax + dax/2.0f) - contour(ax - dax/2.0f),
 			0));
@@ -99,7 +99,7 @@ void Boundary_axissymmetric::draw2D() {
 	glColor4f(0.6, 0.8, 0.8, 1);
 
 	float X;
-	int resolution = 20;
+	constexpr int resolution = 20;
 
 	// the right hand side section in the (x,y) plane:
 	glBegin(GL_LINE_LOOP);

@@ -11,20 +11,20 @@ class MinimumDistance {
 	// member order is important because of dependency!
 
 	// point where the distance is measured to the curve from:
-	Vec3d point;
-	float point_X0 = point.toYAxial().axial;
-	float point_R0 = point.toYAxial().radial;
+	const Vec3d point;
+	const float point_X0 = point.toYAxial().axial;
+	const float point_R0 = point.toYAxial().radial;
 
-	Vec3d axis = Vec3d::j; // default axis
+	const Vec3d axis = Vec3d::j; // default axis
 
-	std::function<float(float)> contour;
+	const std::function<float(float)> contour;
 
 	float distance2(float X) const {
 		return (X - point_X0) * (X - point_X0)
 				+ (contour(X) - point_R0) * (contour(X) - point_R0);
 	};
 	// function pointer to the function (square of the distance) to be minimized
-	std::function<float(float)> function;
+	const std::function<float(float)> function;
 
 	Minimum minimum;
 
@@ -73,10 +73,10 @@ public:
 
 	// call in all constructors!
 	void findClosestPointOnContour() {
-		float curve_X = minimum.findRoot(); // location of minimum distance point on the curve
-		float curve_R = contour(curve_X); // radius of axisymmetric shape at curve_X
+		const float curve_X = minimum.findRoot(); // location of minimum distance point on the curve
+		const float curve_R = contour(curve_X); // radius of axisymmetric shape at curve_X
 
-		VecAxiSym closestPointInRadialCoord(curve_X, curve_R);
+		const VecAxiSym closestPointInRadialCoord(curve_X, curve_R);
 
 		Vec3d radial = point - (point * axis) * axis; // radial vector. it becomes zero, when the point is on the axis!
 
@@ -95,10 +95,10 @@ public:
 	}
 
 	float getDistance2() {
-		float curve_X = closest_point_on_the_contour.toYAxial().axial;
-		float curve_R = closest_point_on_the_contour.toYAxial().radial;
+		const float curve_X = closest_point_on_the_contour.toYAxial().axial;
+		const float curve_R = closest_point_on_the_contour.toYAxial().radial;
 
-		float distance_squared = (curve_X - point_X0)*(curve_X - point_X0) +
+		const float distance_squared = (curve_X - point_X0)*(curve_X - point_X0) +
 								 (curve_R - point_R0)*(curve_R - point_R0);
 
 		return distance_squared;
@@ -125,10 +125,10 @@ public:
 	Vec3d getNormal2() {
 		// legacy implementation for testing
 		// TODO: clarify the misleading name!
-		float curve_X = minimum.findRoot(); // location of minimum distance point on the curve
-		float curve_R = contour(curve_X); // radius of axisymmetric shape at curve_X
+		const float curve_X = minimum.findRoot(); // location of minimum distance point on the curve
+		const float curve_R = contour(curve_X); // radius of axisymmetric shape at curve_X
 
-		VecAxiSym closestPointInRadialCoord(curve_X, curve_R);
+		const VecAxiSym closestPointInRadialCoord(curve_X, curve_R);
 
 		Vec3d radial = point - (point * axis) * axis; // radial vector. it becomes zero, when the point is on the axis!
 
@@ -137,7 +137,7 @@ public:
 			radial = Vec3d::i;
 		}
 
-		Vec3d contactPoint = axis * closestPointInRadialCoord.axial
+		const Vec3d contactPoint = axis * closestPointInRadialCoord.axial
 					+ norm(radial) * closestPointInRadialCoord.radial;
 
 		return norm(point - contactPoint);

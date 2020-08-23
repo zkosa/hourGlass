@@ -20,7 +20,7 @@ Vec3d Cell::dX{0,0,0}; // 2D
 // constructor
 Cell::Cell(const Vec3d &center) {
 
-	Vec3d dX = Cell::dX;
+	const Vec3d dX = Cell::dX;
 
 	bounds.x1 = (center - dX / 2.) * Vec3d::i;
 	bounds.y1 = (center - dX / 2.) * Vec3d::j;
@@ -30,7 +30,7 @@ Cell::Cell(const Vec3d &center) {
 	bounds.y2 = (center + dX / 2.) * Vec3d::j;
 	bounds.z2 = (center + dX / 2.) * Vec3d::k;
 
-	float factor = 0.94;
+	constexpr float factor = 0.94f;
 	bounds_for_display.x1 = (center - factor * dX / 2.) * Vec3d::i;
 	bounds_for_display.y1 = (center - factor * dX / 2.) * Vec3d::j;
 	bounds_for_display.z1 = (center - factor * dX / 2.) * Vec3d::k;
@@ -122,9 +122,9 @@ pointData Cell::getAllPoints() const {
 	all.reserve(27);
 	all.push_back(center);
 
-	pointData corners = getCorners();
-	pointData faceCenters = getFaceCenters();
-	pointData edgeCenters = getEdgeCenters();
+	const pointData corners = getCorners();
+	const pointData faceCenters = getFaceCenters();
+	const pointData edgeCenters = getEdgeCenters();
 	all.insert(all.end(), corners.begin(), corners.end());
 	all.insert(all.end(), faceCenters.begin(), faceCenters.end());
 	all.insert(all.end(), edgeCenters.begin(), edgeCenters.end());
@@ -145,7 +145,7 @@ void Cell::populate(std::vector<Particle> &particles) {
 }
 
 bool Cell::contains(const Particle &p) const {
-	float r = p.getR();
+	const float r = p.getR();
 
 	return (p.getX() + r > bounds.x1 && p.getX() - r < bounds.x2)
 			&& (p.getY() + r > bounds.y1 && p.getY() - r < bounds.y2)

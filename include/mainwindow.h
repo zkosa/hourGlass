@@ -71,11 +71,11 @@ private:
 	float radius;
 
 	// button texts:
-	QString start_text = QString("Start");
-	QString pause_text = QString("Pause");
-	QString continue_text = QString("Continue");
-	QString reset_text = QString("Reset");
-	QString stop_text = QString("Stop");
+	const QString start_text = QString("Start");
+	const QString pause_text = QString("Pause");
+	const QString continue_text = QString("Continue");
+	const QString reset_text = QString("Reset");
+	const QString stop_text = QString("Stop");
 
 	void run_simulation(); // inside integrated CustomOpenGLWindow
 

@@ -20,9 +20,9 @@ float Particle::uniform_radius = 0.005;
 
 void Particle::advance(float dt) {
 	// velocity Verlet integration:
-	Vec3d new_pos = pos + vel * dt + acc * dt * dt * 0.5;
-	Vec3d new_acc = apply_forces();
-	Vec3d new_vel = vel + 0.5 * (acc + new_acc) * dt;
+	const Vec3d new_pos = pos + vel * dt + acc * dt * dt * 0.5;
+	const Vec3d new_acc = apply_forces();
+	const Vec3d new_vel = vel + 0.5 * (acc + new_acc) * dt;
 
 	pos = new_pos;
 	vel = new_vel;
@@ -47,8 +47,8 @@ Vec3d Particle::impulse() const {
 }
 
 Vec3d Particle::apply_forces() {
-	Vec3d drag_force = -0.5 * density_medium * CdA() * (vel * abs(vel));
-	Vec3d drag_acc = drag_force / mass(); // a = F/m
+	const Vec3d drag_force = -0.5 * density_medium * CdA() * (vel * abs(vel));
+	const Vec3d drag_acc = drag_force / mass(); // a = F/m
 
 	return gravity + drag_acc;
 }
@@ -64,8 +64,8 @@ void Particle::info() const {
 }
 
 void Particle::draw2D() const {
-	GLfloat display_radius = radius; //radius
-	GLfloat twicePi = 2.0f * pi;
+	const GLfloat display_radius = radius; //radius
+	constexpr GLfloat twicePi = 2.0f * pi;
 
 	int number_of_triangles; //# of triangles used to draw circle
 	if (display_radius < 0.002) {
@@ -96,7 +96,7 @@ void Particle::draw2D() const {
 
 void Particle::collideToWall(const Boundary &wall) {
 
-	Vec3d n = wall.getNormal(*this);
+	const Vec3d n = wall.getNormal(*this);
 
 	Vec3d pos_corr { 0, 0, 0 };
 	if (std::abs(n * vel) > SMALL && wall.isPlanar()) { // not parallel, and moving
@@ -125,7 +125,7 @@ void Particle::collideToParticle(Particle &other) {
 
 	Vec3d n = other.pos - this->pos; // distance vector, pointing towards the other particle
 
-	float distance = abs(n);
+	const float distance = abs(n);
 
 	// do not do anything with distant particles:
 	if (distance > this->getR() + other.getR()) {
@@ -135,7 +135,7 @@ void Particle::collideToParticle(Particle &other) {
 	n = norm(n); // normalize
 
 	// move back to the positions where they just touched the other:
-	Vec3d pos_corr = -0.5 * n * (this->getR() + other.getR() - distance);
+	const Vec3d pos_corr = -0.5 * n * (this->getR() + other.getR() - distance);
 	this->move(pos_corr);
 	other.move(-pos_corr);
 
@@ -149,7 +149,7 @@ void Particle::collideToParticle_checkBoundary(Particle &other) {
 
 	Vec3d n = other.pos - this->pos; // distance vector, pointing towards the other particle
 
-	float distance = abs(n);
+	const float distance = abs(n);
 
 	// do not do anything with distant particles:
 	if (distance > this->getR() + other.getR()) {
@@ -164,11 +164,11 @@ void Particle::collideToParticle_checkBoundary(Particle &other) {
 	// create temporary particles with the planned correction, for overlap checking
 	Particle tmp_particle(*this);
 	tmp_particle.setPos(pos + pos_corr);
-	bool this_overlaps = tmp_particle.overlapWithWalls();
+	const bool this_overlaps = tmp_particle.overlapWithWalls();
 
 	Particle tmp_other_particle(other);
 	tmp_other_particle.setPos(other.getPos() - pos_corr);
-	bool other_overlaps = tmp_other_particle.overlapWithWalls();
+	const bool other_overlaps = tmp_other_particle.overlapWithWalls();
 
 	if (!this_overlaps && !other_overlaps) {
 		// apply the correction to both!
@@ -179,14 +179,14 @@ void Particle::collideToParticle_checkBoundary(Particle &other) {
 		// move both particles also with the value of the overlap of the overlapping particle
 		// mutual overlap of the particles becomes resolved, but
 		// the non-overlapping particle can become overlapping with a wall in narrow channels and corners!
-		Vec3d overlap = tmp_particle.overlapVectorWithWalls(); // prospected overlap after correction with pos_corr
+		const Vec3d overlap = tmp_particle.overlapVectorWithWalls(); // prospected overlap after correction with pos_corr
 		this->move(pos_corr - overlap);
 		other.move(-pos_corr - overlap);
 	} else if (other_overlaps && !this_overlaps) {
 		// move both particles also with the value of the overlap of the overlapping particle
 		// mutual overlap of the particles becomes resolved, but
 		// the non-overlapping particle can become overlapping with a wall in narrow channels and corners
-		Vec3d overlap = tmp_other_particle.overlapVectorWithWalls(); // prospected overlap after correction with pos_corr
+		const Vec3d overlap = tmp_other_particle.overlapVectorWithWalls(); // prospected overlap after correction with pos_corr
 		this->move(pos_corr - overlap);
 		other.move(-pos_corr - overlap);
 	} else { // both particles overlap with walls
@@ -217,7 +217,7 @@ void Particle::exchangeImpulse(Particle &other) {
 	Vec3d n = other.pos - this->pos; // distance vector, pointing towards the other particle
 	n = norm(n); // normalize
 
-	Vec3d vel_old = vel; // store it for the other particle
+	const Vec3d vel_old = vel; // store it for the other particle
 	vel = vel_old - n * (n * vel_old)
 			+ (mass() - other.mass()) / (mass() + other.mass()) * n
 					* (vel_old * n)
@@ -290,7 +290,7 @@ float Particle::terminalVelocity() const {
 float Particle::maxFreeFallVelocity() const {
 	// The velocity which can be reached by gravitational acceleration within the domain.
 	// domain height along the gravity vector:
-	float h = std::abs(scene->getBoundingBox().diagonal() * norm(gravity));
+	const float h = std::abs(scene->getBoundingBox().diagonal() * norm(gravity));
 	return std::sqrt(2 * abs(gravity) * h);
 }
 

@@ -22,14 +22,14 @@ void Scene::createGeometry(Geometry geometry) {
 	boundaries_pl.clear();
 	boundaries_ax.clear();
 
-	float corner = 0.999;
+	constexpr float corner = 0.999;
 
 	if (geometry == Geometry::hourglass ||
 		geometry == Geometry::hourglass_with_removable_orifice)
 	{
-		Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, -corner, 0),
+		const Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, -corner, 0),
 				Vec3d(-1, -corner, 1));
-		Boundary_axissymmetric glass;
+		const Boundary_axissymmetric glass;
 
 		boundaries_pl.push_back(ground);
 		boundaries_ax.push_back(glass);
@@ -41,11 +41,11 @@ void Scene::createGeometry(Geometry geometry) {
 		}
 
 	} else if (geometry == Geometry::box) {
-		Boundary_planar slope(Vec3d(-corner, -corner, 0), Vec3d(corner, 0, 0),
+		const Boundary_planar slope(Vec3d(-corner, -corner, 0), Vec3d(corner, 0, 0),
 				Vec3d(-corner, -corner, 1));
-		Boundary_planar side_wall_left(Vec3d(-corner, -corner, 0),
+		const Boundary_planar side_wall_left(Vec3d(-corner, -corner, 0),
 				Vec3d(-corner, corner, 0), Vec3d(-corner, -corner, -1));
-		Boundary_planar side_wall_right(Vec3d(corner, 0, 0),
+		const Boundary_planar side_wall_right(Vec3d(corner, 0, 0),
 				Vec3d(corner, corner, 0), Vec3d(corner, 0, 1));
 
 		boundaries_pl.push_back(slope);
@@ -53,11 +53,11 @@ void Scene::createGeometry(Geometry geometry) {
 		boundaries_pl.push_back(side_wall_right);
 
 	} else if (geometry == Geometry::test) {
-		Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, -corner, 0),
+		const Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, -corner, 0),
 						Vec3d(-1, -corner, 1));
-		Boundary_planar side_wall_left(Vec3d(-corner, -corner, 0),
+		const Boundary_planar side_wall_left(Vec3d(-corner, -corner, 0),
 				Vec3d(-corner, corner, 0), Vec3d(-corner, -corner, -1));
-		Boundary_planar side_wall_right(Vec3d(corner, -corner, 0),
+		const Boundary_planar side_wall_right(Vec3d(corner, -corner, 0),
 				Vec3d(corner, corner, 0), Vec3d(corner, -corner, 1));
 
 		boundaries_pl.push_back(ground);
@@ -76,16 +76,16 @@ void Scene::createGeometry(Geometry geometry) {
 void Scene::setVeloThreeParticlesTest() {
 	// check, whether the context is appropriate
 	if( geometry == Geometry::test && getNumberOfParticles() == 3 ) {
-		int particle_diameter_mm = 50;
-		float r = particle_diameter_mm / 1000. / 2.; // int [mm] --> float [m], diameter --> radius
+		const int particle_diameter_mm = 50;
+		const float r = particle_diameter_mm / 1000. / 2.; // int [mm] --> float [m], diameter --> radius
 		Particle::setUniformRadius(r);
-		float vx = 10.0f;
+		const float vx = 10.0f;
 		// left particle:
 		particles[0].setV(Vec3d(vx, 0.0f, 0.0f));
 		// right particle:
 		particles[2].setV(Vec3d(-vx, 0.0f, 0.0f));
 	} else {
-		std::string message = "wrong call to initializeTestThreeParticles()";
+		const std::string message = "wrong call to initializeTestThreeParticles()";
 		std::cout << message << std::endl;
 	}
 }
@@ -378,24 +378,24 @@ void Scene::createCells() {
 
 	deleteCells();
 
-	int Nx = Cell::getNx();
-	int Ny = Cell::getNy();
-	int Nz = Cell::getNz();
+	const int Nx = Cell::getNx();
+	const int Ny = Cell::getNy();
+	const int Nz = Cell::getNz();
 
-	float dx = bounding_box.diagonal().x / Nx;
-	float dy = bounding_box.diagonal().y / Ny;
-	float dz = 0.0f; //dy; // bounding_box.diagonal().z / Nz;// 2D: keep the third dimension small !!!
+	const float dx = bounding_box.diagonal().x / Nx;
+	const float dy = bounding_box.diagonal().y / Ny;
+	const float dz = 0.0f; //dy; // bounding_box.diagonal().z / Nz;// 2D: keep the third dimension small !!!
 
 	Cell::setDX(Vec3d(dx, dy, dz));
 
 	// add extra cell layer on top for the particles which go beyond y=1
 	// during e.g. the initial geometric constraint resolution
-	int extra_layers_on_top = 1;
+	const int extra_layers_on_top = 1;
 
 	cells.reserve(Nx * (Ny + extra_layers_on_top) * Nz);
 
 	std::cout << "Creating cells..." << std::endl;
-	Vec3d corner1 = bounding_box.getCorner1();
+	const Vec3d corner1 = bounding_box.getCorner1();
 	Vec3d cell_center;
 	for (int i = 0; i < Nx; ++i) {
 		for (int j = 0; j < Ny + extra_layers_on_top; ++j) {
@@ -435,8 +435,8 @@ void Scene::markBoundaryCells() {
 bool Scene::pointIsExternal(const Boundary_axissymmetric &b,
 		const Vec3d &point) const {
 	// rough method!
-	auto contour = b.getContourFun();
-	float contour_radius = contour(point * norm(b.getAxis()));
+	const auto contour = b.getContourFun();
+	const float contour_radius = contour(point * norm(b.getAxis()));
 	float point_radius = abs(
 			point - (point * norm(b.getAxis())) * norm(b.getAxis()));
 	// tuning factor for marking also those cells where all points are external,
@@ -578,7 +578,7 @@ void Scene::addParticles(int N, float y, float r, bool randomize_y) {
 	std::uniform_int_distribution<> distr(-number_of_distinct_random,
 			number_of_distinct_random); // define the range
 
-	float corner = 0.999;
+	const float corner = 0.999;
 	float x;
 	float random_y;
 	for (int i = 0; i < N; i++) {
@@ -590,9 +590,9 @@ void Scene::addParticles(int N, float y, float r, bool randomize_y) {
 			random_y = 0;
 		}
 
-		Vec3d pos(x, y * (1 + random_y / 200.), 0);
-		Vec3d vel(0,0,0);
-		Particle p(pos, vel, r);
+		const Vec3d pos(x, y * (1 + random_y / 200.), 0);
+		const Vec3d vel(0,0,0);
+		const Particle p(pos, vel, r);
 
 		addParticle(p);
 	}

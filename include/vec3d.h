@@ -137,7 +137,7 @@ inline float abs(const Vec3d &a) {
 }
 
 inline Vec3d norm(const Vec3d &a) {
-	float length = abs(a);
+	const float length = abs(a);
 	if (length > SMALL) {
 		return a / length;
 	} else {

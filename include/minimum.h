@@ -5,7 +5,7 @@
 
 class Minimum {
 	// std::function enables passing the functions to other objects
-	std::function<float(float)> function;
+	const std::function<float(float)> function;
 
 	// starting value for the Newton iterations:
 	float guess = 0;
