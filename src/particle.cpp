@@ -78,6 +78,7 @@ void Particle::draw2D() const {
 		number_of_triangles = 20;
 	}
 
+	glColor4f(0.86, 0.72, 0.39, 1); // "sand"
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex2f(pos.x, pos.y); // center of circle
 	for (int i = 0; i <= number_of_triangles; i++) {
@@ -90,6 +91,7 @@ void Particle::draw2D() const {
 								* sin(i * twicePi / number_of_triangles)));
 	}
 	glEnd();
+	glColor4f(1, 1, 1, 1); // reset color
 }
 
 void Particle::collideToWall(const Boundary &wall) {
