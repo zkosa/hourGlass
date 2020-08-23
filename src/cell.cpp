@@ -144,7 +144,7 @@ void Cell::populate(std::vector<Particle> &particles) {
 	}
 }
 
-bool Cell::contains(const Particle &p) {
+bool Cell::contains(const Particle &p) const {
 	float r = p.getR();
 
 	return (p.getX() + r > bounds.x1 && p.getX() - r < bounds.x2)
@@ -152,7 +152,7 @@ bool Cell::contains(const Particle &p) {
 			&& (p.getZ() + r > bounds.z1 && p.getZ() - r < bounds.z2);
 }
 
-bool Cell::contains(const Boundary &b) {
+bool Cell::contains(const Boundary &b) const {
 	if (b.distance(center) <= getHalfDiagonal()) {
 		return true;
 	} else {
@@ -168,7 +168,7 @@ void Cell::size() const {
 	std::cout << "Size of cell object: " << sizeof(*this) << std::endl;
 }
 
-void Cell::draw2D() {
+void Cell::draw2D() const {
 	glBegin(GL_LINE_LOOP);
 	if (hasBoundary()) {
 		glColor4f(1, 0, 0, 1);

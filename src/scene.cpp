@@ -433,7 +433,7 @@ void Scene::markBoundaryCells() {
 }
 
 bool Scene::pointIsExternal(const Boundary_axissymmetric &b,
-		const Vec3d &point) {
+		const Vec3d &point) const {
 	// rough method!
 	auto contour = b.getContourFun();
 	float contour_radius = contour(point * norm(b.getAxis()));
@@ -450,7 +450,7 @@ bool Scene::pointIsExternal(const Boundary_axissymmetric &b,
 	}
 }
 
-bool Scene::pointIsExternal(const Boundary_planar &b, const Vec3d &point) {
+bool Scene::pointIsExternal(const Boundary_planar &b, const Vec3d &point) const {
 	if (b.distanceSigned(point) < 0) {
 		return true;
 	} else {
@@ -522,8 +522,8 @@ void Scene::removeExternalCells() {
 	std::cout << "Number of cells after removal: " << cells.size() << std::endl;
 }
 
-void Scene::drawCells() {
-	for (auto &c : cells) {
+void Scene::drawCells() const {
+	for (auto const &c : cells) {
 		c.draw2D();
 	}
 }
@@ -599,7 +599,7 @@ void Scene::addParticles(int N, float y, float r, bool randomize_y) {
 
 }
 
-float Scene::energy() {
+float Scene::energy() const {
 	float energy = 0;
 	for (auto &p : particles) {
 		energy += p.energy();
@@ -607,7 +607,7 @@ float Scene::energy() {
 	return energy;
 }
 
-Vec3d Scene::impulse() {
+Vec3d Scene::impulse() const {
 	Vec3d impulse { 0, 0, 0 };
 	for (auto &p : particles) {
 		impulse = impulse + p.impulse();
@@ -615,7 +615,7 @@ Vec3d Scene::impulse() {
 	return impulse;
 }
 
-void Scene::veloCheck() {
+void Scene::veloCheck() const {
 
 	std::vector<float> vels(sizeof(particles));
 	std::vector<float> max_vels(sizeof(particles));

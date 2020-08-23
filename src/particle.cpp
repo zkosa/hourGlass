@@ -29,20 +29,20 @@ void Particle::advance(float dt) {
 	acc = new_acc;
 }
 
-float Particle::kineticEnergy() {
+float Particle::kineticEnergy() const {
 	return vel * vel * (mass() / 2);
 }
 
-float Particle::potentialEnergy() {
+float Particle::potentialEnergy() const {
 	//return mass * (gravity * (pos + Vec3d(0,1,0)));
 	return mass() * g * (pos.y + 1);
 }
 
-float Particle::energy() {
+float Particle::energy() const {
 	return kineticEnergy() + potentialEnergy();
 }
 
-Vec3d Particle::impulse() {
+Vec3d Particle::impulse() const {
 	return mass() * vel;
 }
 
@@ -53,7 +53,7 @@ Vec3d Particle::apply_forces() {
 	return gravity + drag_acc;
 }
 
-void Particle::info() {
+void Particle::info() const {
 	std::cout << "---------------------------" << std::endl;
 	std::cout << "ID: " << ID << std::endl;
 	std::cout << "pos: "; pos.print();
@@ -63,7 +63,7 @@ void Particle::info() {
 			  << potentialEnergy() << " + " << kineticEnergy() << std::endl;
 }
 
-void Particle::draw2D() {
+void Particle::draw2D() const {
 	GLfloat display_radius = radius; //radius
 	GLfloat twicePi = 2.0f * pi;
 

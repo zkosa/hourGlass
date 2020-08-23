@@ -61,14 +61,14 @@ public:
 	inline void move(const Vec3d &movement) {
 		pos += movement;
 	}
-	float kineticEnergy();
-	float potentialEnergy();
-	float energy();
-	Vec3d impulse();
+	float kineticEnergy() const;
+	float potentialEnergy() const;
+	float energy() const;
+	Vec3d impulse() const;
 
-	void info();
-	void draw2D();
-	void drawNow2D();
+	void info() const;
+	void draw2D() const;
+	void drawNow2D() const;
 
 	inline float distance(const Particle &other) const {
 		return abs(pos - other.pos);

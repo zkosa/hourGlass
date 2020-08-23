@@ -75,34 +75,34 @@ public:
 	void collideParticles();
 	void collideParticlesCells();
 
-	float getSimulationTime() {
+	float getSimulationTime() const {
 		return simulation_time;
 	}
 	std::vector<Particle>& getParticles() {
 		return particles;
 	}
-	const std::vector<Boundary_planar>& getBoundariesPlanar() {
+	const std::vector<Boundary_planar>& getBoundariesPlanar() const {
 		return boundaries_pl;
 	}
-	const std::vector<Boundary_axissymmetric>& getBoundariesAxiSym() {
+	const std::vector<Boundary_axissymmetric>& getBoundariesAxiSym() const {
 		return boundaries_ax;
 	}
-	const Geometry& getGeometry() {
+	const Geometry& getGeometry() const {
 		return geometry;
 	}
-	std::string getGeometryName() {
+	std::string getGeometryName() const {
 		return geometry_names[(int)geometry];
 	}
-	bool benchmarkMode() {
+	bool benchmarkMode() const {
 		return benchmark_mode;
 	}
-	bool isStarted() {
+	bool isStarted() const {
 		return started;
 	}
-	bool isRunning() {
+	bool isRunning() const {
 		return running;
 	}
-	bool isFinished() {
+	bool isFinished() const {
 		return finished;
 	}
 
@@ -115,18 +115,18 @@ public:
 	bool hasTemporaryGeo() const;
 	void createCells();
 	void markBoundaryCells();
-	bool pointIsExternal(const Boundary_axissymmetric &b, const Vec3d &point);
-	bool pointIsExternal(const Boundary_planar &b, const Vec3d &point);
-	bool pointIsInternal(const Boundary_axissymmetric &b, const Vec3d &point) {
+	bool pointIsExternal(const Boundary_axissymmetric &b, const Vec3d &point) const;
+	bool pointIsExternal(const Boundary_planar &b, const Vec3d &point) const;
+	bool pointIsInternal(const Boundary_axissymmetric &b, const Vec3d &point) const {
 		return !pointIsExternal(b, point);
 	}
-	bool pointIsInternal(const Boundary_planar &b, const Vec3d &point) {
+	bool pointIsInternal(const Boundary_planar &b, const Vec3d &point) const {
 		return !pointIsExternal(b, point);
 	}
 	void markExternal(Cell &c);
 	void markExternalCells();
 	void removeExternalCells();
-	void drawCells();
+	void drawCells() const;
 	void populateCells();
 	void clearCells();
 	void deleteCells();
@@ -136,13 +136,13 @@ public:
 	void addParticles(int N, float y = 1.0, float r =
 			Particle::getUniformRadius(), bool randomize_y = true);
 
-	float energy();
-	Vec3d impulse();
-	float impulseMagnitude() {
+	float energy() const;
+	Vec3d impulse() const;
+	float impulseMagnitude() const {
 		return abs(impulse());
 	}
 
-	void veloCheck();
+	void veloCheck() const;
 
 	void setRunning();
 	void setStopping();
@@ -165,7 +165,7 @@ public:
 	float getTimeStep() const {
 		return time_step;
 	}
-	float getDuration() {
+	float getDuration() const {
 		return duration;
 	}
 	void setDuration(float duration) {
@@ -186,13 +186,13 @@ public:
 	void resetCounter() {
 		loop_counter = 0;
 	}
-	int getCounter() {
+	int getCounter() const {
 		return loop_counter;
 	}
-	const BoundingBox& getBoundingBox() {
+	const BoundingBox& getBoundingBox() const {
 		return bounding_box;
 	}
-	const Defaults& getDefaults() {
+	const Defaults& getDefaults() const {
 		return defaults;
 	}
 	int getNumberOfParticles() const {

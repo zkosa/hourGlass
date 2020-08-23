@@ -52,12 +52,12 @@ public:
 
 	void clear();
 	void populate(std::vector<Particle> &particles);
-	bool contains(const Particle&);
-	bool contains(const Boundary&);
+	bool contains(const Particle&) const;
+	bool contains(const Boundary&) const;;
 	void addParticle(const Particle&);
 
 	void size() const;
-	void draw2D();
+	void draw2D() const;
 /*
 	const std::vector<int>& getBoundaryIDsAxisSymmetric() const {
 		return boundary_IDs_axis_symmetric;
@@ -83,15 +83,15 @@ public:
 		return particle_IDs;
 	}
 
-	bool hasBoundary() {
+	bool hasBoundary() const {
 		return cell_with_boundary;
 	}
 
-	inline bool isExternal() {
+	inline bool isExternal() const {
 		return cell_is_external;
 	}
 
-	inline bool isInternal() {
+	inline bool isInternal() const {
 		return !cell_is_external;
 	}
 
