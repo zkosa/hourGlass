@@ -12,8 +12,10 @@ public:
 
 	Boundary_planar() = delete;
 	Boundary_planar(Vec3d p1, Vec3d p2, Vec3d p3) :
-			plane_point(p1), normal(norm(crossProduct(p3 - p1, p2 - p1))), p1(
-					p1), p2(p2) {
+			plane_point(p1),
+			normal(norm(crossProduct(p3 - p1, p2 - p1))),
+			p1(p1),
+			p2(p2) {
 		planar = true;
 	}
 

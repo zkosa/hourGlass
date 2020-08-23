@@ -6,7 +6,7 @@
 
 class Boundary {
 
-	bool temporary = false;
+	bool temporary = false; // TODO: rather derive temporary boundaries
 
 protected:
 	bool planar = false; // for type checking: set to true in constructor of planar
