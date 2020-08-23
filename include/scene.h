@@ -162,7 +162,9 @@ public:
 	void setTimestep(float time_step) {
 		this->time_step = time_step;
 	}
-
+	float getTimeStep() const {
+		return time_step;
+	}
 	float getDuration() {
 		return duration;
 	}
