@@ -32,7 +32,7 @@ class Cell {
 	Bounds bounds;
 	Bounds bounds_for_display; // scaled for avoiding overlap of edges during display
 
-	Vec3d center = { 0, 0, 0 };
+	Vec3d center;
 	static Vec3d dX; // cell edge sizes
 
 	std::vector<int> particle_IDs;

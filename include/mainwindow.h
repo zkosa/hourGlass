@@ -68,7 +68,6 @@ private:
 	Ui::MainWindow *ui;
 
 	Scene scene;
-	float radius;
 
 	// button texts:
 	const QString start_text = QString("Start");

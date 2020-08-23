@@ -9,7 +9,6 @@ class MainWindow;
 class CustomOpenGLWidget: public QOpenGLWidget {
 	Scene *scene;
 	MainWindow *window;
-	int x = 0;
 
 public:
 	CustomOpenGLWidget(QWidget *parent);
