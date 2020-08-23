@@ -171,9 +171,9 @@ void Cell::size() const {
 void Cell::draw2D() const {
 	glBegin(GL_LINE_LOOP);
 	if (hasBoundary()) {
-		glColor4f(1, 0, 0, 1);
+		glColor4f(1, 0, 0, 0.7);
 	} else {
-		glColor4f(0, 1, 0, 0.1);
+		glColor4f(0, 1, 0, 0.5);
 	}
 //	if (isExternal()) {
 //		glColor4f(0, 0, 1, 1);
