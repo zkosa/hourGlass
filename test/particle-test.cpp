@@ -380,10 +380,10 @@ BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_twoTouch_axisymm_test )
 	p1.collideToParticle_checkBoundary(p2);
 
 	auto tol = boost::test_tools::tolerance(float(1e-6f));
-// TODO: check the reason for the high difference!
-//	BOOST_TEST_REQUIRE( p1.distance(p2) == 2.0f*r, tol );
-//	BOOST_TEST_REQUIRE( hourglass.distance(p1) == r, tol );
-//	BOOST_TEST_REQUIRE( hourglass.distance(p2) == r, tol );
+//  TODO: check the reason for the high difference!
+	BOOST_TEST_REQUIRE( p1.distance(p2) == 2.0f*r, tol );
+	BOOST_TEST_REQUIRE( hourglass.distance(p1) == r, tol );
+	BOOST_TEST_REQUIRE( hourglass.distance(p2) == r, tol );
 }
 
 BOOST_AUTO_TEST_CASE( no_drag_first_step_test )
