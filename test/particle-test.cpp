@@ -448,7 +448,7 @@ BOOST_AUTO_TEST_CASE( no_drag_fall_test )
 	BOOST_TEST_REQUIRE( !boost::math::isfinite(p.terminalVelocity()) );
 
 	// when there is no drag, the limit is the domain max free fall velocity
-	BOOST_TEST_REQUIRE( p.maxVelocity() == p.maxFreeFallVelocity() );
+	BOOST_TEST_REQUIRE( (p.maxVelocity() == p.maxFreeFallVelocity()) );
 
 	watch(p.terminalVelocity());
 	watch(p.maxFreeFallVelocity());

@@ -187,7 +187,7 @@ BOOST_AUTO_TEST_CASE( scene_collideParticles_test ) {
 	p1.move(-half_dist);
 	p2.move(half_dist);
 
-	BOOST_TEST_REQUIRE( p1.distance(p2) == abs(2.0f * half_dist) );
+	BOOST_TEST_REQUIRE( (p1.distance(p2) == abs(2.0f * half_dist)) );
 
 	scene.addParticle(p1);
 	scene.addParticle(p2);
@@ -216,7 +216,7 @@ BOOST_AUTO_TEST_CASE( scene_collideParticlesCells_test ) {
 	p1.move(-half_dist);
 	p2.move(half_dist);
 
-	BOOST_TEST_REQUIRE( p1.distance(p2) == abs(2.0f * half_dist) );
+	BOOST_TEST_REQUIRE( (p1.distance(p2) == abs(2.0f * half_dist)) );
 
 	scene.addParticle(p1);
 	scene.addParticle(p2);
