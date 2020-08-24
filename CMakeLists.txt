@@ -141,6 +141,12 @@ if(TEST_THE_TEST)
 	add_unit_test(boosttest-test)
 endif(TEST_THE_TEST)
 
+# object_size
+file(GLOB SOURCES "test/object_size.cpp" "src/vec3d.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/cell.cpp" "src/scene.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp") #  "src/boundingbox.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp"
+add_executable(object_size ${SOURCES} ${MOC_HEADERS} ${UI})
+target_include_directories(object_size PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(object_size ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
+
 ############
 # running tests automatically after build:
 set(UNIT_TEST_COLLECTOR all_tests)
