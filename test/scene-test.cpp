@@ -5,6 +5,8 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE scene-TEST
 #include <boost/test/unit_test.hpp>
+#include <boost/test/data/test_case.hpp>
+#include <boost/array.hpp>
 
 #define FLOAT_TEST_PRECISION 1e-6f
 
@@ -263,7 +265,9 @@ BOOST_AUTO_TEST_CASE( scene_collideWithBoundariesCells_planar_test ) {
 	BOOST_TEST_REQUIRE( P1.getV().x == -vx, boost::test_tools::tolerance(1e-5f) );
 }
 
-BOOST_AUTO_TEST_CASE( scene_collideWithBoundariesCells_axisymm_test ) {
+static const boost::array< int, 8 > cell_Ns{1, 2, 5, 10, 11, 30, 32, 99};
+
+BOOST_DATA_TEST_CASE( scene_collideWithBoundariesCells_axisymm_test, cell_Ns, N ) {
 
 	Scene scene;
 	scene.applyDefaults();
@@ -286,7 +290,7 @@ BOOST_AUTO_TEST_CASE( scene_collideWithBoundariesCells_axisymm_test ) {
 	// because the issue occured earlier when a particle
 	// was part of odd number of cells:
 	// (colliding odd number of times has undone the velocity reversion)
-	Cell::setNx(10);
+	Cell::setNx(N);
 	Cell::setNy(Cell::getNx());
 
 	// cellwise collision requires cells
