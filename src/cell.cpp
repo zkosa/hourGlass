@@ -5,6 +5,7 @@
 #include "scene.h"
 //#include <omp.h>
 #include <QOpenGLWidget>
+#include <iostream>
 
 // static members:
 int Cell::Nx = 10;

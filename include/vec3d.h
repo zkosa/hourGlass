@@ -2,7 +2,7 @@
 #define VEC3D_H_
 
 #include <math.h>
-#include <iostream>
+#include <iosfwd>
 #include <stdexcept>
 #include "constants.h"
 #include "vecaxisym.h"
@@ -62,10 +62,7 @@ inline bool operator==(const Vec3d &a, const Vec3d &b) {
 	return ( a.x == b.x && a.y == b.y && a.z == b.z );
 }
 
-inline std::ostream& operator<<(std::ostream &out, const Vec3d &a) {
-	out << "(" << a.x << ", " << a.y << ", " << a.z << ")";
-	return out;
-}
+std::ostream& operator<<(std::ostream &out, const Vec3d &a);
 
 inline Vec3d operator+(const Vec3d &a, const Vec3d &b) {
 	return Add(a, b);

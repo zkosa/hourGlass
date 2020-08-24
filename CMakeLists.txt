@@ -63,7 +63,7 @@ macro(add_unit_test UNIT_TEST)
 endmacro(add_unit_test)
 
 # vec3d-test 
-file(GLOB SOURCES "test/vec3d-test.cpp" "src/vec3d.cpp") 
+file(GLOB SOURCES "test/vec3d-test.cpp" "src/vec3d.cpp" "src/vecaxisym.cpp") 
 add_executable(vec3d-test ${SOURCES})
 target_include_directories(vec3d-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 target_link_libraries(vec3d-test ${Boost_LIBRARIES})
@@ -78,7 +78,7 @@ target_link_libraries(particle-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIB
 add_unit_test(particle-test)
 
 # cell-test
-file(GLOB SOURCES "test/cell-test.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp")
+file(GLOB SOURCES "test/cell-test.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp"  "src/vecaxisym.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp")
 add_executable(cell-test ${SOURCES})
 target_include_directories(cell-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 target_link_libraries(cell-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})

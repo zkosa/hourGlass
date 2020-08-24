@@ -3,6 +3,7 @@
 #include "boundary_axissymmetric.h"
 #include <random>
 //#include <omp.h>
+#include <iostream>
 #include "mainwindow.h"
 
 Scene::Scene() {

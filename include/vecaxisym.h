@@ -1,5 +1,7 @@
 #ifndef VECAXISYM_H_
 #define VECAXISYM_H_
+#include <iosfwd>
+#include <math.h>
 
 // container with axial and radial coordinates for axis-symmetric vector calculations
 
@@ -12,9 +14,7 @@ struct VecAxiSym {
 			axial(axial), radial(radial) {
 	}
 
-	std::ostream& print(std::ostream& os = std::cout) const {
-		return os << *this << std::endl;
-	}
+	std::ostream& print() const; // default std::cout argument has been removed to allow  <iosfwd> only
 
 	// declare non-member function:
 	friend std::ostream& operator<<(std::ostream &out, const VecAxiSym &a);
@@ -28,10 +28,7 @@ inline VecAxiSym operator-(const VecAxiSym &a, const VecAxiSym &b) {
 	return VecAxiSym( a.axial - b.axial, a.radial - b.radial );
 }
 
-inline std::ostream& operator<<(std::ostream &out, const VecAxiSym &a) {
-	out << "(axial: " << a.axial << ", radial: " << a.radial << ")";
-	return out;
-}
+std::ostream& operator<<(std::ostream &out, const VecAxiSym &a);
 
 inline float abs(const VecAxiSym& a) {
 	return std::sqrt(a.axial*a.axial + a.radial*a.radial);

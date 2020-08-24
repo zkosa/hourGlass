@@ -1,4 +1,10 @@
 #include "vec3d.h"
+#include <iostream>
+
+std::ostream& operator<<(std::ostream &out, const Vec3d &a) {
+	out << "(" << a.x << ", " << a.y << ", " << a.z << ")";
+	return out;
+}
 
 std::ostream& Vec3d::print() const {
 	return std::cout << *this << std::endl;

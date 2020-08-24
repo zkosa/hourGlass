@@ -1,4 +1,5 @@
 #include "boundary_planar.h"
+#include <iostream>
 #include <QOpenGLWidget>
 
 

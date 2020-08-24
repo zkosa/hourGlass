@@ -3,6 +3,7 @@
 #include "cell.h"
 #include "minimumdistance.h"
 #include "scene.h"
+#include <iostream>
 
 int main() {
 
