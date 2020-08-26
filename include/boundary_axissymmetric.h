@@ -2,8 +2,8 @@
 #define BOUNDARY_AXISSYMMETRIC_H_
 
 #include "boundary.h"
+#include "vec3d.h"
 #include <functional>
-#include <unordered_map>
 
 class Boundary_axissymmetric: public Boundary {
 	Vec3d p1_axis { 0.0f, -1.0f, 0.0f };

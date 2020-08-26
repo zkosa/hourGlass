@@ -2,6 +2,7 @@
 #define BOUNDARY_PLANAR_H_
 
 #include "boundary.h"
+#include "vec3d.h"
 
 class Boundary_planar: public Boundary {
 	Vec3d plane_point;

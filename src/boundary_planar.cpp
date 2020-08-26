@@ -1,7 +1,7 @@
 #include "boundary_planar.h"
+#include "particle.h"
 #include <iostream>
 #include <QOpenGLWidget>
-
 
 bool Boundary_planar::operator==(const Boundary &other) const {
 	const Boundary_planar* other_boundary_casted_to_this = dynamic_cast< const Boundary_planar* >( &other );
