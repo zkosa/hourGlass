@@ -17,6 +17,7 @@ public:
 
 	void updateGUIcontrols();
 	void updateLogs();
+	// public wrapper for the private slot:
 	void wrapStopButtonClicked() {
 		on_stopButton_clicked();
 	}
