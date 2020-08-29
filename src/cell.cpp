@@ -6,6 +6,7 @@
 //#include <omp.h>
 #include <QOpenGLWidget>
 #include <iostream>
+#include <algorithm>
 
 // static members:
 int Cell::Nx = 10;
@@ -190,10 +191,5 @@ void Cell::draw2D() const {
 }
 
 Vec3d Cell::average(const pointData& pd) {
-
-	Vec3d sum(0,0,0);
-	for (const auto & p : pd) {
-		sum = sum + p;
-	}
-	return sum / pd.size();
+	return std::accumulate(pd.begin(), pd.end(), Vec3d::null) / pd.size();
 }

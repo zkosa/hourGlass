@@ -4,6 +4,7 @@
 #include <random>
 //#include <omp.h>
 #include <iostream>
+#include <algorithm>
 #include "mainwindow.h"
 
 Scene::Scene() {
@@ -107,17 +108,8 @@ void Scene::removeTemporaryGeo() {
 }
 
 bool Scene::hasTemporaryGeo() const {
-	for (const auto &b : boundaries_pl) {
-		if (b.isTemporary()) {
-			return true;
-		}
-	}
-	for (const auto &b : boundaries_ax) {
-		if (b.isTemporary()) {
-			return true;
-		}
-	}
-	return false;
+    return std::any_of(boundaries_pl.begin(), boundaries_pl.end(),  [](auto const& b){ return b.isTemporary(); }) ||
+           std::any_of(boundaries_ax.begin(), boundaries_ax.end(),  [](auto const& b){ return b.isTemporary(); });
 }
 
 void Scene::resolveConstraintsOnInit(int sweeps) {
@@ -496,8 +488,8 @@ void Scene::markExternal(Cell &c) {
 
 	// if the cell is on the outer side of any boundary, it is external:
 	c.setInternal();
-	for (const auto &internal : internal_status_per_boundary) {
-		if (!internal) {
+	for (const auto &internal_boundary : internal_status_per_boundary) {
+		if (!internal_boundary) {
 			c.setExternal();
 		}
 	}
