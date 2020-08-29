@@ -14,12 +14,12 @@ Scene::Scene() {
 }
 
 void Scene::createGeometry(int geo) {
-
 	createGeometry(static_cast<Geometry>(geo));
-
 }
 
 void Scene::createGeometry(Geometry geometry) {
+
+	setGeometry(geometry);
 
 	boundaries_pl.clear();
 	boundaries_ax.clear();

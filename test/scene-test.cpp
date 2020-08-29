@@ -60,8 +60,6 @@ BOOST_AUTO_TEST_CASE( scene_drag_test )
 	Scene scene;
 	scene.applyDefaults();
 	//Particle::setCd(0.0f);
-
-	scene.setGeometry(Geometry::test);
 	scene.createGeometry(Geometry::test);
 	scene.setNumberOfParticles(3);
 	scene.addParticles(scene.getNumberOfParticles());
@@ -94,7 +92,6 @@ BOOST_AUTO_TEST_CASE( scene_three_particles_test )
 
 	float Cd = 0.5f;
 	Particle::setCd(Cd);
-	scene.setGeometry(Geometry::test);
 	scene.createGeometry(Geometry::test);
 	scene.setNumberOfParticles(3);
 	scene.addParticles(scene.getNumberOfParticles());
@@ -135,7 +132,6 @@ BOOST_AUTO_TEST_CASE( scene_collide_to_wall_test )
 {
 	Scene scene;
 	scene.applyDefaults();
-	scene.setGeometry(Geometry::test); // TODO: combine setGeometry and createGeometry?
 	scene.createGeometry(Geometry::test);
 
 	float ground_level = -0.999;
@@ -176,8 +172,6 @@ BOOST_AUTO_TEST_CASE( scene_collideParticles_test ) {
 
 	Scene scene;
 	scene.applyDefaults();
-
-	scene.setGeometry(Geometry::test); // TODO: combine setGeometry and createGeometry?
 	scene.createGeometry(Geometry::test);
 
 	float r = Particle::getUniformRadius();
@@ -205,8 +199,6 @@ BOOST_AUTO_TEST_CASE( scene_collideParticlesCells_test ) {
 
 	Scene scene;
 	scene.applyDefaults();
-
-	scene.setGeometry(Geometry::test);
 	scene.createGeometry(Geometry::test);
 
 	float r = Particle::getUniformRadius();
@@ -238,8 +230,6 @@ BOOST_AUTO_TEST_CASE( scene_collideWithBoundariesCells_planar_test ) {
 
 	Scene scene;
 	scene.applyDefaults();
-
-	scene.setGeometry(Geometry::test);
 	scene.createGeometry(Geometry::test);
 
 	// taking the appropriate (nearest) wall, knowing the order of walls from createGeometry
@@ -271,8 +261,6 @@ BOOST_DATA_TEST_CASE( scene_collideWithBoundariesCells_axisymm_test, cell_Ns, N 
 
 	Scene scene;
 	scene.applyDefaults();
-
-	scene.setGeometry(Geometry::hourglass);
 	scene.createGeometry(Geometry::hourglass);
 
 	auto hourglass = scene.getBoundariesAxiSym()[0];

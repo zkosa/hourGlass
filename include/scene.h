@@ -147,12 +147,6 @@ public:
 	void setRunning();
 	void setStopping();
 	void setFinished();
-	void setGeometry(int geo) {
-		this->geometry = static_cast<Geometry>(geo);
-	}
-	void setGeometry(Geometry geometry) {
-		this->geometry = geometry;
-	}
 	void setNumberOfParticles(int number_of_particles) {
 		this->number_of_particles = number_of_particles;
 	}
@@ -202,6 +196,11 @@ public:
 
 	template <typename T>
 	static void removeDuplicates(std::vector<T> &vector);
+
+private:
+	void setGeometry(Geometry geometry) {
+		this->geometry = geometry;
+	}
 
 };
 

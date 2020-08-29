@@ -79,7 +79,6 @@ void MainWindow::on_openOrificeButton_clicked() {
 }
 
 void MainWindow::on_geometryComboBox_currentIndexChanged(int geo) {
-	scene.setGeometry(geo);
 	std::cout << "Activating geometry: " << scene.getGeometryName()
 			<< std::endl;
 	scene.createGeometry(geo);
