@@ -317,7 +317,7 @@ void Scene::collideWithBoundariesCells() {
 		}
 	}
 
-	removeDuplicates(to_be_collided);
+	//removeDuplicates(to_be_collided); // comment out as long as not fixed
 
 	for (auto [particle, boundary] : to_be_collided) {
 		particle.collideToWall(boundary);
