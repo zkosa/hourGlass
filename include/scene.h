@@ -19,7 +19,7 @@ enum class Geometry {
 using particle_boundary_pair = std::pair<Particle&, Boundary&>;
 
 class Scene {
-	// TODO: allow only a single instant!
+	// TODO: allow only a single instance!
 
 	MainWindow *viewer = nullptr;
 	float time_step = 0.001; // [s]

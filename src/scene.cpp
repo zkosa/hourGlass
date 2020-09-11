@@ -94,6 +94,7 @@ void Scene::setVeloThreeParticlesTest() {
 
 void Scene::removeTemporaryGeo() {
 	std::cout << "Removing temporary geometries..." << std::endl;
+	// TODO: clean it, use wrappers functions if necessary
 	boundaries_pl.erase(
 			std::remove_if(boundaries_pl.begin(), boundaries_pl.end(),
 					[](auto &b) {
