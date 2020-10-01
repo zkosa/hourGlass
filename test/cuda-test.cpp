@@ -7,4 +7,5 @@
 BOOST_AUTO_TEST_CASE( cuda_test )
 {
 	printCudaVersion();
+	printGpuDeviceInfo();
 }
