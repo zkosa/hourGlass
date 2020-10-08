@@ -530,6 +530,14 @@ void Scene::populateCells() {
 	}
 }
 
+void Scene::populateCellsCuda() {
+	this->clearCells();
+
+	for (auto &c : cells) {
+		c.populateCuda(particles);
+	}
+}
+
 void Scene::clearCells() {
 	//cells[0].size();
 	for (auto &c : cells) {

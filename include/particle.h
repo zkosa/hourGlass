@@ -3,6 +3,7 @@
 
 #include "vec3d.h"
 #include "constants.h"
+#include "cuda.h"
 
 class Boundary;
 class Scene;
@@ -46,6 +47,7 @@ private:
 
 public:
 
+	Particle() = default;
 	Particle(Vec3d _pos, float _r = Particle::uniform_radius) :
 			pos(_pos), radius(_r) {
 	}
@@ -120,18 +122,23 @@ public:
 		last_ID += 1;
 	}
 
+	CUDA_HOSTDEV
 	int getID() const {
 		return ID;
 	}
+	CUDA_HOSTDEV
 	float getX() const {
 		return pos.x;
 	}
+	CUDA_HOSTDEV
 	float getY() const {
 		return pos.y;
 	}
+	CUDA_HOSTDEV
 	float getZ() const {
 		return pos.z;
 	}
+	CUDA_HOSTDEV
 	float getR() const {
 		return radius;
 	}

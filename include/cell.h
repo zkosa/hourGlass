@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "vec3d.h"
+#include "cuda.h"
 
 class Scene;
 class Particle;
@@ -52,9 +53,14 @@ public:
 
 	void clear();
 	void populate(std::vector<Particle> &particles);
+	void populateCuda(std::vector<Particle> &particles);
 	bool contains(const Particle&) const;
-	bool contains(const Boundary&) const;;
+	__device__
+	bool containsCuda(const Particle*);
+	bool contains(const Boundary&) const;
 	void addParticle(const Particle&);
+	__device__
+	void addParticleCuda(const Particle*, int *particle_IDs_in_cell,  int *number_of_particle_IDs);
 
 	void size() const;
 	void draw2D() const;
@@ -68,6 +74,7 @@ public:
 	const Bounds& getBounds() const {
 		return bounds;
 	}
+//	__host__ __device__
 	const Vec3d& getCenter() const {
 		return center;
 	}
@@ -79,6 +86,7 @@ public:
 
 	pointData getAllPoints() const;
 
+	__host__ __device__
 	const std::vector<int>& getParticleIDs() const {
 		return particle_IDs;
 	}

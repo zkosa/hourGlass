@@ -2,8 +2,14 @@
 #include "test.cuh"
 #include <cuda_runtime_api.h> // just for proper indexing, nvcc includes it anyhow
 
-void printCudaVersion()
-{
+bool areCudaDevicesAvailable() {
+	int _; // ignored variable
+	cudaError_t error_code = cudaGetDeviceCount( &_ );
+
+	return (error_code == cudaSuccess);
+}
+
+void printCudaVersion() {
 	std::cout << "CUDA Compiled version: " << __CUDACC_VER_MAJOR__ << "."
 										   << __CUDACC_VER_MINOR__
 										   <<  ", Build: " << __CUDACC_VER_BUILD__ << std::endl;
@@ -15,10 +21,10 @@ void printCudaVersion()
 	int driver_version;
 	cudaDriverGetVersion(&driver_version);
 	std::cout << "CUDA driver version: " << driver_version << std::endl;
-	}
+}
 
 
-void printGpuDeviceInfo(){
+void printGpuDeviceInfo() {
 
 	int number_of_gpus = 0;
 	cudaError_t error_code = cudaGetDeviceCount( &number_of_gpus );
@@ -26,6 +32,7 @@ void printGpuDeviceInfo(){
 
 	if (error_code != cudaSuccess) {
 		std::cout << "No GPU device available" << std::endl;
+		std::cout << "cudaGetDeviceCount error code: " << error_code << std::endl;
 	}
 	else {
 		cudaDeviceProp device_properties;

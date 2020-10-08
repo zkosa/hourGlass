@@ -9,6 +9,7 @@
 #include "boundary_axissymmetric.h"
 #include "cell.h"
 #include "timer.h"
+#include "cuda.h"
 
 class MainWindow;
 
@@ -24,10 +25,11 @@ class Scene {
 	MainWindow *viewer = nullptr;
 	float time_step = 0.001; // [s]
 	float simulation_time = 0;
-	std::vector<Particle> particles;
+	float time = 0;
+	CUDA_HOSTDEV std::vector<Particle> particles;
 	std::vector<Boundary_planar> boundaries_pl;
 	std::vector<Boundary_axissymmetric> boundaries_ax;
-	std::vector<Cell> cells;
+	CUDA_HOSTDEV std::vector<Cell> cells;
 
 	Geometry geometry = Geometry::hourglass;
 	std::string geometry_names[4] = { "hourglass",
@@ -87,6 +89,9 @@ public:
 	const std::vector<Boundary_axissymmetric>& getBoundariesAxiSym() const {
 		return boundaries_ax;
 	}
+	const std::vector<Cell>& getCells() const{
+		return cells;
+	}
 	const Geometry& getGeometry() const {
 		return geometry;
 	}
@@ -128,6 +133,7 @@ public:
 	void removeExternalCells();
 	void drawCells() const;
 	void populateCells();
+	void populateCellsCuda();
 	void clearCells();
 	void deleteCells();
 

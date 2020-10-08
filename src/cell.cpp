@@ -145,6 +145,28 @@ void Cell::populate(std::vector<Particle> &particles) {
 		}
 	}
 }
+/*
+__global__ void populate_kernel(Particle *p, Cell *c) {
+	if (c->containsCuda(p)) {
+		c->addParticleCuda(p);
+	}
+}
+
+void Cell::populateCuda(std::vector<Particle> &particles)
+{
+	for (auto &p : particles) {
+
+		Particle* device_particle_ptr;
+		cudaMalloc((void **)&device_particle_ptr, sizeof(Particle));
+
+		cudaMemcpy(device_particle_ptr, &p, sizeof(Particle), cudaMemcpyHostToDevice);
+
+		populate_kernel<<<1,1>>>(device_particle_ptr, this);
+	}
+
+
+}
+*/
 
 bool Cell::contains(const Particle &p) const {
 	const float r = p.getR();
@@ -153,7 +175,16 @@ bool Cell::contains(const Particle &p) const {
 			&& (p.getY() + r > bounds.y1 && p.getY() - r < bounds.y2)
 			&& (p.getZ() + r > bounds.z1 && p.getZ() - r < bounds.z2);
 }
+/*
+__device__
+bool Cell::containsCuda(const Particle *p) {
+	float r = p->getR();
 
+	return (p->getX() + r > bounds.x1 && p->getX() - r < bounds.x2)
+			&& (p->getY() + r > bounds.y1 && p->getY() - r < bounds.y2)
+			&& (p->getZ() + r > bounds.z1 && p->getZ() - r < bounds.z2);
+}
+*/
 bool Cell::contains(const Boundary &b) const {
 	if (b.distance(center) <= getHalfDiagonal()) {
 		return true;
@@ -165,7 +196,12 @@ bool Cell::contains(const Boundary &b) const {
 void Cell::addParticle(const Particle &p) {
 	particle_IDs.emplace_back(p.getID());
 }
-
+/*
+__device__
+void Cell::addParticleCuda(const Particle *p) {
+	particle_IDs.emplace_back(p->getID());
+}
+*/
 void Cell::size() const {
 	std::cout << "Size of cell object: " << sizeof(*this) << std::endl;
 }
