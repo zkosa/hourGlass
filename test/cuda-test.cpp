@@ -5,6 +5,8 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE cuda-TEST
 #include <boost/test/unit_test.hpp>
+#include <boost/test/data/test_case.hpp>
+#include <boost/array.hpp>
 
 BOOST_AUTO_TEST_CASE( cuda_CudaDevicesAvailable_test )
 {
@@ -21,14 +23,14 @@ BOOST_AUTO_TEST_CASE( cuda_info_test )
 	//cudaSetDevice(0);
 }
 
-void prepareTest(Scene& scene) {
+void prepareTest(Scene& scene, int number_of_particles) {
 	Particle::connectScene(&scene);
 	Cell::connectScene(&scene);
 
 	Cell::setNx(2);
 	Cell::setNy(1);
 	Cell::setNz(1);
-	scene.setNumberOfParticles(3);
+	scene.setNumberOfParticles(number_of_particles);
 	Particle::setUniformRadius(0.005f);
 
 	Particle::resetLastID();
@@ -55,9 +57,9 @@ void printResults(Scene& scene) {
 				<< scene.getCells()[i].getParticleIDs() << std::endl;
 	}
 
-	for (size_t i=0; i<scene.getParticles().size(); i++) {
-		std::cout << i << " " <<scene.getParticles()[i].getPos() << std::endl;
-	}
+//	for (size_t i=0; i<scene.getParticles().size(); i++) {
+//		std::cout << i << " " <<scene.getParticles()[i].getPos() << std::endl;
+//	}
 }
 
 bool compareResults(Scene& scene1, Scene& scene2) {
@@ -79,20 +81,23 @@ bool compareResults(Scene& scene1, Scene& scene2) {
 	return (particle_IDs_scene1 == particle_IDs_scene2);
 }
 
-BOOST_AUTO_TEST_CASE( cuda_populateCells_test )
+static const boost::array<int, 9> N_data{1, 2, 31, 33, 255, 257, 1023, 1025, 100000};
+//static const boost::array<int, 9> N_data{1, 2, 31, 33, 255, 257, 1023, 1025, 1024*1024*10}; // 1024*1024*1024*10 is too much: check the reasons
+
+BOOST_DATA_TEST_CASE( cuda_populateCells_test, N_data, number_of_particles )
 {
 
 	std::cout << "Serial ------- " << std::endl;
 
 	Scene scene;
-	prepareTest(scene);
+	prepareTest(scene, number_of_particles);
 	scene.populateCells();
 	printResults(scene);
 
 	std::cout << "CUDA ------- " << std::endl;
 
 	Scene sceneCuda;
-	prepareTest(sceneCuda);
+	prepareTest(sceneCuda, number_of_particles);
 	sceneCuda.populateCellsCuda();
 	printResults(sceneCuda);
 
