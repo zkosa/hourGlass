@@ -71,6 +71,7 @@ public:
 	void resolveConstraintsCells(int max_sweeps = 500); // do while there is collision
 	void draw();
 	void calculatePhysics();
+	void calculatePhysicsCuda();
 	void advance();
 	void collideWithBoundaries();
 	void collideWithBoundariesCells();

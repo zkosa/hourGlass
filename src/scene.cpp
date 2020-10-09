@@ -245,13 +245,22 @@ void Scene::calculatePhysics() {
 	populateCells();
 	advance();
 	populateCells();
-	//std::cout << "before collision..." << std::endl;
-	//veloCheck();
 	collideWithBoundariesCells();
 	populateCells();
 	collideParticlesCells();
-	//std::cout << "after collision..." << std::endl;
-	//veloCheck();
+	timer.stop();
+	addToDuration(timer.milliSeconds());
+	std::cout << timer.milliSeconds() << "ms" << std::endl << std::flush;
+}
+
+void Scene::calculatePhysicsCuda() {
+	timer.start();
+	populateCells();
+	advance();
+	populateCellsCuda();
+	collideWithBoundariesCells();
+	populateCellsCuda();
+	collideParticlesCells();
 	timer.stop();
 	addToDuration(timer.milliSeconds());
 	std::cout << timer.milliSeconds() << "ms" << std::endl << std::flush;
