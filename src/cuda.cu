@@ -20,13 +20,14 @@ void Cell::addParticleCuda(const Particle *p, int *particle_IDs_in_cell, int *nu
 
 __global__
 void get_particle_IDs_in_cell(int number_of_particles, const Particle *p, Cell *c, int *particle_IDs_in_cell, int *number_of_particle_IDs) {
-	int i = threadIdx.x;
 
-	if (i<number_of_particles)
+	// grid-stride loop, handling even more processes than
+	for (int i = blockIdx.x * blockDim.x + threadIdx.x;
+		i < number_of_particles;
+		i += blockDim.x * gridDim.x)
 	{
-		//printf("==== thread number: %d === \n", i);
 		if (c->containsCuda(p + i)) {
-			c->addParticleCuda(p + i, particle_IDs_in_cell,  number_of_particle_IDs);
+			c->addParticleCuda(p + i, particle_IDs_in_cell, number_of_particle_IDs);
 		}
 
 	}
@@ -57,7 +58,7 @@ void Cell::populateCuda(std::vector<Particle> &particles) {
 	cudaMalloc((void **)&device_number_of_particle_IDs, sizeof(int));
 
 
-	int threads = 256; // or simply N until it is less than 1024
+	int threads = 256; // recommended first value, must not be larger than 1024
 	int blocks = ceil(float(N)/threads);
 	// calling function to be run on the GPU:
 	get_particle_IDs_in_cell<<<blocks,threads>>>(N, device_particle_ptr, device_cell_ptr, device_particle_IDs_in_cell, device_number_of_particle_IDs);
