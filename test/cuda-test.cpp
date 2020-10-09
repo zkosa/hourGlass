@@ -64,11 +64,16 @@ bool compareResults(Scene& scene1, Scene& scene2) {
 
 	std::vector<std::vector<int>> particle_IDs_scene1;
 	for (auto const& c : scene1.getCells())  {
-		particle_IDs_scene1.push_back(c.getParticleIDs());
+		auto ids = c.getParticleIDs();
+		std::sort(ids.begin(), ids.end());
+		particle_IDs_scene1.push_back(ids);
 	}
+
 	std::vector<std::vector<int>> particle_IDs_scene2;
 	for (auto const& c : scene2.getCells())  {
-		particle_IDs_scene2.push_back(c.getParticleIDs());
+		auto ids = c.getParticleIDs();
+		std::sort(ids.begin(), ids.end());
+		particle_IDs_scene2.push_back(ids);
 	}
 
 	return (particle_IDs_scene1 == particle_IDs_scene2);
@@ -91,5 +96,6 @@ BOOST_AUTO_TEST_CASE( cuda_populateCells_test )
 	sceneCuda.populateCellsCuda();
 	printResults(sceneCuda);
 
+	// the results are sorted before comparison, because form CUDA we accept the unsorted output
 	BOOST_TEST( compareResults(scene, sceneCuda) );
 }
