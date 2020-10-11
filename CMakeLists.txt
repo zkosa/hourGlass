@@ -205,7 +205,7 @@ endif(TESTS)
 
 if(BENCHMARKS)
 	find_package(benchmark REQUIRED)
-	file(GLOB SOURCES "test/benchmark.cpp" "src/*.cpp")
+	file(GLOB SOURCES "test/benchmark.cpp" "src/*.cpp" "src/*.cu")
 	list(FILTER SOURCES EXCLUDE REGEX "src/main.cpp") # exclude main
 	add_executable(${PROJECT_NAME}_benchmark ${SOURCES} ${MOC_HEADERS} ${UI}) # the MOC headers are needed
 	target_include_directories(${PROJECT_NAME}_benchmark PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${OPENGL_INCLUDE_DIR})

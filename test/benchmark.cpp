@@ -39,7 +39,8 @@ void benchMark_hourGlass_calculatePhysics(benchmark::State& state) {
 
 		scene.setRunning();
 		while ( scene.isRunning() ) {
-			scene.calculatePhysics();
+			//scene.calculatePhysics();
+			scene.calculatePhysicsCuda();
 		}
 	}
 }
