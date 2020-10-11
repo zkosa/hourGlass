@@ -81,10 +81,12 @@ bool compareResults(Scene& scene1, Scene& scene2) {
 	return (particle_IDs_scene1 == particle_IDs_scene2);
 }
 
-static const boost::array<int, 9> N_data{1, 2, 31, 33, 255, 257, 1023, 1025, 100000};
-//static const boost::array<int, 9> N_data{1, 2, 31, 33, 255, 257, 1023, 1025, 1024*1024*10}; // 1024*1024*1024*10 is too much: check the reasons
+//static const boost::array<int, 1> number_of_particles_data{1};
+//static const boost::array<int, 1> number_of_particles_data{2};
+static const boost::array<int, 9> number_of_particles_data{1, 2, 31, 33, 255, 257, 1023, 1025, 100000};
+//static const boost::array<int, 9> number_of_particles_data{1, 2, 31, 33, 255, 257, 1023, 1025, 1024*1024*10}; // 1024*1024*1024*10 is too much: check the reasons
 
-BOOST_DATA_TEST_CASE( cuda_populateCells_test, N_data, number_of_particles )
+BOOST_DATA_TEST_CASE( cuda_populateCells_test, number_of_particles_data, number_of_particles )
 {
 
 	std::cout << "Serial ------- " << std::endl;
