@@ -34,14 +34,7 @@ void get_particle_IDs_in_cell(int number_of_particles, const Particle *p, Cell *
 }
 
 __host__
-void Cell::populateCuda(std::vector<Particle> &particles) {
-
-// inputs:
-	int N = particles.size();
-
-	Particle* device_particle_ptr;
-	cudaMalloc((void **)&device_particle_ptr, N*sizeof(Particle));
-	cudaMemcpy(device_particle_ptr, &particles[0], N*sizeof(Particle), cudaMemcpyHostToDevice);
+void Cell::populateCuda(Particle* device_particles_ptr, int N_particles) {
 
 	Cell* device_cell_ptr;
 	cudaMalloc((void **)&device_cell_ptr, sizeof(Cell));
@@ -50,18 +43,19 @@ void Cell::populateCuda(std::vector<Particle> &particles) {
 // outputs:
 	int *device_particle_IDs_in_cell;
 	// TODO: use a two step method to reduce the amount of cudaMallocs via calculating the number of particle IDs (see my 009-populate-array-on-GPU two_step branch)
-	int max_number_of_particles_in_the_cell = N; // very conservative and impractical guess!
+	int max_number_of_particles_in_the_cell = N_particles; // very conservative and impractical guess!
 	cudaMalloc((void **)&device_particle_IDs_in_cell, max_number_of_particles_in_the_cell*sizeof(int));
 	cudaMemset(device_particle_IDs_in_cell, -1, max_number_of_particles_in_the_cell*sizeof(int));// zero could be a particle ID, so use something obviously not particle id
 
 	int *device_number_of_particle_IDs = 0;
 	cudaMalloc((void **)&device_number_of_particle_IDs, sizeof(int));
+	cudaMemset(device_number_of_particle_IDs, 0, sizeof(int));
 
 
 	int threads = 256; // recommended first value, must not be larger than 1024
-	int blocks = ceil(float(N)/threads);
+	int blocks = ceil(float(N_particles)/threads);
 	// calling function to be run on the GPU:
-	get_particle_IDs_in_cell<<<blocks,threads>>>(N, device_particle_ptr, device_cell_ptr, device_particle_IDs_in_cell, device_number_of_particle_IDs);
+	get_particle_IDs_in_cell<<<blocks,threads>>>(N_particles, device_particles_ptr, device_cell_ptr, device_particle_IDs_in_cell, device_number_of_particle_IDs);
 	cudaDeviceSynchronize(); // TODO: try to move it one layer higher (from within cell to within scene level, to educe number of synchronizations)
 
 	int host_number_of_particle_IDs = -999;
@@ -95,7 +89,6 @@ void Cell::populateCuda(std::vector<Particle> &particles) {
 			 );
 
 	cudaFree(device_cell_ptr);
-	cudaFree(device_particle_ptr);
 	cudaFree(device_particle_IDs_in_cell);
 	cudaFree(device_number_of_particle_IDs);
 
