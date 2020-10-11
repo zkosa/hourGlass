@@ -160,6 +160,9 @@ public:
 	void setBenchmarkMode(bool benchmark_mode) {
 		this->benchmark_mode = benchmark_mode;
 	}
+	void setBenchmarkSimulationTime(float benchmark_simulation_time) {
+		this->benchmark_simulation_time = benchmark_simulation_time;
+	}
 	void setTimestep(float time_step) {
 		this->time_step = time_step;
 	}
