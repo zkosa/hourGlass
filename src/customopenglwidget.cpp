@@ -22,7 +22,8 @@ void CustomOpenGLWidget::paintGL() {
 
 	//scene->resolve_constraints_on_init_cells(5);
 	if (scene->isRunning()) {
-		scene->calculatePhysics();
+		//scene->calculatePhysics();
+		scene->calculatePhysicsCuda();
 	} else {
 		// draw cells only when simulation is stopped/paused
 		scene->drawCells();
