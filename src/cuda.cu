@@ -65,6 +65,9 @@ void Cell::populateCuda(Particle* device_particles_ptr, int N_particles) {
 				cudaMemcpyDeviceToHost
 				);
 
+	// we copy only the useful results:
+	// first host_number_of_particle_IDs
+	// instead of max_number_of_particles_in_the_cell
 	int host_particle_IDs_in_cell[host_number_of_particle_IDs];
 
 	cudaMemcpy( &host_particle_IDs_in_cell[0],
@@ -72,7 +75,8 @@ void Cell::populateCuda(Particle* device_particles_ptr, int N_particles) {
 				host_number_of_particle_IDs * sizeof(int),
 				cudaMemcpyDeviceToHost
 				);
-/*
+
+/*// do not copy the unchanged data // TODO: use const specifiers to ensure the constantness
 	cudaMemcpy( this,
 				device_cell_ptr,
 				sizeof(Cell),
