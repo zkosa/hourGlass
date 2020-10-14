@@ -1,5 +1,6 @@
 #include "test.cuh"
 #include "scene.h"
+#include "cuda.h"
 
 //#define BOOST_TEST_TOOLS_UNDER_DEBUGGER // it deactivates the tolerance!!!
 #define BOOST_TEST_DYN_LINK
@@ -21,6 +22,30 @@ BOOST_AUTO_TEST_CASE( cuda_info_test )
 	printGpuDeviceInfo();
 
 	//cudaSetDevice(0);
+}
+
+BOOST_AUTO_TEST_CASE( cuda_CHECK_CUDA_test )
+{
+	{
+		int* device_data_ptr;
+		// it compiles fine and fails silently:
+		// (cuda-memcheck can report it)
+		//cudaMalloc((void **)&device_data_ptr, -1);
+	}
+
+	{
+		int* device_data_ptr;
+		// it captures and prints the error and exits the program
+		// the test fails because of exit
+		//CHECK_CUDA( cudaMalloc((void **)&device_data_ptr, -1) );
+	}
+
+	{
+		int* device_data_ptr;
+		// fine
+		CHECK_CUDA( cudaMalloc((void **)&device_data_ptr, sizeof(int)) );
+		CHECK_CUDA( cudaFree(device_data_ptr) );
+	}
 }
 
 void prepareTest(Scene& scene, int number_of_particles) {
