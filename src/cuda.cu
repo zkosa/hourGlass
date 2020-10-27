@@ -19,6 +19,19 @@ void Cell::addParticleCuda(const Particle *p, int *particle_IDs_in_cell, int *in
 }
 
 __global__
+void get_number_of_particles_in_cell(int number_of_particles, const Particle *p, Cell *c, int *number_of_particle_IDs) {
+	// grid-stride loop
+	for (int i = blockIdx.x * blockDim.x + threadIdx.x;
+		i < number_of_particles;
+		i += blockDim.x * gridDim.x)
+	{
+		if (c->containsCuda(p + i)) {
+			atomicAdd(number_of_particle_IDs, 1);
+		}
+	}
+}
+
+__global__
 void get_particle_IDs_in_cell(int number_of_particles, const Particle *p, Cell *c, int *particle_IDs_in_cell, int *index_counter) {
 
 	// grid-stride loop, handling even more processes than
