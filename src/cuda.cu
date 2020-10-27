@@ -13,13 +13,13 @@ bool Cell::containsCuda(const Particle *p) {
 }
 
 __device__
-void Cell::addParticleCuda(const Particle *p, int *particle_IDs_in_cell, int *number_of_particle_IDs) {
-	int old_index = atomicAdd(number_of_particle_IDs, 1);
+void Cell::addParticleCuda(const Particle *p, int *particle_IDs_in_cell, int *index_counter) {
+	int old_index = atomicAdd(index_counter, 1);
 	particle_IDs_in_cell[old_index] = p->getID();
 }
 
 __global__
-void get_particle_IDs_in_cell(int number_of_particles, const Particle *p, Cell *c, int *particle_IDs_in_cell, int *number_of_particle_IDs) {
+void get_particle_IDs_in_cell(int number_of_particles, const Particle *p, Cell *c, int *particle_IDs_in_cell, int *index_counter) {
 
 	// grid-stride loop, handling even more processes than
 	for (int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -27,7 +27,7 @@ void get_particle_IDs_in_cell(int number_of_particles, const Particle *p, Cell *
 		i += blockDim.x * gridDim.x)
 	{
 		if (c->containsCuda(p + i)) {
-			c->addParticleCuda(p + i, particle_IDs_in_cell, number_of_particle_IDs);
+			c->addParticleCuda(p + i, particle_IDs_in_cell, index_counter);
 		}
 
 	}
