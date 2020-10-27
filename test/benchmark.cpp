@@ -26,6 +26,8 @@ void benchMark_hourGlass_calculatePhysics(benchmark::State& state) {
 		Scene scene;
 		// TODO: create and connect a MainWindow, or eliminate it (it is a nullptr currently)
 		scene.setBenchmarkMode(true);
+		// make the benchmark shorter for easier GPU profiling
+		//scene.setBenchmarkSimulationTime(5 * scene.getTimeStep());
 
 		scene.applyDefaults();
 		int N = scene.getDefaults().number_of_particles;
