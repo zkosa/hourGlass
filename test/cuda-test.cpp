@@ -114,19 +114,24 @@ static const boost::array<int, 9> number_of_particles_data{1, 2, 31, 33, 255, 25
 BOOST_DATA_TEST_CASE( cuda_populateCells_test, number_of_particles_data, number_of_particles )
 {
 
+	int print_limit = 1000;
 	std::cout << "Serial ------- " << std::endl;
 
 	Scene scene;
 	prepareTest(scene, number_of_particles);
 	scene.populateCells();
-	printResults(scene);
+	if (number_of_particles < print_limit) {
+		printResults(scene);
+	}
 
 	std::cout << "CUDA ------- " << std::endl;
 
 	Scene sceneCuda;
 	prepareTest(sceneCuda, number_of_particles);
 	sceneCuda.populateCellsCuda();
-	printResults(sceneCuda);
+	if (number_of_particles < print_limit) {
+		printResults(sceneCuda);
+	}
 
 	// the results are sorted before comparison, because form CUDA we accept the unsorted output
 	BOOST_TEST( compareResults(scene, sceneCuda) );
