@@ -6,6 +6,7 @@ project(hourGlass LANGUAGES CXX)
 set(TESTS ON) # ON / OFF
 set(BENCHMARKS ON) # ON / OFF
 set(CODE_COVERAGE_ANALYSIS OFF) # ON / OFF, linux only
+set(BOLT_POST_LINK_OPTIMIZATION ON) # ON / OFF, linux only, requires perf, Bolt (and LLVM)
 
 set(CMAKE_CXX_STANDARD 20)
 add_compile_options("-Wall")
@@ -47,6 +48,26 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${
 set_target_properties(${PROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets ${OPENGL_LIBRARIES}) # OpenMP::OpenMP_CXX
 target_link_options(${PROJECT_NAME} PUBLIC "-Wl,--emit-relocs") # for Bolt
+
+if(BOLT_POST_LINK_OPTIMIZATION)
+
+	add_custom_command(
+	      OUTPUT perf.data
+	      COMMAND perf ARGS record -e cycles:u -j any,u -o perf.data -- ${CMAKE_BINARY_DIR}/${PROJECT_NAME}
+	      DEPENDS ${PROJECT_NAME} ##?
+	      COMMENT "generate profile data: perf.data"
+	)
+
+	add_custom_target( ${PROJECT_NAME}.bolt ALL DEPENDS perf.data)
+	add_custom_command(
+	      TARGET ${PROJECT_NAME}.bolt
+	      #OUTPUT ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.bolt
+	      COMMAND /home/kosaz/work/C++/bolt-install/build/bin/llvm-bolt
+	      ARGS ${CMAKE_BINARY_DIR}/${PROJECT_NAME} -o ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.bolt -data=perf.data -reorder-blocks=cache+ -reorder-functions=hfsort -split-functions=2 -split-all-cold -split-eh -dyno-stats
+	      DEPENDS perf.data
+	      COMMENT "running BOLT post-link optimizer"
+	)
+endif(BOLT_POST_LINK_OPTIMIZATION)
 
 ##############################
 # TESTING: ###################
