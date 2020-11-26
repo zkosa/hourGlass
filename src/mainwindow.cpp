@@ -334,6 +334,11 @@ void MainWindow::setupHooverHints() {
 					"Divisions of the numerical grid used to limit collision detection to particles in the same grid cell"));
 }
 
+void MainWindow::setGuiControlAutomatic() {
+	automatic_GUI_control = true;
+	setWindowTitle(windowTitle() + QString(" ... AUTOMATIC BENCHMARK RUN ..."));
+}
+
 void MainWindow::launchBenchmark() {
 	scene.setBenchmarkMode(true);
 	setGuiControlAutomatic();

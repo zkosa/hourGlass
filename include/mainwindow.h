@@ -21,9 +21,7 @@ public:
 	void wrapStopButtonClicked() {
 		on_stopButton_clicked();
 	}
-	void setGuiControlAutomatic() {
-		automatic_GUI_control = true;
-	}
+	void setGuiControlAutomatic();
 	void launchBenchmark();
 
 private slots:
