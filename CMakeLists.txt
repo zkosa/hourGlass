@@ -51,7 +51,6 @@ target_link_options(${PROJECT_NAME} PUBLIC "-Wl,--emit-relocs") # for Bolt
 
 if(BOLT_POST_LINK_OPTIMIZATION)
 # known limitations of the current build process:
-# llvm-bolt is called whenever the project is built (even when hourGlass and perf.data are unchanged)
 # the benchmark may run alongside other compile tasks!
 	add_custom_command(
 	      COMMENT "Generating perf.data in automatic benchmark mode..."
@@ -60,10 +59,10 @@ if(BOLT_POST_LINK_OPTIMIZATION)
 	      DEPENDS ${PROJECT_NAME} # is it used?
 	)
 
-	add_custom_target( ${PROJECT_NAME}.bolt ALL DEPENDS perf.data)
+	add_custom_target( bolt ALL DEPENDS ${PROJECT_NAME}.bolt)
 	add_custom_command(
 	      COMMENT "Running BOLT post-link optimizer..."
-	      TARGET ${PROJECT_NAME}.bolt
+	      OUTPUT ${PROJECT_NAME}.bolt
 	      COMMAND /home/kosaz/work/C++/bolt-install/build/bin/llvm-bolt
 	      ARGS ${CMAKE_BINARY_DIR}/${PROJECT_NAME} -o ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.bolt -data=perf.data -reorder-blocks=cache+ -reorder-functions=hfsort -split-functions=2 -split-all-cold -split-eh -dyno-stats
 	      DEPENDS perf.data
