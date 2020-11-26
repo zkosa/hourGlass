@@ -59,8 +59,13 @@ void MainWindow::on_startButton_clicked() {
 }
 
 void MainWindow::on_stopButton_clicked() {
-	if (ui->stopButton->text() == stop_text)
+	if (ui->stopButton->text() == stop_text) {
 		finish();
+		if (automatic_GUI_control) {
+			std::cout << "Closing the window at the end of an automatic benchmark run..." << std::endl;
+			close();
+		}
+	}
 	else if (ui->stopButton->text() == reset_text) {
 		reset();
 	} else {
@@ -327,4 +332,11 @@ void MainWindow::setupHooverHints() {
 	ui->cells_title->setToolTip(
 			QString(
 					"Divisions of the numerical grid used to limit collision detection to particles in the same grid cell"));
+}
+
+void MainWindow::launchBenchmark() {
+	scene.setBenchmarkMode(true);
+	setGuiControlAutomatic();
+	updateGUIcontrols();
+	on_startButton_clicked();
 }

@@ -21,6 +21,10 @@ public:
 	void wrapStopButtonClicked() {
 		on_stopButton_clicked();
 	}
+	void setGuiControlAutomatic() {
+		automatic_GUI_control = true;
+	}
+	void launchBenchmark();
 
 private slots:
 	// they can be auto generated from QT Creator using right click go to slot -- not from QT Designer :(
@@ -69,6 +73,9 @@ private:
 	Ui::MainWindow *ui;
 
 	Scene scene;
+
+	// used to close the window automatically after an automatic benchmark has been finished:
+	bool automatic_GUI_control = false;
 
 	// button texts:
 	const QString start_text = QString("Start");

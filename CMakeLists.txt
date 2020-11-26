@@ -53,19 +53,18 @@ if(BOLT_POST_LINK_OPTIMIZATION)
 
 	add_custom_command(
 	      OUTPUT perf.data
-	      COMMAND perf ARGS record -e cycles:u -j any,u -o perf.data -- ${CMAKE_BINARY_DIR}/${PROJECT_NAME}
-	      DEPENDS ${PROJECT_NAME} ##?
-	      COMMENT "generate profile data: perf.data"
+	      COMMAND perf ARGS record -e cycles:u -j any,u -o perf.data -- ${CMAKE_BINARY_DIR}/${PROJECT_NAME} -benchmark
+	      DEPENDS ${PROJECT_NAME} # is it used?
+	      COMMENT "Generating perf.data in automatic benchmark mode..."
 	)
 
 	add_custom_target( ${PROJECT_NAME}.bolt ALL DEPENDS perf.data)
 	add_custom_command(
 	      TARGET ${PROJECT_NAME}.bolt
-	      #OUTPUT ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.bolt
 	      COMMAND /home/kosaz/work/C++/bolt-install/build/bin/llvm-bolt
 	      ARGS ${CMAKE_BINARY_DIR}/${PROJECT_NAME} -o ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.bolt -data=perf.data -reorder-blocks=cache+ -reorder-functions=hfsort -split-functions=2 -split-all-cold -split-eh -dyno-stats
 	      DEPENDS perf.data
-	      COMMENT "running BOLT post-link optimizer"
+	      COMMENT "Running BOLT post-link optimizer..."
 	)
 endif(BOLT_POST_LINK_OPTIMIZATION)
 
