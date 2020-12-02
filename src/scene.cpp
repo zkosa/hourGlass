@@ -255,7 +255,7 @@ void Scene::calculatePhysics() {
 
 void Scene::calculatePhysicsCuda() {
 	timer.start();
-	populateCells();
+	populateCellsCuda();
 	advance();
 	populateCellsCuda();
 	collideWithBoundariesCells();
