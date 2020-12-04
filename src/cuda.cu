@@ -87,7 +87,7 @@ void Cell::populateCuda(Particle* device_particles_ptr, int N_particles) {
 	get_particle_IDs_in_cell<<<blocks,threads>>>(N_particles, device_particles_ptr, device_cell_ptr, device_particle_IDs_in_cell, device_index_counter);
 	cudaDeviceSynchronize(); // TODO: try to move it one layer higher (from within cell to within scene level, to educe number of synchronizations)
 
-
+// check
 	int host_number_of_particle_IDs_second_kernel;
 	cudaMemcpy( &host_number_of_particle_IDs_second_kernel,
 				device_index_counter,
@@ -103,7 +103,7 @@ void Cell::populateCuda(Particle* device_particles_ptr, int N_particles) {
 		std::exit(EXIT_FAILURE); // makes it untestable???
 	}
 
-
+// get the data
 	int host_particle_IDs_in_cell[host_number_of_particle_IDs];
 
 	cudaMemcpy( &host_particle_IDs_in_cell[0],
@@ -123,6 +123,7 @@ void Cell::populateCuda(Particle* device_particles_ptr, int N_particles) {
 	// copy the array of particle IDs (collected via CUDA) into the cells vector:
 	size_t number_of_elements = sizeof(host_particle_IDs_in_cell) / sizeof(int);
 	particle_IDs.resize(number_of_elements);
+	// TODO: check if std::move could be used instead
 	std::copy(host_particle_IDs_in_cell + 0,
 			  host_particle_IDs_in_cell + number_of_elements,
 			  particle_IDs.begin()
