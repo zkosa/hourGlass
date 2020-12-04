@@ -5,7 +5,7 @@
 #include <iostream>
 
 __device__
-bool Cell::containsCuda(const Particle *p) {
+bool Cell::containsCuda(const Particle *p) const {
 	float r = p->getR();
 
 	return (p->getX() + r > bounds.x1 && p->getX() - r < bounds.x2)

@@ -56,7 +56,7 @@ public:
 	void populateCuda(Particle* device_particle_ptr, int N);
 	bool contains(const Particle&) const;
 	__device__
-	bool containsCuda(const Particle*);
+	bool containsCuda(const Particle*) const;
 	bool contains(const Boundary&) const;
 	void addParticle(const Particle&);
 	__device__
