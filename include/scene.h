@@ -26,10 +26,10 @@ class Scene {
 	float time_step = 0.001; // [s]
 	float simulation_time = 0;
 	float time = 0;
-	CUDA_HOSTDEV std::vector<Particle> particles;
+	std::vector<Particle> particles;
 	std::vector<Boundary_planar> boundaries_pl;
 	std::vector<Boundary_axissymmetric> boundaries_ax;
-	CUDA_HOSTDEV std::vector<Cell> cells;
+	std::vector<Cell> cells;
 
 	Geometry geometry = Geometry::hourglass;
 	std::string geometry_names[4] = { "hourglass",
