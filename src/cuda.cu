@@ -112,14 +112,6 @@ void Cell::populateCuda(Particle* device_particles_ptr, int N_particles) {
 				cudaMemcpyDeviceToHost
 				);
 
-/*// do not copy the unchanged data // TODO: use const specifiers to ensure the constantness
-	cudaMemcpy( this,
-				device_cell_ptr,
-				sizeof(Cell),
-				cudaMemcpyDeviceToHost
-				);
-*/
-
 	// copy the array of particle IDs (collected via CUDA) into the cells vector:
 	size_t number_of_elements = sizeof(host_particle_IDs_in_cell) / sizeof(int);
 	particle_IDs.resize(number_of_elements);
