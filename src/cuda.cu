@@ -85,7 +85,7 @@ void Cell::populateCuda(Particle* device_particles_ptr, int N_particles) {
 
 
 	get_particle_IDs_in_cell<<<blocks,threads>>>(N_particles, device_particles_ptr, device_cell_ptr, device_particle_IDs_in_cell, device_index_counter);
-	cudaDeviceSynchronize(); // TODO: try to move it one layer higher (from within cell to within scene level, to educe number of synchronizations)
+	cudaDeviceSynchronize(); // TODO: try to move it one layer higher (from within cell to within scene level, to reduce number of synchronizations)
 
 // check
 	int host_number_of_particle_IDs_second_kernel;
