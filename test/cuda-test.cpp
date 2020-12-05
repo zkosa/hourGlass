@@ -27,14 +27,14 @@ BOOST_AUTO_TEST_CASE( cuda_info_test )
 BOOST_AUTO_TEST_CASE( cuda_CHECK_CUDA_test )
 {
 	{
-		int* device_data_ptr;
+		//int* device_data_ptr;
 		// it compiles fine and fails silently:
 		// (cuda-memcheck can report it)
 		//cudaMalloc((void **)&device_data_ptr, -1);
 	}
 
 	{
-		int* device_data_ptr;
+		//int* device_data_ptr;
 		// it captures and prints the error and exits the program
 		// the test fails because of exit
 		//CHECK_CUDA( cudaMalloc((void **)&device_data_ptr, -1) );
