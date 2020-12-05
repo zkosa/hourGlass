@@ -103,23 +103,13 @@ void Cell::populateCuda(Particle* device_particles_ptr, int N_particles) {
 		std::exit(EXIT_FAILURE); // makes it untestable???
 	}
 
-// get the data
-	int host_particle_IDs_in_cell[host_number_of_particle_IDs];
-
-	cudaMemcpy( &host_particle_IDs_in_cell[0],
+// copy the resultant cell IDs into the host Cell::particle_IDs vectors
+	particle_IDs.resize(host_number_of_particle_IDs);
+	cudaMemcpy( particle_IDs.data(),
 				device_particle_IDs_in_cell,
 				host_number_of_particle_IDs * sizeof(int),
 				cudaMemcpyDeviceToHost
 				);
-
-	// copy the array of particle IDs (collected via CUDA) into the cells vector:
-	size_t number_of_elements = sizeof(host_particle_IDs_in_cell) / sizeof(int);
-	particle_IDs.resize(number_of_elements);
-	// TODO: check if std::move could be used instead
-	std::copy(host_particle_IDs_in_cell + 0,
-			  host_particle_IDs_in_cell + number_of_elements,
-			  particle_IDs.begin()
-			 );
 
 	cudaFree(device_cell_ptr);
 	cudaFree(device_particle_IDs_in_cell);
