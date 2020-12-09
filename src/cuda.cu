@@ -62,7 +62,12 @@ void Cell::populateCuda(const Particle* device_particles_ptr, int N_particles) {
 	int threads = 256; // recommended first value, must not be larger than 1024
 	int blocks = ceil(float(N_particles)/threads);
 	// calling function to be run on the GPU:
-	get_number_of_particles_in_cell<<<blocks,threads>>>(N_particles, device_particles_ptr, device_cell_ptr, device_number_of_particle_IDs);
+	get_number_of_particles_in_cell<<<blocks,threads>>>(
+			N_particles,
+			device_particles_ptr,
+			device_cell_ptr,
+			device_number_of_particle_IDs
+			);
 	cudaDeviceSynchronize();
 
 	int host_number_of_particle_IDs = 0;
@@ -84,7 +89,13 @@ void Cell::populateCuda(const Particle* device_particles_ptr, int N_particles) {
 	cudaMemset(device_particle_IDs_in_cell, -1, max_number_of_particles_in_the_cell*sizeof(int));// zero could be a particle ID, so use something obviously not particle id
 
 
-	get_particle_IDs_in_cell<<<blocks,threads>>>(N_particles, device_particles_ptr, device_cell_ptr, device_particle_IDs_in_cell, device_index_counter);
+	get_particle_IDs_in_cell<<<blocks,threads>>>(
+			N_particles,
+			device_particles_ptr,
+			device_cell_ptr,
+			device_particle_IDs_in_cell,
+			device_index_counter
+			);
 	cudaDeviceSynchronize(); // TODO: try to move it one layer higher (from within cell to within scene level, to reduce number of synchronizations)
 
 #define CHECK
@@ -107,7 +118,7 @@ void Cell::populateCuda(const Particle* device_particles_ptr, int N_particles) {
 #endif
 #undef CHECK
 
-// copy the resultant cell IDs into the host Cell::particle_IDs vectors
+// copy the resultant cell IDs into the host Cell::particle_IDs vector
 	particle_IDs.resize(host_number_of_particle_IDs);
 	cudaMemcpy( particle_IDs.data(),
 				device_particle_IDs_in_cell,
