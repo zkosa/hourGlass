@@ -46,7 +46,7 @@ void get_particle_IDs_in_cell(int number_of_particles, const Particle *p, Cell *
 }
 
 __host__
-void Cell::populateCuda(Particle* device_particles_ptr, int N_particles) {
+void Cell::populateCuda(const Particle* device_particles_ptr, int N_particles) {
 
 	Cell* device_cell_ptr;
 	cudaMalloc((void **)&device_cell_ptr, sizeof(Cell));
