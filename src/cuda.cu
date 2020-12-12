@@ -3,6 +3,7 @@
 #include "cuda.h"
 #include <stdio.h> // for printing from the device
 #include <iostream>
+#include <device_launch_parameters.h> // just for proper indexing, nvcc includes it anyhow
 
 __device__
 bool Cell::containsCuda(const Particle *p) const {
