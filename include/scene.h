@@ -57,6 +57,11 @@ class Scene {
 
 	const Defaults defaults;
 
+	Particle* device_particles_ptr;
+	Cell* device_cells_ptr;
+	Boundary_axissymmetric* device_boundaries_ax_ptr;
+	Boundary_planar* device_boundaries_pl_ptr;
+
 public:
 	Timer timer_all, timer;
 
@@ -73,10 +78,16 @@ public:
 	void calculatePhysics();
 	void calculatePhysicsCuda();
 	void advance();
+	void advanceCuda();
 	void collideWithBoundaries();
 	void collideWithBoundariesCells();
+	void collideWithBoundariesCellsCuda();
 	void collideParticles();
 	void collideParticlesCells();
+	void collideParticlesCellsCuda();
+
+	void hostToDevice();
+	void deviceToHost();
 
 	float getSimulationTime() const {
 		return simulation_time;

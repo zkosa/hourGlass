@@ -255,12 +255,24 @@ void Scene::calculatePhysics() {
 
 void Scene::calculatePhysicsCuda() {
 	timer.start();
+	hostToDevice();
+
+//	populateCellsCuda();
+	advanceCuda();
+//	populateCellsCuda();
+//	collideWithBoundariesCellsCuda();
+//	populateCellsCuda();
+//	collideParticlesCellsCuda();
+
+	deviceToHost();
+/*
 	populateCellsCuda();
 	advance();
 	populateCellsCuda();
 	collideWithBoundariesCells();
 	populateCellsCuda();
 	collideParticlesCells();
+*/
 	timer.stop();
 	addToDuration(timer.milliSeconds());
 	std::cout << timer.milliSeconds() << "ms" << std::endl << std::flush;
@@ -538,7 +550,7 @@ void Scene::populateCells() {
 		c.populate(particles);
 	}
 }
-
+/*
 void Scene::populateCellsCuda() {
 	this->clearCells();
 
@@ -553,7 +565,7 @@ void Scene::populateCellsCuda() {
 	}
 	cudaFree(device_particles_ptr);
 }
-
+*/
 void Scene::clearCells() {
 	//cells[0].size();
 	for (auto &c : cells) {
