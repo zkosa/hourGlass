@@ -26,7 +26,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
-find_package(Qt5 REQUIRED Core Gui Widgets)
+find_package(Qt5 REQUIRED Widgets)
 #find_package(OpenMP REQUIRED)
 find_package(OpenGL REQUIRED)
 
@@ -57,7 +57,7 @@ endif()
 add_executable(${PROJECT_NAME} ${SOURCES} ${CUDA_SOURCES} ${MOC_HEADERS} ${UI}) # the MOC headers are needed
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${OPENGL_INCLUDE_DIR})
 set_target_properties(${PROJECT_NAME} PROPERTIES AUTOMOC TRUE)
-target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets ${OPENGL_LIBRARIES}) # OpenMP::OpenMP_CXX
+target_link_libraries(${PROJECT_NAME} Qt5::Widgets ${OPENGL_LIBRARIES}) # OpenMP::OpenMP_CXX
 
 
 ##############################
@@ -211,7 +211,7 @@ if(BENCHMARKS)
 	add_executable(${PROJECT_NAME}_benchmark ${SOURCES} ${MOC_HEADERS} ${UI}) # the MOC headers are needed
 	target_include_directories(${PROJECT_NAME}_benchmark PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${OPENGL_INCLUDE_DIR})
 	set_target_properties(${PROJECT_NAME}_benchmark PROPERTIES AUTOMOC TRUE)
-	target_link_libraries(${PROJECT_NAME}_benchmark benchmark::benchmark Qt5::Core Qt5::Gui Qt5::Widgets ${OPENGL_LIBRARIES})
+	target_link_libraries(${PROJECT_NAME}_benchmark benchmark::benchmark Qt5::Widgets ${OPENGL_LIBRARIES})
 endif(BENCHMARKS)
 
 # run the benchmark with constant CPU frequency:
