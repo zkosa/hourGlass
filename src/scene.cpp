@@ -97,20 +97,20 @@ void Scene::removeTemporaryGeo() {
 	// TODO: clean it, use wrappers functions if necessary
 	boundaries_pl.erase(
 			std::remove_if(boundaries_pl.begin(), boundaries_pl.end(),
-					[](auto &b) {
+					[](Boundary_planar &b) {
 						return b.isTemporary();
 					}), boundaries_pl.end());
 	boundaries_ax.erase(
 			std::remove_if(boundaries_ax.begin(), boundaries_ax.end(),
-					[](auto &b) {
+					[](Boundary_axissymmetric &b) {
 						return b.isTemporary();
 					}), boundaries_ax.end());
 	createCells();
 }
 
 bool Scene::hasTemporaryGeo() const {
-    return std::any_of(boundaries_pl.begin(), boundaries_pl.end(),  [](auto const& b){ return b.isTemporary(); }) ||
-           std::any_of(boundaries_ax.begin(), boundaries_ax.end(),  [](auto const& b){ return b.isTemporary(); });
+    return std::any_of(boundaries_pl.begin(), boundaries_pl.end(),  [](Boundary_planar const& b){ return b.isTemporary(); }) ||
+           std::any_of(boundaries_ax.begin(), boundaries_ax.end(),  [](Boundary_axissymmetric const& b){ return b.isTemporary(); });
 }
 
 void Scene::resolveConstraintsOnInit(int sweeps) {
@@ -341,7 +341,12 @@ void Scene::collideWithBoundariesCells() {
 
 	//removeDuplicates(to_be_collided); // comment out as long as not fixed
 
-	for (auto [particle, boundary] : to_be_collided) {
+//	for (auto [particle, boundary] : to_be_collided) {
+//		particle.collideToWall(boundary);
+//	}
+	for (std::pair<Particle&, Boundary&> PBpair : to_be_collided) {
+		Particle& particle = PBpair.first;
+		Boundary& boundary = PBpair.second;
 		particle.collideToWall(boundary);
 	}
 }
@@ -550,6 +555,8 @@ void Scene::populateCells() {
 		c.populate(particles);
 	}
 }
+
+
 /*
 void Scene::populateCellsCuda() {
 	this->clearCells();
@@ -748,3 +755,50 @@ void Scene::removeDuplicates(std::vector<T> &vector) {
 template void Scene::removeDuplicates<particle_boundary_pair>(std::vector<particle_boundary_pair> &vector);
 // this is used only for testing purposes, can be excluded from production variant:
 template void Scene::removeDuplicates<int>(std::vector<int> &vector);
+
+// from scene.cu
+#include <device_launch_parameters.h>
+
+void Scene::hostToDevice() {
+	// TODO: lock data on host!
+
+	int N_particles = particles.size();
+	cudaMalloc((void **)&device_particles_ptr, N_particles*sizeof(Particle));
+	cudaMemcpy(device_particles_ptr, &particles[0], N_particles*sizeof(Particle), cudaMemcpyHostToDevice);
+
+	int N_cells = cells.size();
+	cudaMalloc((void **)&device_cells_ptr, N_cells*sizeof(Cell));
+	cudaMemcpy(device_cells_ptr, &cells[0], N_cells*sizeof(Cell), cudaMemcpyHostToDevice);
+
+	int N_boundaries_ax = boundaries_ax.size();
+	cudaMalloc((void **)&device_boundaries_ax_ptr, N_boundaries_ax*sizeof(Boundary_axissymmetric));
+	cudaMemcpy(device_boundaries_ax_ptr, &boundaries_ax[0], N_boundaries_ax*sizeof(Boundary_axissymmetric), cudaMemcpyHostToDevice);
+
+	int N_boundaries_pl = boundaries_pl.size();
+	cudaMalloc((void **)&device_boundaries_pl_ptr, N_boundaries_pl*sizeof(Boundary_planar));
+	cudaMemcpy(device_boundaries_pl_ptr, &boundaries_pl[0], N_boundaries_pl*sizeof(Boundary_planar), cudaMemcpyHostToDevice);
+
+}
+
+void Scene::deviceToHost() {
+
+	// copy the particles back for display purposes
+	int N_particles = particles.size();
+	cudaMemcpy( particles.data(),
+				device_particles_ptr,
+				N_particles*sizeof(Particle),
+				cudaMemcpyDeviceToHost
+				);
+
+	// cell geometry does not change, particle_IDs are not needed on host --> no need to copy
+
+	// boundaries do not change (can it be enforced???) --> no need to copy
+
+
+	cudaFree(device_particles_ptr);
+	cudaFree(device_cells_ptr);
+	cudaFree(device_boundaries_ax_ptr);
+	cudaFree(device_boundaries_pl_ptr);
+
+	// TODO: unlock data on host
+}

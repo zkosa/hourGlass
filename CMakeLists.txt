@@ -17,6 +17,8 @@ endif(NOT CODE_COVERAGE_ANALYSIS)
 string(APPEND CMAKE_CXX_FLAGS "-Wall")
 #string(APPEND CMAKE_CXX_FLAGS_DEBUG " -g3")
 #string(APPEND CMAKE_CXX_FLAGS_RELEASE " -O3")
+#string(APPEND CMAKE_CUDA_FLAGS "--relocatable-device-code=true")
+#string(APPEND CMAKE_CUDA_FLAGS "-Xcompiler=-std=c++17") # unsuccessful attempt to enable more C++ features in CUDA code
 
 if (WIN32)
 	set(CMAKE_PREFIX_PATH "C:\\Qt\\Qt5.13.2\\5.13.2\\msvc2017_64") # add also to system path (Win)
@@ -29,10 +31,14 @@ set(CMAKE_AUTOUIC ON)
 find_package(Qt5 REQUIRED Widgets)
 #find_package(OpenMP REQUIRED)
 find_package(OpenGL REQUIRED)
+#set(CUDA_SEPARABLE_COMPILATION ON)# setting CUDA_SEPARABLE_COMPILATION before find_package() enables both relocatable device code compiling and linking
+find_package(CUDA REQUIRED)
 
 message(STATUS "OPENGL_INCLUDE_DIR:= ${OPENGL_INCLUDE_DIR}")  # OPENGL_INCLUDE_DIR is not set on Windows, except for cygwin!
 message(STATUS "OPENGL_LIBRARY:= ${OPENGL_LIBRARY}")
 message(STATUS "OPENGL_LIBRARIES:= ${OPENGL_LIBRARIES}")
+message(STATUS "CUDA_LIBRARIES:= ${CUDA_LIBRARIES}")
+message(STATUS "CUDA_RUNTIME_LIBRARY:= ${CUDA_RUNTIME_LIBRARY}")
 
 
 file(GLOB SOURCES "src/*.cpp")
@@ -49,16 +55,17 @@ if ( TARGET Qt5::Core )
 	get_property( core_options TARGET Qt5::Core PROPERTY INTERFACE_COMPILE_OPTIONS )
 	string( REPLACE "-fPIC" "" new_core_options "${core_options}" )
 	set_property( TARGET Qt5::Core PROPERTY INTERFACE_COMPILE_OPTIONS ${new_core_options} )
-	set_property( TARGET Qt5::Core PROPERTY INTERFACE_POSITION_INDEPENDENT_CODE "ON" )
+	set_property( TARGET Qt5::Core PROPERTY INTERFACE_POSITION_INDEPENDENT_CODE "ON" ) # build with position independent code if Qt was built with -reduce-relocations: -fPIC (-fPIE is not enough)
 	set( CMAKE_CXX_COMPILE_OPTIONS_PIE "-fPIC" )
+	set( CMAKE_CUDA_COMPILE_OPTIONS_PIE "-Xcompiler=-fPIC" )
 endif()
 
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${CUDA_SOURCES} ${MOC_HEADERS} ${UI}) # the MOC headers are needed
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${OPENGL_INCLUDE_DIR})
 set_target_properties(${PROJECT_NAME} PROPERTIES AUTOMOC TRUE)
-target_link_libraries(${PROJECT_NAME} Qt5::Widgets ${OPENGL_LIBRARIES}) # OpenMP::OpenMP_CXX
-
+set_target_properties(${PROJECT_NAME} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+target_link_libraries(${PROJECT_NAME} Qt5::Widgets ${OPENGL_LIBRARIES})
 
 ##############################
 # TESTING: ###################
@@ -82,7 +89,7 @@ target_link_libraries(vec3d-test ${Boost_LIBRARIES})
 add_unit_test(vec3d-test)
 
 # particle-test
-file(GLOB SOURCES "test/particle-test.cpp" "src/particle.cpp" "src/scene.cpp" "src/cell.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp" "src/scene.cu")
+file(GLOB SOURCES "test/particle-test.cpp" "src/particle.cpp" "src/scene.cpp" "src/cell.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp" "src/particle.cu" "src/scene.cu")
 add_executable(particle-test ${SOURCES} ${MOC_HEADERS} ${UI})
 target_include_directories(particle-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 set_target_properties(particle-test PROPERTIES AUTOMOC TRUE)
@@ -90,7 +97,7 @@ target_link_libraries(particle-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIB
 add_unit_test(particle-test)
 
 # cell-test
-file(GLOB SOURCES "test/cell-test.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/vecaxisym.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/scene.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp" "src/scene.cu")
+file(GLOB SOURCES "test/cell-test.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/vecaxisym.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/scene.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp" "src/particle.cu" "src/scene.cu")
 add_executable(cell-test ${SOURCES} ${MOC_HEADERS})
 target_include_directories(cell-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 set_target_properties(cell-test PROPERTIES AUTOMOC TRUE)
@@ -98,7 +105,7 @@ target_link_libraries(cell-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARI
 add_unit_test(cell-test)
 
 # scene-test
-file(GLOB SOURCES "test/scene-test.cpp" "src/scene.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp" "src/scene.cu")
+file(GLOB SOURCES "test/scene-test.cpp" "src/scene.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp" "src/particle.cu" "src/scene.cu")
 add_executable(scene-test ${SOURCES} ${MOC_HEADERS} ${UI})
 target_include_directories(scene-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 set_target_properties(scene-test PROPERTIES AUTOMOC TRUE)
@@ -106,7 +113,7 @@ target_link_libraries(scene-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRAR
 add_unit_test(scene-test)
 
 # boundary-test
-file(GLOB SOURCES "test/boundary-test.cpp" "src/scene.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/customopenglwidget.cpp" "src/mainwindow.cpp" "src/scene.cu")
+file(GLOB SOURCES "test/boundary-test.cpp" "src/scene.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/customopenglwidget.cpp" "src/mainwindow.cpp" "src/particle.cu" "src/scene.cu")
 add_executable(boundary-test ${SOURCES} ${MOC_HEADERS} ${UI})
 target_include_directories(boundary-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}  ${Boost_INCLUDE_DIRS})
 set_target_properties(boundary-test PROPERTIES AUTOMOC TRUE)
@@ -121,7 +128,7 @@ target_link_libraries(minimum-test ${Boost_LIBRARIES})
 add_unit_test(minimum-test)
 
 # minimumdistance-test
-file(GLOB SOURCES "test/minimumdistance-test.cpp" "src/minimum.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/particle.cpp" "src/vector.cpp" "src/boundingbox.cpp")
+file(GLOB SOURCES "test/minimumdistance-test.cpp" "src/minimum.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/particle.cpp" "src/vector.cpp" "src/boundingbox.cpp" "src/particle.cu")
 add_executable(minimumdistance-test ${SOURCES} )
 target_include_directories(minimumdistance-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 target_link_libraries(minimumdistance-test ${Boost_LIBRARIES} Qt5::Widgets Qt5::Core Qt5::Gui ${OPENGL_LIBRARIES})
@@ -167,7 +174,7 @@ if(TEST_THE_TEST)
 endif(TEST_THE_TEST)
 
 # object_size
-file(GLOB SOURCES "test/object_size.cpp" "src/vec3d.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/cell.cpp" "src/scene.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp" "src/scene.cu") #  "src/boundingbox.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp"
+file(GLOB SOURCES "test/object_size.cpp" "src/vec3d.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/cell.cpp" "src/scene.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp" "src/scene.cu" "src/particle.cu") #  "src/boundingbox.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp"
 add_executable(object_size ${SOURCES} ${MOC_HEADERS} ${UI})
 target_include_directories(object_size PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(object_size ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
@@ -211,7 +218,7 @@ if(BENCHMARKS)
 	add_executable(${PROJECT_NAME}_benchmark ${SOURCES} ${MOC_HEADERS} ${UI}) # the MOC headers are needed
 	target_include_directories(${PROJECT_NAME}_benchmark PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${OPENGL_INCLUDE_DIR})
 	set_target_properties(${PROJECT_NAME}_benchmark PROPERTIES AUTOMOC TRUE)
-	target_link_libraries(${PROJECT_NAME}_benchmark benchmark::benchmark Qt5::Widgets ${OPENGL_LIBRARIES})
+	target_link_libraries(${PROJECT_NAME}_benchmark benchmark::benchmark ${CUDA_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
 endif(BENCHMARKS)
 
 # run the benchmark with constant CPU frequency:

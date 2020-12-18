@@ -8,6 +8,17 @@
 class Boundary;
 class Scene;
 
+// use global, "namespaced" variables to mimic static class member variables on the GPU device:
+namespace static_container {
+namespace Particle {
+	__device__
+	extern float drag_coefficient_global;
+	__device__
+	extern float restitution_coeff_global;
+}
+}
+
+
 class Particle {
 private:
 
@@ -23,26 +34,21 @@ private:
 	static int last_ID;
 	static constexpr float density = 2700.0; // kg/m3
 	static constexpr float density_medium = 1.0; // air kg/m3
-	static float restitution_coeff;
-	static float drag_coefficient; // non-const can not be initialized in the declaration
 	static float uniform_radius;
 	float radius = uniform_radius;
-	float volume() const {
-		return radius * radius * radius * pi * 4.0 / 3.0;
-	}
-	float mass() const {
-		return volume() * density;
-	}
-	float A() const {
-		return radius * radius * pi;
-	}
-	float CdA() const {
-		return drag_coefficient * A();
-	}
-	float CoR() const {
-		return restitution_coeff;
-	}
 
+	CUDA_HOSTDEV
+	float volume() const;
+	CUDA_HOSTDEV
+	float mass() const;
+	CUDA_HOSTDEV
+	float A() const;
+	CUDA_HOSTDEV
+	float CdA() const;
+	CUDA_HOSTDEV
+	float CoR() const;
+
+	CUDA_HOSTDEV
 	Vec3d apply_forces();
 
 public:
@@ -59,6 +65,7 @@ public:
 			pos(_pos), vel(_vel), ID(_ID), radius(_r) {
 	}
 
+	CUDA_HOSTDEV
 	void advance(float dt);
 	inline void move(const Vec3d &movement) {
 		pos += movement;
@@ -106,12 +113,11 @@ public:
 		Particle::scene = scene;
 	}
 
-	static void setCd(const float _drag_coefficient) {
-		drag_coefficient = _drag_coefficient;
-	}
-	static void setRestitutionCoefficient(const float restitution_coefficient) {
-		restitution_coeff = restitution_coefficient;
-	}
+	CUDA_HOSTDEV
+	static void setCd(const float _drag_coefficient);
+	CUDA_HOSTDEV
+	static void setRestitutionCoefficient(const float restitution_coefficient);
+
 	static void setUniformRadius(float _uniform_radius) {
 		uniform_radius = _uniform_radius;
 	}
@@ -161,9 +167,11 @@ public:
 
 	// static getters can not be qualified as const according to the standard
 	// (they do not modify any instance of the class)
-	static float getCd() {
-		return drag_coefficient;
-	}
+	CUDA_HOSTDEV
+	static float getCd();
+	CUDA_HOSTDEV
+	static float getRestitutionCoeff();
+
 	static float getUniformRadius() {
 		return uniform_radius;
 	}
@@ -182,5 +190,8 @@ inline bool operator==(const Particle& a, const Particle& b) {
 			a.getR() == b.getR()
 			);
 }
+
+__global__
+void particles_advance(float dt, Particle *particles, int number_of_particles);
 
 #endif /* PARTICLE_H_ */

@@ -32,7 +32,8 @@ BOOST_AUTO_TEST_CASE( vec3d_test, * boost::unit_test::tolerance(1e-6f) )
 	BOOST_REQUIRE_EQUAL( v2/2, 0.5*v2 );
 	BOOST_REQUIRE_EQUAL( v2/2, v1 );
 	BOOST_REQUIRE_EQUAL( v2*2, v2/0.5 );
-	BOOST_CHECK_THROW( v2/0, std::invalid_argument );
+	// No exception handling in CUDA:
+	// BOOST_CHECK_THROW( v2/0, std::invalid_argument );
 
 	BOOST_REQUIRE_EQUAL( v2.isLarge(), false );
 	BOOST_REQUIRE_EQUAL( (1e25*v2).isLarge(), true );
@@ -103,5 +104,6 @@ BOOST_AUTO_TEST_CASE( vec3d_test, * boost::unit_test::tolerance(1e-6f) )
 	v6 /= 2;
 	BOOST_TEST_REQUIRE( v5 == v6 );
 
-	BOOST_CHECK_THROW( v6 /= 0;, std::invalid_argument );
+	// No exception handling in CUDA:
+	//BOOST_CHECK_THROW( v6 /= 0;, std::invalid_argument );
 }

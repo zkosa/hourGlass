@@ -3,6 +3,7 @@
 #include "boundary.h"
 #include "scene.h"
 #include <QOpenGLWidget>
+//#include <device_launch_parameters.h> // just for proper indexing, nvcc includes it anyhow
 
 // static members:
 
@@ -12,21 +13,28 @@ Vec3d Particle::force_field = gravity;
 
 Scene *Particle::scene = nullptr;
 
-float Particle::drag_coefficient = 0.5; // non-constexpr static members must be initialized in the definition
-
-float Particle::restitution_coeff = 0.5;
+__device__
+float static_container::Particle::drag_coefficient_global = 0.5;
+__device__
+float static_container::Particle::restitution_coeff_global = 0.5;
 
 float Particle::uniform_radius = 0.005;
 
-void Particle::advance(float dt) {
-	// velocity Verlet integration:
-	const Vec3d new_pos = pos + vel * dt + acc * dt * dt * 0.5;
-	const Vec3d new_acc = apply_forces();
-	const Vec3d new_vel = vel + 0.5 * (acc + new_acc) * dt;
-
-	pos = new_pos;
-	vel = new_vel;
-	acc = new_acc;
+CUDA_HOSTDEV
+void Particle::setCd(const float _drag_coefficient) {
+	static_container::Particle::drag_coefficient_global = _drag_coefficient;
+}
+CUDA_HOSTDEV
+void Particle::setRestitutionCoefficient(const float restitution_coefficient) {
+	static_container::Particle::restitution_coeff_global = restitution_coefficient;
+}
+CUDA_HOSTDEV
+float Particle::getCd() {
+	return static_container::Particle::drag_coefficient_global;
+}
+CUDA_HOSTDEV
+float Particle::getRestitutionCoeff() {
+	return static_container::Particle::restitution_coeff_global;
 }
 
 float Particle::kineticEnergy() const {
@@ -44,13 +52,6 @@ float Particle::energy() const {
 
 Vec3d Particle::impulse() const {
 	return mass() * vel;
-}
-
-Vec3d Particle::apply_forces() {
-	const Vec3d drag_force = -0.5 * density_medium * CdA() * (vel * abs(vel));
-	const Vec3d drag_acc = drag_force / mass(); // a = F/m
-
-	return gravity + drag_acc;
 }
 
 void Particle::info() const {
@@ -118,7 +119,7 @@ void Particle::collideToWall(const Boundary &wall) {
 	correctVelocity(pos_corr);
 
 	// revert the wall normal velocity component
-	vel = vel - (1 + Particle::restitution_coeff) * (vel * n) * n;
+	vel = vel - (1 + Particle::getRestitutionCoeff()) * (vel * n) * n;
 }
 
 void Particle::collideToParticle(Particle &other) {
