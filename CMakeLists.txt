@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 set(CMAKE_VERBOSE_MAKEFILE On) # enables indexing in eclipse?
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # writes compilation settings into ${CMAKE_BINARY_DIR}/compile_commands.json
 
 project(hourGlass LANGUAGES CXX CUDA)
 
