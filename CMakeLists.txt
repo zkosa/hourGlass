@@ -220,6 +220,14 @@ if(BENCHMARKS)
 	target_include_directories(${PROJECT_NAME}_benchmark PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${OPENGL_INCLUDE_DIR})
 	set_target_properties(${PROJECT_NAME}_benchmark PROPERTIES AUTOMOC TRUE)
 	target_link_libraries(${PROJECT_NAME}_benchmark benchmark::benchmark ${CUDA_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
+
+	file(GLOB SOURCES "test/benchmark-plain.cpp" "src/*.cpp" "src/*.cu")
+	list(FILTER SOURCES EXCLUDE REGEX "src/main.cpp") # exclude main
+	set(BENCHMARK_PLAIN "${PROJECT_NAME}_benchmark_plain")
+	add_executable(${BENCHMARK_PLAIN} ${SOURCES} ${MOC_HEADERS} ${UI}) # the MOC headers are needed
+	target_include_directories(${BENCHMARK_PLAIN} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${OPENGL_INCLUDE_DIR})
+	set_target_properties(${BENCHMARK_PLAIN} PROPERTIES AUTOMOC TRUE)
+	target_link_libraries(${BENCHMARK_PLAIN} ${CUDA_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
 endif(BENCHMARKS)
 
 # run the benchmark with constant CPU frequency:
