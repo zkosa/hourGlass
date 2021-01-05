@@ -87,8 +87,15 @@ public:
 	pointData getAllPoints() const;
 
 	__host__ __device__
-	const std::vector<int>& getParticleIDs() const {
+	const std::vector<int>& cGetParticleIDs() const {
 		return particle_IDs;
+	}
+	__host__ __device__
+	std::vector<int>& getParticleIDs() {
+		// creating a non-const getter via overloading the const getter
+		return const_cast<std::vector<int>&>( // casting away return value constantness
+				const_cast<const Cell*>(this) // casting away object constantness
+				->cGetParticleIDs() );
 	}
 
 	bool hasBoundary() const {
