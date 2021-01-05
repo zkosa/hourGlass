@@ -95,6 +95,8 @@ public:
 	std::vector<Particle>& getParticles() {
 		return particles;
 	}
+	std::vector<int> getIDsOfParticlesInCellsWithBoundary() const;
+
 	const std::vector<Boundary_planar>& getBoundariesPlanar() const {
 		return boundaries_pl;
 	}

@@ -13,6 +13,22 @@ Scene::Scene() {
 	Cell::connectScene(this);
 }
 
+std::vector<int> Scene::getIDsOfParticlesInCellsWithBoundary() const {
+
+	std::vector<int> IDs; // preserve some sensible size beforehand??? --> test
+	for (const auto& c : cells) {
+		if (c.hasBoundary()) {
+			std::copy(c.cgetParticleIDs().begin(),
+					 c.cgetParticleIDs().end(),
+					 IDs.begin() );
+		}
+	}
+	std::sort(IDs.begin(), IDs.end());
+	std::unique(IDs.begin(), IDs.end());
+	return IDs;
+}
+
+
 void Scene::createGeometry(int geo) {
 	createGeometry(static_cast<Geometry>(geo));
 }
