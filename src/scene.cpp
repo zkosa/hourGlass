@@ -18,8 +18,8 @@ std::vector<int> Scene::getIDsOfParticlesInCellsWithBoundary() const {
 	std::vector<int> IDs; // preserve some sensible size beforehand??? --> test
 	for (const auto& c : cells) {
 		if (c.hasBoundary()) {
-			std::copy(c.cgetParticleIDs().begin(),
-					 c.cgetParticleIDs().end(),
+			std::copy(c.cGetParticleIDs().begin(),
+					 c.cGetParticleIDs().end(),
 					 IDs.begin() );
 		}
 	}
@@ -167,9 +167,9 @@ void Scene::resolveConstraintsOnInitCells(int sweeps) {
 		std::cout << sweep << " " << std::flush;
 
 		for (auto &c : cells) {
-			for (int p1ID : c.getParticleIDs()) {
+			for (int p1ID : c.cGetParticleIDs()) {
 				auto &p1 = particles[p1ID];
-				for (int p2ID : c.getParticleIDs()) {
+				for (int p2ID : c.cGetParticleIDs()) {
 					auto &p2 = particles[p2ID];
 					if (p1.distance(p2) < p1.getR() + p2.getR()) {
 						if (p1ID != p2ID) { // do not collide with itself
@@ -197,7 +197,7 @@ void Scene::resolveConstraintsCells(int max_sweeps) {
 
 		for (auto &c : cells) {
 			if (c.hasBoundary()) { // TODO: check if the compiler can optimize it when it is moved into the loop!
-				for (int p1ID : c.getParticleIDs()) {
+				for (int p1ID : c.cGetParticleIDs()) {
 					auto &p1 = particles[p1ID];
 					for (auto &b : boundaries_pl) {
 						if (b.distance(p1) < p1.getR()) {
@@ -209,7 +209,7 @@ void Scene::resolveConstraintsCells(int max_sweeps) {
 							p1.collideToWall(b);
 						}
 					}
-					for (int p2ID : c.getParticleIDs()) {
+					for (int p2ID : c.cGetParticleIDs()) {
 						auto &p2 = particles[p2ID];
 						if (p1.distance(p2) < p1.getR() + p2.getR()) {
 							if (p1ID != p2ID) { // do not collide with itself
@@ -220,9 +220,9 @@ void Scene::resolveConstraintsCells(int max_sweeps) {
 					}
 				}
 			} else {
-				for (int p1ID : c.getParticleIDs()) {
+				for (int p1ID : c.cGetParticleIDs()) {
 					auto &p1 = particles[p1ID];
-					for (int p2ID : c.getParticleIDs()) {
+					for (int p2ID : c.cGetParticleIDs()) {
 						auto &p2 = particles[p2ID];
 						if (p1.distance(p2) < p1.getR() + p2.getR()) {
 							if (p1ID != p2ID) { // do not collide with itself
@@ -337,7 +337,7 @@ void Scene::collideWithBoundariesCells() {
 	// we can still save time via a cell-wise approach, by excluding cells without boundaries
 	for (auto &c : cells) {
 		if (c.hasBoundary()) {
-			for (int pID : c.getParticleIDs()) {
+			for (int pID : c.cGetParticleIDs()) {
 				auto &p = particles[pID];
 				for (auto &b : boundaries_pl) {
 					if (b.distance(p) < p.getR()) {
@@ -383,9 +383,9 @@ void Scene::collideParticlesCells() {
 
 	for (auto &c : cells) { // when no omp (: loops are not supported)
 		if (c.hasBoundary()) {
-			for (int p1ID : c.getParticleIDs()) {
+			for (int p1ID : c.cGetParticleIDs()) {
 				auto &p1 = particles[p1ID];
-				for (int p2ID : c.getParticleIDs()) {
+				for (int p2ID : c.cGetParticleIDs()) {
 					auto &p2 = particles[p2ID];
 					if (p1.distance(p2) < p1.getR() + p2.getR()) {
 						if (p1ID != p2ID) { // do not collide with itself
@@ -395,9 +395,9 @@ void Scene::collideParticlesCells() {
 				}
 			}
 		} else {
-			for (int p1ID : c.getParticleIDs()) {
+			for (int p1ID : c.cGetParticleIDs()) {
 				auto &p1 = particles[p1ID];
-				for (int p2ID : c.getParticleIDs()) {
+				for (int p2ID : c.cGetParticleIDs()) {
 					auto &p2 = particles[p2ID];
 					if (p1.distance(p2) < p1.getR() + p2.getR()) {
 						if (p1ID != p2ID) { // do not collide with itself

@@ -73,13 +73,13 @@ std::ostream& operator<<(std::ostream& os, const std::vector<int> &input)
 	return os;
 }
 
-void printResults(Scene& scene) {
+void printResults(const Scene& scene) {
 	std::cout << scene.getCells().size() << std::endl;
 	for (size_t i=0; i<scene.getCells().size(); i++) {
 		std::cout << i << " "
 				<< scene.getCells()[i].getCenter() << " : "
-				<< scene.getCells()[i].getParticleIDs().size() << " : "
-				<< scene.getCells()[i].getParticleIDs() << std::endl;
+				<< scene.getCells()[i].cGetParticleIDs().size() << " : "
+				<< scene.getCells()[i].cGetParticleIDs() << std::endl;
 	}
 
 //	for (size_t i=0; i<scene.getParticles().size(); i++) {
@@ -91,14 +91,14 @@ bool compareResults(Scene& scene1, Scene& scene2) {
 
 	std::vector<std::vector<int>> particle_IDs_scene1;
 	for (auto const& c : scene1.getCells())  {
-		auto ids = c.getParticleIDs();
+		auto ids = c.cGetParticleIDs();
 		std::sort(ids.begin(), ids.end());
 		particle_IDs_scene1.push_back(ids);
 	}
 
 	std::vector<std::vector<int>> particle_IDs_scene2;
 	for (auto const& c : scene2.getCells())  {
-		auto ids = c.getParticleIDs();
+		auto ids = c.cGetParticleIDs();
 		std::sort(ids.begin(), ids.end());
 		particle_IDs_scene2.push_back(ids);
 	}
