@@ -94,6 +94,7 @@ file(GLOB SOURCES "test/particle-test.cpp" "src/particle.cpp" "src/scene.cpp" "s
 add_executable(particle-test ${SOURCES} ${MOC_HEADERS} ${UI})
 target_include_directories(particle-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 set_target_properties(particle-test PROPERTIES AUTOMOC TRUE)
+set_target_properties(particle-test PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 target_link_libraries(particle-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
 add_unit_test(particle-test)
 
@@ -102,6 +103,7 @@ file(GLOB SOURCES "test/cell-test.cpp" "src/cell.cpp" "src/particle.cpp" "src/bo
 add_executable(cell-test ${SOURCES} ${MOC_HEADERS})
 target_include_directories(cell-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 set_target_properties(cell-test PROPERTIES AUTOMOC TRUE)
+set_target_properties(cell-test PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 target_link_libraries(cell-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
 add_unit_test(cell-test)
 
@@ -110,6 +112,7 @@ file(GLOB SOURCES "test/scene-test.cpp" "src/scene.cpp" "src/cell.cpp" "src/part
 add_executable(scene-test ${SOURCES} ${MOC_HEADERS} ${UI})
 target_include_directories(scene-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 set_target_properties(scene-test PROPERTIES AUTOMOC TRUE)
+set_target_properties(scene-test PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 target_link_libraries(scene-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
 add_unit_test(scene-test)
 
@@ -118,6 +121,7 @@ file(GLOB SOURCES "test/boundary-test.cpp" "src/scene.cpp" "src/cell.cpp" "src/p
 add_executable(boundary-test ${SOURCES} ${MOC_HEADERS} ${UI})
 target_include_directories(boundary-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}  ${Boost_INCLUDE_DIRS})
 set_target_properties(boundary-test PROPERTIES AUTOMOC TRUE)
+set_target_properties(boundary-test PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 target_link_libraries(boundary-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
 add_unit_test(boundary-test)
 
@@ -140,6 +144,7 @@ add_executable(cuda-test ${CUDA_SOURCES} ${MOC_HEADERS} ${UI} "test/cuda-test.cp
 target_include_directories(cuda-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 set_target_properties(cuda-test PROPERTIES AUTOMOC TRUE)
 target_link_libraries(cuda-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
+set_target_properties(cuda-test PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 target_compile_options(cuda-test PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
                        --generate-line-info
 #                       --use_fast_math
@@ -219,6 +224,7 @@ if(BENCHMARKS)
 	add_executable(${PROJECT_NAME}_benchmark ${SOURCES} ${MOC_HEADERS} ${UI}) # the MOC headers are needed
 	target_include_directories(${PROJECT_NAME}_benchmark PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${OPENGL_INCLUDE_DIR})
 	set_target_properties(${PROJECT_NAME}_benchmark PROPERTIES AUTOMOC TRUE)
+	set_target_properties(${PROJECT_NAME}_benchmark PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 	target_link_libraries(${PROJECT_NAME}_benchmark benchmark::benchmark ${CUDA_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
 
 	file(GLOB SOURCES "test/benchmark-plain.cpp" "src/*.cpp" "src/*.cu")
@@ -227,6 +233,7 @@ if(BENCHMARKS)
 	add_executable(${BENCHMARK_PLAIN} ${SOURCES} ${MOC_HEADERS} ${UI}) # the MOC headers are needed
 	target_include_directories(${BENCHMARK_PLAIN} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${OPENGL_INCLUDE_DIR})
 	set_target_properties(${BENCHMARK_PLAIN} PROPERTIES AUTOMOC TRUE)
+	set_target_properties(${BENCHMARK_PLAIN} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 	target_link_libraries(${BENCHMARK_PLAIN} ${CUDA_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
 endif(BENCHMARKS)
 
