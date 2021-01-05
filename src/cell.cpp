@@ -3,7 +3,6 @@
 #include "boundary_axissymmetric.h"
 #include "cell.h"
 #include "scene.h"
-//#include <omp.h>
 #include <QOpenGLWidget>
 #include <iostream>
 #include <algorithm>
