@@ -32,15 +32,10 @@ set(CMAKE_AUTOUIC ON)
 find_package(Qt5 REQUIRED Widgets)
 #find_package(OpenMP REQUIRED)
 find_package(OpenGL REQUIRED)
-#set(CUDA_SEPARABLE_COMPILATION ON)# setting CUDA_SEPARABLE_COMPILATION before find_package() enables both relocatable device code compiling and linking
-find_package(CUDA REQUIRED)
 
 message(STATUS "OPENGL_INCLUDE_DIR:= ${OPENGL_INCLUDE_DIR}")  # OPENGL_INCLUDE_DIR is not set on Windows, except for cygwin!
 message(STATUS "OPENGL_LIBRARY:= ${OPENGL_LIBRARY}")
 message(STATUS "OPENGL_LIBRARIES:= ${OPENGL_LIBRARIES}")
-message(STATUS "CUDA_LIBRARIES:= ${CUDA_LIBRARIES}")
-message(STATUS "CUDA_RUNTIME_LIBRARY:= ${CUDA_RUNTIME_LIBRARY}")
-
 
 file(GLOB SOURCES "src/*.cpp")
 file(GLOB CUDA_SOURCES "src/*.cu")
