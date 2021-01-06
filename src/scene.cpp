@@ -799,7 +799,14 @@ void Scene::deviceToHost() {
 				cudaMemcpyDeviceToHost
 				) );
 
-	// cell geometry does not change, particle_IDs are not needed on host --> no need to copy
+	// TODO: protect against overwriting (freeing after copy should do it (?))
+	/* it has been copied in Scene::populateCellsCuda() */
+//	int N_cells = cells.size();
+//	CHECK_CUDA( cudaMemcpy( cells.data(),
+//				device_cells_ptr,
+//				N_cells*sizeof(Cell), // TODO: how does it know the changed amount of particle IDS, stored in a vector? (resize particle_IDS?)
+//				cudaMemcpyDeviceToHost
+//				) );
 
 	// boundaries do not change (can it be enforced???) --> no need to copy
 
