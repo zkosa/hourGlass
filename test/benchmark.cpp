@@ -33,11 +33,11 @@ void benchMark_hourGlass_calculatePhysics(benchmark::State& state) {
 		int N = scene.getDefaults().number_of_particles;
 		scene.setNumberOfParticles(N);
 		scene.addParticles(scene.getNumberOfParticles());
-		// less cells, for easier GPU profiling
-//		int Nx = 2;
-//		int Ny = Nx;
-//		Cell::setNx(Nx);
-//		Cell::setNy(Ny);
+		// We can use less cells for easier debugging
+		int Nx = scene.getDefaults().Nx; // 2
+		int Ny = Nx;
+		Cell::setNx(Nx);
+		Cell::setNy(Ny);
 
 		scene.createCells();
 		scene.populateCells();
