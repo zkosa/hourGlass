@@ -572,23 +572,6 @@ void Scene::populateCells() {
 	}
 }
 
-
-/*
-void Scene::populateCellsCuda() {
-	this->clearCells();
-
-	// transfer the particle data before the loop, because it does not change
-	int N_particles = particles.size();
-	Particle* device_particles_ptr;
-	cudaMalloc((void **)&device_particles_ptr, N_particles*sizeof(Particle));
-	cudaMemcpy(device_particles_ptr, &particles[0], N_particles*sizeof(Particle), cudaMemcpyHostToDevice);
-
-	for (auto &c : cells) {
-		c.populateCuda(device_particles_ptr, N_particles);
-	}
-	cudaFree(device_particles_ptr);
-}
-*/
 void Scene::clearCells() {
 	//cells[0].size();
 	for (auto &c : cells) {
