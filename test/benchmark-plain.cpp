@@ -1,6 +1,8 @@
 #include "scene.h"
 #include "cuda.h"
 
+// Benchmark without google benchmark library:
+// More straightforward syntax, easier debugging
 
 int main() {
 	Scene scene;
@@ -14,22 +16,23 @@ int main() {
 	scene.setNumberOfParticles(N);
 	scene.addParticles(scene.getNumberOfParticles());
 
-	int Nx = scene.getDefaults().Nx;
-	//Nx = 2; // use less cells, for easier GPU profiling
+	// We can use less cells for easier debugging
+	int Nx = scene.getDefaults().Nx; // 2
 	int Ny = Nx;
 	Cell::setNx(Nx);
 	Cell::setNy(Ny);
 
 	scene.createCells();
 	scene.populateCells();
-	scene.resolveConstraintsOnInitCells(5);
-	scene.populateCells();
+	//scene.resolveConstraintsOnInitCells(5);
 
 	cudaDeviceSynchronize();
+
 	scene.setRunning();
 	while ( scene.isRunning() ) {
 		//scene.calculatePhysics();
 		scene.calculatePhysicsCuda();
 	}
+
 }
 
