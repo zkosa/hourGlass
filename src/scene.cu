@@ -71,15 +71,14 @@ void Scene::populateCellsCuda() {
 //		device_cells_ptr[i].populateCuda(device_particles_ptr, N_particles);
 //	}
 
-
-	dim3 block(16,16);
-	dim3 grid((N_cells*N_particles+15)/16,  (N_cells*N_particles+15)/16);
+	dim3 threads(std::min(N_cells, 1024), 1); // all cells are within a block with usual number of cells
+	dim3 blocks((N_cells + threads.x - 1)/threads.x, (N_particles + threads.y - 1)/threads.y);
+	// std::cout << blocks.x << "x" << blocks.y << " X " << threads.x << "x" << threads.y << std::endl;
 
 	int *device_number_of_particle_IDs_per_cell;
 	CHECK_CUDA( cudaMalloc((void **)&device_number_of_particle_IDs_per_cell, sizeof(int)*N_cells) );
 	CHECK_CUDA( cudaMemset(device_number_of_particle_IDs_per_cell, 0, sizeof(int)*N_cells) );
-
-	get_number_of_particles_per_cell<<<grid,block>>>(
+	get_number_of_particles_per_cell<<<blocks,threads>>>(
 			N_particles,
 			device_particles_ptr,
 			N_cells,
@@ -125,7 +124,7 @@ void Scene::populateCellsCuda() {
 	CHECK_CUDA( cudaMalloc((void **)&device_indices_counter, sizeof(int)*N_cells) );
 	CHECK_CUDA( cudaMemset(device_indices_counter, 0, sizeof(int)*N_cells) );
 
-	get_particle_IDs_in_cells<<<grid,block>>>(
+	get_particle_IDs_in_cells<<<blocks,threads>>>(
 			N_particles, device_particles_ptr,
 			N_cells, device_cells_ptr,
 			device_number_of_particle_IDs_per_cell, // input
