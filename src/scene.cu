@@ -84,7 +84,7 @@ void Scene::populateCellsCuda() {
 			device_particles_ptr,
 			N_cells,
 			device_cells_ptr,
-			device_number_of_particle_IDs_per_cell);
+			device_number_of_particle_IDs_per_cell); CHECK_CUDA_POST
 
 	//cudaDeviceSynchronize();
 
@@ -131,7 +131,7 @@ void Scene::populateCellsCuda() {
 			device_number_of_particle_IDs_per_cell, // input
 			device_particle_IDs_per_cell, // output
 			device_indices_counter // output, for debugging
-			);
+			); CHECK_CUDA_POST
 
 /*
 #define CHECK
