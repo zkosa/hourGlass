@@ -59,8 +59,20 @@ public:
 	bool containsCuda(const Particle*) const;
 	bool contains(const Boundary&) const;
 	void addParticle(const Particle&);
+	// functionality is different from the CPU version!
+	// TODO: reflect it in name, consider making it a free function
 	__device__
-	void addParticleCuda(const Particle*, int *particle_IDs_in_cell,  int *number_of_particle_IDs);
+	void addParticleCuda(	const Particle *p,
+							int *particle_IDs_in_cell,
+							int *particle_ID_counter
+						);
+	__device__
+	void addParticleCudaMultiCell(	const Particle *p,
+							const int *IN_number_of_particleIDs, // for each cell
+							int *OUT_particle_IDs_in_cells, // particles of all cells
+							int cell_index,
+							int *OUT_particle_ID_counter
+						  );
 
 	void size() const;
 	void draw2D() const;
