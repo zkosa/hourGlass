@@ -274,7 +274,7 @@ void Scene::calculatePhysicsCuda() {
 	hostToDevice();
 
 //	populateCellsCuda();
-	advanceCuda();
+	advanceCuda(); // not cellwise --> cells are not needed to be populated with cells!
 //	populateCellsCuda();
 //	collideWithBoundariesCellsCuda();
 //	populateCellsCuda();
