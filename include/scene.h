@@ -57,10 +57,10 @@ class Scene {
 
 	const Defaults defaults;
 
-	Particle* device_particles_ptr;
-	Cell* device_cells_ptr;
-	Boundary_axissymmetric* device_boundaries_ax_ptr;
-	Boundary_planar* device_boundaries_pl_ptr;
+	Particle* device_particles_ptr = nullptr;
+	Cell* device_cells_ptr = nullptr;
+	Boundary_axissymmetric* device_boundaries_ax_ptr = nullptr;
+	Boundary_planar* device_boundaries_pl_ptr = nullptr;
 
 public:
 	Timer timer_all, timer;
