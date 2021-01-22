@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.18)
 set(CMAKE_VERBOSE_MAKEFILE On) # enables indexing in eclipse?
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # writes compilation settings into ${CMAKE_BINARY_DIR}/compile_commands.json
 
@@ -61,6 +61,7 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${CUDA_SOURCES} ${MOC_HEADERS} ${UI}) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${OPENGL_INCLUDE_DIR})
 set_target_properties(${PROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 set_target_properties(${PROJECT_NAME} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+set_property(TARGET ${PROJECT_NAME} PROPERTY CUDA_ARCHITECTURES 50) # based on the compute capability 5.0 of GeForce 840M, required since CMake 3.18
 target_link_libraries(${PROJECT_NAME} Qt5::Widgets ${OPENGL_LIBRARIES})
 
 ##############################
