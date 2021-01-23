@@ -22,8 +22,10 @@ public:
 	virtual float distanceDev(const Particle *particle) const = 0;
 	__host__ __device__
 	virtual float distanceSigned(const Particle &particle) const = 0;
-	__host__ __device__
+	__host__
 	virtual Vec3d getNormal(const Particle &particle) const = 0;
+	__device__
+	virtual Vec3d getNormal(const Particle *particle) const = 0;
 
 	bool isTemporary() const {
 		return temporary;

@@ -35,11 +35,14 @@ public:
 	Vec3d getNormal() const {
 		return normal;
 	}
-	__host__ __device__
+	__host__
 	Vec3d getNormal(const Particle &particle) const override {
 		return normal;
 	} // argument is not used, only to conform virtual function
-
+	__device__
+	Vec3d getNormal(const Particle *particle) const override {
+		return normal;
+	}
 };
 
 #endif /* BOUNDARY_PLANAR_H_ */

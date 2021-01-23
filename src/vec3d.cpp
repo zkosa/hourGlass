@@ -10,14 +10,6 @@ std::ostream& Vec3d::print() const {
 	return std::cout << *this << std::endl;
 }
 
-bool Vec3d::isLarge() const {
-	return ( abs(*this) > LARGE || std::isnan(abs(*this)) );
-}
-
-bool Vec3d::isSmall() const {
-	return ( abs(*this) < SMALL || std::isnan(abs(*this)) );
-}
-
 // static members:
 CUDA_HOSTDEV
 const Vec3d Vec3d::null = Vec3d(0, 0, 0);

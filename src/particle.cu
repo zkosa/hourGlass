@@ -42,7 +42,7 @@ Vec3d Particle::apply_forces() {
 
 __device__
 void Particle::collideToWall(const Boundary *wall) {
-	const Vec3d n = wall->getNormal(*this);
+	const Vec3d n = wall->getNormal(this);
 
 	Vec3d pos_corr { 0, 0, 0 };
 	if (std::abs(n * vel) > SMALL && wall->isPlanar()) { // not parallel, and moving

@@ -56,9 +56,14 @@ public:
 
 	void draw2D() override;
 
-	__host__ __device__
+	__host__
 	Vec3d getNormal(const Particle &particle) const override;
+	__device__
+	Vec3d getNormal(const Particle *particle) const override;
+	__host__
 	Vec3d getNormalNumDiff(const Vec3d &curve_point) const;
+	__device__
+	Vec3d getNormalNumDiff(const Vec3d *curve_point) const;
 
 	__host__ __device__
 	const Vec3d& getAxis() const {

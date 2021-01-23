@@ -61,6 +61,7 @@ public:
 	int getPerformedIterations() {
 		return performed_iterations;
 	}
+	__host__ __device__
 	bool numberOfIterReached();
 };
 

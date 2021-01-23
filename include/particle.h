@@ -52,14 +52,17 @@ private:
 	Vec3d apply_forces();
 
 public:
-
-	Particle() = default;
+//	CUDA_HOSTDEV
+//	Particle() = default;
+	CUDA_HOSTDEV
 	Particle(Vec3d _pos, float _r = Particle::uniform_radius) :
 			pos(_pos), radius(_r) {
 	}
+	CUDA_HOSTDEV
 	Particle(Vec3d _pos, Vec3d _vel, float _r = Particle::uniform_radius) :
 			pos(_pos), vel(_vel), radius(_r) {
 	}
+	CUDA_HOSTDEV
 	Particle(Vec3d _pos, Vec3d _vel, int _ID, float _r =
 			Particle::uniform_radius) :
 			pos(_pos), vel(_vel), ID(_ID), radius(_r) {

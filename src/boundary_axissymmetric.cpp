@@ -46,6 +46,7 @@ float Boundary_axissymmetric::distanceSigned(const Vec3d &point) const {
 	return (point - contact_point) * getNormal(point);
 }
 
+__host__
 Vec3d Boundary_axissymmetric::getNormal(const Particle &particle) const {
 	// provides a normalized direction vector from the closest surface point to the particle
 
@@ -54,7 +55,7 @@ Vec3d Boundary_axissymmetric::getNormal(const Particle &particle) const {
 	return getNormalNumDiff(minimum_distance.getClosestPointOnTheContour());
 }
 
-__host__ __device__
+__host__
 Vec3d Boundary_axissymmetric::getNormalNumDiff(const Vec3d &curve_point) const {
 	// Returns a normal vector at the specified point on the axial symmetric surface.
 	// The normal points inside.

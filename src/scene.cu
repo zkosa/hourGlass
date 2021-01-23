@@ -315,7 +315,10 @@ void collide_with_boundaries(
 			(boundaries_ax_ptr + i_b)->distanceDev(p + 1);
 			(boundaries_ax_ptr + i_b)->distanceDev(p + i_p);
 			//p[i_p].getR();
-			if ((boundaries_ax_ptr + i_b)->distanceDev(p + i_p) < (p + i_p)->getR()) {
+//			(boundaries_ax_ptr + i_b)->distanceDev(p->cGetPos()); CUDA_HELLO; // fine
+//			(boundaries_ax_ptr + i_b)->distanceDev(p); CUDA_HELLO; // fail --> IT DOES NOT WORK with particle!
+
+			if ((boundaries_ax_ptr + i_b)->distanceDev((p + i_p)->cGetPos()) < (p + i_p)->getR()) {
 				(p + i_p)->collideToWall(boundaries_ax_ptr + i_b);
 				// to_be_collided.emplace_back(p, b); // more sophisticated is used on the CPU!!!
 			}
@@ -347,8 +350,8 @@ void Scene::collideWithBoundariesCellsCuda() {
 	CHECK_CUDA_POINTER( device_particles_ptr );
 	CHECK_CUDA_POINTER( device_boundaries_ax_ptr );
 	CHECK_CUDA_POINTER( device_boundaries_pl_ptr );
-	//collide_with_boundaries<<<1, N_particles>>>( // TODO: fix
-	collide_with_boundaries<<<1, 1>>>( // DEBUG
+	collide_with_boundaries<<<1, N_particles>>>( // TODO: fix
+	//collide_with_boundaries<<<1, 1>>>( // DEBUG
 			device_particles_ptr, N_particles,
 			device_boundaries_ax_ptr, N_boundaries_ax,
 			device_boundaries_pl_ptr, N_boundaries_pl
