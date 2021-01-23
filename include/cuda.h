@@ -11,6 +11,8 @@
 #define CHECK_CUDA(cuda_call) { cudaAssert((cuda_call), __FILE__, __LINE__); }
 #define CHECK_CUDA_POST { cudaAssert((cudaPeekAtLastError()), __FILE__, __LINE__); }
 #define CHECK_CUDA_POINTER(ptr) { cudaPointerAttributes attributes; printf("----\n"); printf(#ptr); printf(":\n"); CHECK_CUDA( cudaPointerGetAttributes(&attributes, ptr) ); cudaPrintPointerAttributes(attributes); }
+#define CUDA_HELLO { printf("We have reached: %s, %d\n", __FILE__, __LINE__); cudaDeviceSynchronize(); };
+//#define CUDA_HELLO {}
 
 inline void cudaAssert(cudaError_t error_code, const char *file, int line, bool abort=true)
 {
