@@ -28,8 +28,6 @@ class MinimumDistance {
 		return (X - point_X0) * (X - point_X0)
 				+ ((function_owner->*functionHandler_contour)(X) - point_R0) * ((function_owner->*functionHandler_contour)(X) - point_R0);
 	};
-	// function pointer to the function (square of the distance) to be minimized:
-	constFunctionHandler<MinimumDistance> functionHandler_distance2 = &MinimumDistance::distance2;
 
 	Minimum minimum;
 
@@ -96,11 +94,15 @@ public:
 		findClosestPointOnContour();
 	};
 
+	// function pointer to the function (square of the distance) to be minimized:
+	constFunctionHandler<MinimumDistance> functionHandler_distance2 = &MinimumDistance::distance2;
+
 	// call in all constructors!
 	__host__ __device__
 	void findClosestPointOnContour() {
 		const float curve_X = minimum.findRoot(); // location of minimum distance point on the curve
-		const float curve_R = (function_owner->*functionHandler_contour)(curve_X); // radius of axisymmetric shape at curve_X
+		constFunctionHandler<Boundary_axissymmetric> handler = this->functionHandler_contour;
+		const float curve_R = (function_owner->*handler)(curve_X); // radius of axisymmetric shape at curve_X
 
 		const VecAxiSym closestPointInRadialCoord(curve_X, curve_R);
 
