@@ -2,6 +2,7 @@
 #define VECAXISYM_H_
 #include <iosfwd>
 #include <math.h>
+#include "cuda.h"
 
 // container with axial and radial coordinates for axis-symmetric vector calculations
 
@@ -10,6 +11,7 @@ struct VecAxiSym {
 	float axial;
 	float radial;
 
+	__host__ __device__
 	VecAxiSym(float axial, float radial) :
 			axial(axial), radial(radial) {
 	}

@@ -1,6 +1,8 @@
 #ifndef BOUNDARY_H_
 #define BOUNDARY_H_
 
+#include "cuda.h"
+
 class Particle;
 class Vec3d;
 
@@ -16,7 +18,11 @@ public:
 	virtual bool operator==(const Boundary &other) const = 0; // TODO: add tests!
 	virtual void draw2D() = 0;
 	virtual float distance(const Particle &particle) const = 0;
+	__device__
+	virtual float distanceDev(const Particle *particle) const = 0;
+	__host__ __device__
 	virtual float distanceSigned(const Particle &particle) const = 0;
+	__host__ __device__
 	virtual Vec3d getNormal(const Particle &particle) const = 0;
 
 	bool isTemporary() const {
@@ -25,6 +31,7 @@ public:
 	void setTemporary() {
 		temporary = true;
 	}
+	__host__ __device__
 	bool isPlanar() const {
 		return planar;
 	}

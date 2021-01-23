@@ -1,7 +1,71 @@
 #include "scene.h"
 #include "mainwindow.h"
-#include <iostream>
 #include <device_launch_parameters.h> // just for proper indexing, nvcc includes it anyhow
+
+
+void Scene::hostToDevice() {
+	// TODO: lock data on host!
+
+	int N_particles = particles.size();
+	CHECK_CUDA( cudaMalloc((void **)&device_particles_ptr, N_particles*sizeof(Particle)) );
+	CHECK_CUDA( cudaMemcpy(device_particles_ptr, &particles[0],
+				N_particles*sizeof(Particle),
+				cudaMemcpyHostToDevice) );
+
+	int N_cells = cells.size();
+	CHECK_CUDA( cudaMalloc((void **)&device_cells_ptr, N_cells*sizeof(Cell)) );
+	CHECK_CUDA( cudaMemcpy( device_cells_ptr, &cells[0],
+							N_cells*sizeof(Cell),
+							cudaMemcpyHostToDevice) );
+
+	int N_boundaries_ax = boundaries_ax.size();
+	CHECK_CUDA( cudaMalloc((void **)&device_boundaries_ax_ptr, N_boundaries_ax*sizeof(Boundary_axissymmetric)) );
+	CHECK_CUDA( cudaMemcpy( device_boundaries_ax_ptr,
+							&boundaries_ax[0],
+							N_boundaries_ax*sizeof(Boundary_axissymmetric),
+							cudaMemcpyHostToDevice) );
+	// address of function handle is not valid on the device --> recreate it:
+	initializeFunctionHandle<<<1,1>>>(device_boundaries_ax_ptr); CHECK_CUDA_POST
+
+	int N_boundaries_pl = boundaries_pl.size();
+	CHECK_CUDA( cudaMalloc((void **)&device_boundaries_pl_ptr, N_boundaries_pl*sizeof(Boundary_planar)) );
+	CHECK_CUDA( cudaMemcpy( device_boundaries_pl_ptr,
+							&boundaries_pl[0],
+							N_boundaries_pl*sizeof(Boundary_planar),
+							cudaMemcpyHostToDevice) );
+
+}
+
+void Scene::deviceToHost() {
+
+	// copy the particles back for display purposes
+	int N_particles = particles.size();
+	CHECK_CUDA_POINTER( device_particles_ptr );
+	CHECK_CUDA( cudaMemcpy( particles.data(),
+				device_particles_ptr,
+				N_particles*sizeof(Particle),
+				cudaMemcpyDeviceToHost
+				) );
+
+	// TODO: protect against overwriting (freeing after copy should do it (?))
+	/* it has been copied in Scene::populateCellsCuda() */
+//	int N_cells = cells.size();
+//	CHECK_CUDA( cudaMemcpy( cells.data(),
+//				device_cells_ptr,
+//				N_cells*sizeof(Cell), // TODO: how does it know the changed amount of particle IDS, stored in a vector? (resize particle_IDS?)
+//				cudaMemcpyDeviceToHost
+//				) );
+
+	// boundaries do not change (can it be enforced???) --> no need to copy
+
+
+	CHECK_CUDA( cudaFree(device_particles_ptr) );
+	CHECK_CUDA( cudaFree(device_cells_ptr) );
+	CHECK_CUDA( cudaFree(device_boundaries_ax_ptr) );
+	CHECK_CUDA( cudaFree(device_boundaries_pl_ptr) );
+
+	// TODO: unlock data on host
+}
 
 __global__
 void get_number_of_particles_per_cell(
@@ -224,7 +288,73 @@ void Scene::advanceCuda() {
 	advanceCounter();
 }
 
+__global__
+void collide_with_boundaries(
+		Particle *p, int number_of_particles,
+		const Boundary_axissymmetric *boundaries_ax_ptr, int N_boundaries_ax,
+		const Boundary_planar *boundaries_pl_ptr, int N_boundaries_pl
+		)
+{
+	int index = blockIdx.x * blockDim.x + threadIdx.x;
+	int stride = blockDim.x * gridDim.x;
+
+	for (int i_p = index; i_p < number_of_particles; i_p += stride ) {
+		for (int i_b = 0; i_b<N_boundaries_ax; i_b += 1) {
+
+			printf("p: %p\n", (void*)p);
+			printf("p->getX(): %f\n", p->getX());
+//			boundaries_ax_ptr[i_b];
+//			boundaries_ax_ptr[i_b].distanceDev(p); // error already here: out of bounds
+//			boundaries_ax_ptr[i_b].distanceDev(p + 1);
+//			boundaries_ax_ptr[i_b].distanceDev(p + i_p);
+			(boundaries_ax_ptr + i_b);
+			p->advance(0.0001f);
+			//(boundaries_ax_ptr + i_b)->distanceDev(p); // error already here: out of bounds
+			// it must be distanceDev
+			//(boundaries_ax_ptr + i_b)->distanceDev( (p + 1)->cGetPos()); // it causes undefined reference problems
+			(boundaries_ax_ptr + i_b)->distanceDev(p + 1);
+			(boundaries_ax_ptr + i_b)->distanceDev(p + i_p);
+			//p[i_p].getR();
+			if ((boundaries_ax_ptr + i_b)->distanceDev(p + i_p) < (p + i_p)->getR()) {
+				(p + i_p)->collideToWall(boundaries_ax_ptr + i_b);
+				// to_be_collided.emplace_back(p, b); // more sophisticated is used on the CPU!!!
+			}
+		}
+	}
+// TODO: implement for planar too
+
+}
+
 void Scene::collideWithBoundariesCellsCuda() {
+	// number of collision checks:
+	// cells (with boundaries) * boundaries * particles_icell = ~ 100 * 2 * 5000/100 = 50 000
+	// here the only benefit from the cells that we have to collide only those particles which are in a cell with boundaries
+
+//	auto particle_IDs = getIDsOfParticlesInCellsWithBoundary();
+//
+//	int* device_particle_IDs;
+//	int n = particle_IDs.size();
+//
+//	CHECK_CUDA( cudaMalloc((void **)&device_particle_IDs, n*sizeof(int)) );
+//	CHECK_CUDA( cudaMemcpy( device_particle_IDs, particle_IDs.data(),
+//							n*sizeof(int),
+//							cudaMemcpyHostToDevice) );
+	int N_particles = particles.size();
+	int N_boundaries_ax = boundaries_ax.size();
+	int N_boundaries_pl = boundaries_pl.size();
+
+
+	CHECK_CUDA_POINTER( device_particles_ptr );
+	CHECK_CUDA_POINTER( device_boundaries_ax_ptr );
+	CHECK_CUDA_POINTER( device_boundaries_pl_ptr );
+	//collide_with_boundaries<<<1, N_particles>>>( // TODO: fix
+	collide_with_boundaries<<<1, 1>>>( // DEBUG
+			device_particles_ptr, N_particles,
+			device_boundaries_ax_ptr, N_boundaries_ax,
+			device_boundaries_pl_ptr, N_boundaries_pl
+			); CHECK_CUDA_POST
+
+	// TODO: boundaries constant
 
 }
 

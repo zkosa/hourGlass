@@ -24,7 +24,10 @@ float Boundary_planar::distance(const Vec3d &point) const {
 float Boundary_planar::distance(const Particle &particle) const {
 	return Boundary_planar::distance(particle.getPos());
 }
-
+__device__
+float Boundary_planar::distanceDev(const Particle *particle) const {
+	return Boundary_planar::distance(particle->getPos());
+}
 float Boundary_planar::distanceSigned(const Vec3d &point) const {
 	return (point - plane_point) * normal;
 }

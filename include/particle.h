@@ -67,6 +67,7 @@ public:
 
 	CUDA_HOSTDEV
 	void advance(float dt);
+	CUDA_HOSTDEV
 	inline void move(const Vec3d &movement) {
 		pos += movement;
 	}
@@ -84,8 +85,11 @@ public:
 	}
 
 	void collideToWall(const Boundary &wall);
+	__device__
+	void collideToWall(const Boundary *wall);
 	void collideToParticle(Particle &other);
 	void collideToParticle_checkBoundary(Particle &other);
+	CUDA_HOSTDEV
 	void correctVelocity(const Vec3d &position_correction);
 	void exchangeImpulse(Particle &other);
 	bool overlapWithWall(const Boundary &wall) const;
@@ -154,8 +158,13 @@ public:
 	Vec3d getV() const {
 		return vel;
 	}
+	CUDA_HOSTDEV
 	Vec3d getPos() const {
 		return pos;
+	}
+	CUDA_HOSTDEV
+	const Vec3d* cGetPos() const {
+		return &pos;
 	}
 	Vec3d getAcceleration() const {
 		return acc;

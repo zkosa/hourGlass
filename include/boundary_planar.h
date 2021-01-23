@@ -24,7 +24,10 @@ public:
 
 	float distance(const Vec3d &point) const;
 	float distance(const Particle &particle) const override;
+	__device__
+	float distanceDev(const Particle *particle) const override;
 	float distanceSigned(const Vec3d &point) const;
+	__host__ __device__
 	float distanceSigned(const Particle &particle) const override;
 
 	void draw2D() override;
@@ -32,6 +35,7 @@ public:
 	Vec3d getNormal() const {
 		return normal;
 	}
+	__host__ __device__
 	Vec3d getNormal(const Particle &particle) const override {
 		return normal;
 	} // argument is not used, only to conform virtual function

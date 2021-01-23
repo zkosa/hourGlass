@@ -32,9 +32,12 @@ public:
 	Vec3d& operator/=(const float div);
 
 	std::ostream& print() const;
+	CUDA_HOSTDEV
 	bool isLarge() const;
+	CUDA_HOSTDEV
 	bool isSmall() const;
 
+	CUDA_HOSTDEV
 	VecAxiSym toYAxial() const {
 		return VecAxiSym(y, sqrt(x*x + z*z));
 	}
@@ -103,6 +106,7 @@ inline Vec3d operator-(const Vec3d &a, const Vec3d &b) {
 	return Substract(a, b);
 }
 
+CUDA_HOSTDEV
 inline Vec3d& Vec3d::operator-=(const Vec3d &other) {
     x -= other.x;
     y -= other.y;

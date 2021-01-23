@@ -15,9 +15,9 @@ float Minimum::findRoot(float starting_value) {
 		performed_iterations++;
 		X = X_new;
 
-		func_prime = (function(X + delta) - function(X - delta)) / (2 * delta);
-		func_prime_prime = (function(X + 2 * delta)
-				- 2 * function(X) + function(X - 2 * delta))
+		func_prime = ((function_owner->*functionHandler_func_to_be_minimized)(X + delta) - (function_owner->*functionHandler_func_to_be_minimized)(X - delta)) / (2 * delta);
+		func_prime_prime = ((function_owner->*functionHandler_func_to_be_minimized)(X + 2 * delta)
+				- 2 * (function_owner->*functionHandler_func_to_be_minimized)(X) + (function_owner->*functionHandler_func_to_be_minimized)(X - 2 * delta))
 				/ (4 * delta * delta);
 
 		X_new = X - func_prime / func_prime_prime;

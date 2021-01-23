@@ -18,9 +18,12 @@ std::vector<int> Scene::getIDsOfParticlesInCellsWithBoundary() const {
 	std::vector<int> IDs; // preserve some sensible size beforehand??? --> test
 	for (const auto& c : cells) {
 		if (c.hasBoundary()) {
+			// append the particle IDs to the end of IDs:
+			auto old_size = IDs.size();
+			IDs.resize(old_size + c.cGetParticleIDs().size());
 			std::copy(c.cGetParticleIDs().begin(),
 					 c.cGetParticleIDs().end(),
-					 IDs.begin() );
+					 IDs.begin() + old_size );
 		}
 	}
 	std::sort(IDs.begin(), IDs.end());
@@ -275,8 +278,8 @@ void Scene::calculatePhysicsCuda() {
 
 //	populateCellsCuda();
 	advanceCuda(); // not cellwise --> cells are not needed to be populated with cells!
-//	populateCellsCuda();
-//	collideWithBoundariesCellsCuda();
+	populateCellsCuda(); // TODO: populate here only those cells which contain boundaries!
+	collideWithBoundariesCellsCuda();
 //	populateCellsCuda();
 //	collideParticlesCellsCuda();
 
@@ -471,8 +474,10 @@ void Scene::markBoundaryCells() {
 bool Scene::pointIsExternal(const Boundary_axissymmetric &b,
 		const Vec3d &point) const {
 	// rough method!
-	const auto contour = b.getContourFun();
-	const float contour_radius = contour(point * norm(b.getAxis()));
+
+	constFunctionHandler<Boundary_axissymmetric> contour = b.functionHandler_contour;
+
+	const float contour_radius = (&b->*contour)(point * norm(b.getAxis()));
 	float point_radius = abs(
 			point - (point * norm(b.getAxis())) * norm(b.getAxis()));
 	// tuning factor for marking also those cells where all points are external,
@@ -754,67 +759,3 @@ void Scene::removeDuplicates(std::vector<T> &vector) {
 template void Scene::removeDuplicates<particle_boundary_pair>(std::vector<particle_boundary_pair> &vector);
 // this is used only for testing purposes, can be excluded from production variant:
 template void Scene::removeDuplicates<int>(std::vector<int> &vector);
-
-// from scene.cu
-#include <device_launch_parameters.h>
-
-void Scene::hostToDevice() {
-	// TODO: lock data on host!
-
-	int N_particles = particles.size();
-	CHECK_CUDA( cudaMalloc((void **)&device_particles_ptr, N_particles*sizeof(Particle)) );
-	CHECK_CUDA( cudaMemcpy(device_particles_ptr, &particles[0],
-				N_particles*sizeof(Particle),
-				cudaMemcpyHostToDevice) );
-
-	int N_cells = cells.size();
-	CHECK_CUDA( cudaMalloc((void **)&device_cells_ptr, N_cells*sizeof(Cell)) );
-	CHECK_CUDA( cudaMemcpy( device_cells_ptr, &cells[0],
-							N_cells*sizeof(Cell),
-							cudaMemcpyHostToDevice) );
-
-	int N_boundaries_ax = boundaries_ax.size();
-	CHECK_CUDA( cudaMalloc((void **)&device_boundaries_ax_ptr, N_boundaries_ax*sizeof(Boundary_axissymmetric)) );
-	CHECK_CUDA( cudaMemcpy( device_boundaries_ax_ptr,
-							&boundaries_ax[0],
-							N_boundaries_ax*sizeof(Boundary_axissymmetric),
-							cudaMemcpyHostToDevice) );
-
-	int N_boundaries_pl = boundaries_pl.size();
-	CHECK_CUDA( cudaMalloc((void **)&device_boundaries_pl_ptr, N_boundaries_pl*sizeof(Boundary_planar)) );
-	CHECK_CUDA( cudaMemcpy( device_boundaries_pl_ptr,
-							&boundaries_pl[0],
-							N_boundaries_pl*sizeof(Boundary_planar),
-							cudaMemcpyHostToDevice) );
-
-}
-
-void Scene::deviceToHost() {
-
-	// copy the particles back for display purposes
-	int N_particles = particles.size();
-	CHECK_CUDA( cudaMemcpy( particles.data(),
-				device_particles_ptr,
-				N_particles*sizeof(Particle),
-				cudaMemcpyDeviceToHost
-				) );
-
-	// TODO: protect against overwriting (freeing after copy should do it (?))
-	/* it has been copied in Scene::populateCellsCuda() */
-//	int N_cells = cells.size();
-//	CHECK_CUDA( cudaMemcpy( cells.data(),
-//				device_cells_ptr,
-//				N_cells*sizeof(Cell), // TODO: how does it know the changed amount of particle IDS, stored in a vector? (resize particle_IDS?)
-//				cudaMemcpyDeviceToHost
-//				) );
-
-	// boundaries do not change (can it be enforced???) --> no need to copy
-
-
-	CHECK_CUDA( cudaFree(device_particles_ptr) );
-	CHECK_CUDA( cudaFree(device_cells_ptr) );
-	CHECK_CUDA( cudaFree(device_boundaries_ax_ptr) );
-	CHECK_CUDA( cudaFree(device_boundaries_pl_ptr) );
-
-	// TODO: unlock data on host
-}

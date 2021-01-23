@@ -18,13 +18,14 @@ bool Boundary_axissymmetric::operator==(const Boundary &other) const {
 	}
 }
 
+__host__
 float Boundary_axissymmetric::distance(const Particle &particle) const {
 	return distance(particle.getPos());
 }
 
 float Boundary_axissymmetric::distance(const Vec3d &point) const {
 
-	MinimumDistance minimum_distance(*this, point);
+	MinimumDistance minimum_distance(this, point);
 
 	return minimum_distance.getDistance();
 }
@@ -48,11 +49,12 @@ float Boundary_axissymmetric::distanceSigned(const Vec3d &point) const {
 Vec3d Boundary_axissymmetric::getNormal(const Particle &particle) const {
 	// provides a normalized direction vector from the closest surface point to the particle
 
-	const MinimumDistance minimum_distance(*this, particle);
+	const MinimumDistance minimum_distance(this, &particle);
 
 	return getNormalNumDiff(minimum_distance.getClosestPointOnTheContour());
 }
 
+__host__ __device__
 Vec3d Boundary_axissymmetric::getNormalNumDiff(const Vec3d &curve_point) const {
 	// Returns a normal vector at the specified point on the axial symmetric surface.
 	// The normal points inside.
@@ -84,9 +86,10 @@ Vec3d Boundary_axissymmetric::getNormalNumDiff(const Vec3d &curve_point) const {
 	} else {
 		dax_signed = dax;
 	}
+
 	const Vec3d normal = norm(Vec3d(
 			dax_signed,
-			contour(ax + dax/2.0f) - contour(ax - dax/2.0f),
+			(this->*functionHandler_contour)(ax + dax/2.0f) - (this->*functionHandler_contour)(ax - dax/2.0f),
 			0));
 
 	return normal;
@@ -105,7 +108,7 @@ void Boundary_axissymmetric::draw2D() {
 	glBegin(GL_LINE_LOOP);
 	for (int i = 0; i <= resolution; ++i) {
 		X = Vec3d(p1_axis + (p2_axis - p1_axis) * (i / float(resolution))).y;
-		glVertex2f(float(contour(X)), X);
+		glVertex2f(float((this->*functionHandler_contour)(X)), X);
 	}
 	glEnd();
 
@@ -113,7 +116,7 @@ void Boundary_axissymmetric::draw2D() {
 	glBegin(GL_LINE_LOOP);
 	for (int i = 0; i <= resolution; ++i) {
 		X = Vec3d(p1_axis + (p2_axis - p1_axis) * (i / float(resolution))).y;
-		glVertex2f(-float(contour(X)), X);
+		glVertex2f(-float((this->*functionHandler_contour)(X)), X);
 	}
 	glEnd();
 	glColor4f(1, 1, 1, 1);

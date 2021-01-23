@@ -13,11 +13,6 @@ Vec3d Particle::force_field = gravity;
 
 Scene *Particle::scene = nullptr;
 
-__device__
-float static_container::Particle::drag_coefficient_global = 0.5;
-__device__
-float static_container::Particle::restitution_coeff_global = 0.5;
-
 float Particle::uniform_radius = 0.005;
 
 CUDA_HOSTDEV
@@ -31,10 +26,6 @@ void Particle::setRestitutionCoefficient(const float restitution_coefficient) {
 CUDA_HOSTDEV
 float Particle::getCd() {
 	return static_container::Particle::drag_coefficient_global;
-}
-CUDA_HOSTDEV
-float Particle::getRestitutionCoeff() {
-	return static_container::Particle::restitution_coeff_global;
 }
 
 float Particle::kineticEnergy() const {
@@ -122,6 +113,7 @@ void Particle::collideToWall(const Boundary &wall) {
 	vel = vel - (1 + Particle::getRestitutionCoeff()) * (vel * n) * n;
 }
 
+
 void Particle::collideToParticle(Particle &other) {
 
 	Vec3d n = other.pos - this->pos; // distance vector, pointing towards the other particle
@@ -202,15 +194,6 @@ void Particle::collideToParticle_checkBoundary(Particle &other) {
 
 	// perform the actual collision after the positions and velocities are corrected to touching position
 	exchangeImpulse(other);
-}
-
-void Particle::correctVelocity(const Vec3d &pos_corr) {
-	// correct the velocity to conserve energy (dissipation work is not considered!)
-	if (vel * vel + 2 * gravity * pos_corr >= 0.0) {
-		vel = std::sqrt(vel * vel + 2 * gravity * pos_corr) * norm(vel);
-	} else {
-		vel = -std::sqrt(-(vel * vel + 2 * gravity * pos_corr)) * norm(vel);
-	}
 }
 
 void Particle::exchangeImpulse(Particle &other) {
