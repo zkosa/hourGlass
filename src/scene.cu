@@ -40,7 +40,7 @@ void Scene::deviceToHost() {
 
 	// copy the particles back for display purposes
 	int N_particles = particles.size();
-	CHECK_CUDA_POINTER( device_particles_ptr );
+	//CHECK_CUDA_POINTER( device_particles_ptr );
 	CHECK_CUDA( cudaMemcpy( particles.data(),
 				device_particles_ptr,
 				N_particles*sizeof(Particle),
@@ -127,13 +127,10 @@ void get_particle_IDs_in_cells(
 
 void Scene::populateCellsCuda() {
 
-	// this->clearCells(); // will we need something like this?
+	// this->clearCells(); // do we need something like this?
 
 	int N_cells = cells.size();
 	int N_particles = particles.size();
-//	for(int i=0; i<N_cells; i++) {
-//		device_cells_ptr[i].populateCuda(device_particles_ptr, N_particles);
-//	}
 
 	dim3 threads(std::min(N_cells, 1024), 1); // all cells are within a block with usual number of cells
 	dim3 blocks((N_cells + threads.x - 1)/threads.x, (N_particles + threads.y - 1)/threads.y);
@@ -142,6 +139,7 @@ void Scene::populateCellsCuda() {
 	int *device_number_of_particle_IDs_per_cell;
 	CHECK_CUDA( cudaMalloc((void **)&device_number_of_particle_IDs_per_cell, sizeof(int)*N_cells) );
 	CHECK_CUDA( cudaMemset(device_number_of_particle_IDs_per_cell, 0, sizeof(int)*N_cells) );
+
 	get_number_of_particles_per_cell<<<blocks,threads>>>(
 			N_particles,
 			device_particles_ptr,
@@ -149,7 +147,6 @@ void Scene::populateCellsCuda() {
 			device_cells_ptr,
 			device_number_of_particle_IDs_per_cell); CHECK_CUDA_POST
 
-	//cudaDeviceSynchronize();
 
 	std::vector<int> host_number_of_particle_IDs_per_cell(N_cells);
 	CHECK_CUDA( cudaMemcpy( host_number_of_particle_IDs_per_cell.data(),
@@ -157,24 +154,7 @@ void Scene::populateCellsCuda() {
 				sizeof(int)*N_cells,
 				cudaMemcpyDeviceToHost
 				) );
-//	for (auto const& n : host_number_of_particle_IDs_per_cell) {
-//			std::cout << n << '\t';
-//	} std::cout << std::endl;
 
-/*
-	for (auto& ids: host_number_of_particle_IDs_per_cell) {
-		std::cout << ids << '\t';
-	}
-	std::cout << std::endl;
-	for (auto& p: particles) {
-		std::cout << p.getX() << ',' << p.getY() <<'\t';
-	}
-	std::cout << std::endl;
-	for (auto& c: cells) {
-		std::cout << c.getCenter().x << ','<< c.getCenter().y <<'\t';
-	}
-	std::cout << std::endl;
-*/
 	int total_number_of_IDs_in_cells = std::accumulate(
 			host_number_of_particle_IDs_per_cell.begin(),
 			host_number_of_particle_IDs_per_cell.end(),
@@ -196,8 +176,7 @@ void Scene::populateCellsCuda() {
 			device_indices_counter // output, for debugging
 			); CHECK_CUDA_POST
 
-/*
-#define CHECK
+//#define CHECK
 #ifdef CHECK
 	std::vector<int> host_number_of_particle_IDs_per_cell_second_kernel(N_cells);
 	CHECK_CUDA( cudaMemcpy( host_number_of_particle_IDs_per_cell_second_kernel.data(),
@@ -222,36 +201,7 @@ void Scene::populateCellsCuda() {
 	}
 #endif
 #undef CHECK
-*/
-/*
-	// TODO: transfer the results to the right place...
-	// store the results here until no better solution has been implemented
-	//worst case: copy back to the host Cell objects (DeviceToHost copy, not preferred, but currently needed)
-	// ideally device to device copy
-	std::vector<std::vector<int>> cell_particle_IDs(N_cells);
-	int array_index = 0;
-	int cell_ID = 0;
-	for (auto const & number_of_particles_in_cell : host_number_of_particle_IDs_per_cell) {
-		int chunk = number_of_particles_in_cell;
-		cell_particle_IDs[cell_ID].resize(chunk);
-		CHECK_CUDA( cudaMemcpy( cell_particle_IDs[cell_ID].data(),
-					device_particle_IDs_per_cell + array_index,
-					sizeof(int)*chunk,
-					cudaMemcpyDeviceToHost
-					) );
-		array_index = array_index + chunk;
-		cell_ID = cell_ID + 1;
-	}
 
-	std::cout<< "----" << std::endl;
-	for (auto const& IDs: cell_particle_IDs) {
-		for (auto const& ID : IDs) {
-				std::cout << ID << '\t';
-		}
-		std::cout << std::endl;
-	}
-	std::cout<< "----" << std::endl;
-*/
 	// copy the collected particle IDs into the cells in the device
 	// it is useful for testing, but the target is to keep everything on the device!
 	int array_index = 0;
@@ -301,20 +251,6 @@ void collide_with_boundaries(
 	for (int i_p = index; i_p < number_of_particles; i_p += stride ) {
 		for (int i_b = 0; i_b<N_boundaries_ax; i_b += 1) {
 
-			printf("p: %p\n", (void*)p);
-			printf("p->getX(): %f\n", p->getX());
-//			boundaries_ax_ptr[i_b];
-//			boundaries_ax_ptr[i_b].distanceDev(p); // error already here: out of bounds
-//			boundaries_ax_ptr[i_b].distanceDev(p + 1);
-//			boundaries_ax_ptr[i_b].distanceDev(p + i_p);
-			(boundaries_ax_ptr + i_b);
-			p->advance(0.0001f);
-			//(boundaries_ax_ptr + i_b)->distanceDev(p); // error already here: out of bounds
-			// it must be distanceDev
-			//(boundaries_ax_ptr + i_b)->distanceDev( (p + 1)->cGetPos()); // it causes undefined reference problems
-			(boundaries_ax_ptr + i_b)->distanceDev(p + 1);
-			(boundaries_ax_ptr + i_b)->distanceDev(p + i_p);
-			//p[i_p].getR();
 //			(boundaries_ax_ptr + i_b)->distanceDev(p->cGetPos()); CUDA_HELLO; // fine
 //			(boundaries_ax_ptr + i_b)->distanceDev(p); CUDA_HELLO; // fail --> IT DOES NOT WORK with particle!
 
@@ -346,10 +282,6 @@ void Scene::collideWithBoundariesCellsCuda() {
 	int N_boundaries_ax = boundaries_ax.size();
 	int N_boundaries_pl = boundaries_pl.size();
 
-
-	CHECK_CUDA_POINTER( device_particles_ptr );
-	CHECK_CUDA_POINTER( device_boundaries_ax_ptr );
-	CHECK_CUDA_POINTER( device_boundaries_pl_ptr );
 	dim3 threads(std::min(N_particles, 256), 1); // all cells are within a block with usual number of cells
 	dim3 blocks((N_particles + threads.x - 1)/threads.x, 1);
 	//std::cout << blocks.x << "x" << blocks.y << " X " << threads.x << "x" << threads.y << std::endl;

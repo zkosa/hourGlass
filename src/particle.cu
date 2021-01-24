@@ -44,9 +44,8 @@ Vec3d Particle::apply_forces() {
 template<typename Boundary_T>
 __device__
 void Particle::collideToWall(const Boundary_T *wall) {
-	CUDA_HELLO;
+
 	const Vec3d n = wall->getNormal(this);
-	CUDA_HELLO;
 
 	Vec3d pos_corr { 0, 0, 0 };
 	if (std::abs(n * vel) > SMALL && wall->isPlanar()) { // not parallel, and moving
