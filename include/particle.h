@@ -5,7 +5,8 @@
 #include "constants.h"
 #include "cuda.h"
 
-class Boundary;
+//class Boundary;
+//class Boundary_axissymmetric;
 class Scene;
 
 // use global, "namespaced" variables to mimic static class member variables on the GPU device:
@@ -87,17 +88,21 @@ public:
 		return abs(pos - other.pos);
 	}
 
-	void collideToWall(const Boundary &wall);
+	template<typename Boundary_T>
+	void collideToWall(const Boundary_T &wall);
+	template<typename Boundary_T>
 	__device__
-	void collideToWall(const Boundary *wall);
+	void collideToWall(const Boundary_T *wall);
 	void collideToParticle(Particle &other);
 	void collideToParticle_checkBoundary(Particle &other);
 	CUDA_HOSTDEV
 	void correctVelocity(const Vec3d &position_correction);
 	void exchangeImpulse(Particle &other);
-	bool overlapWithWall(const Boundary &wall) const;
+	template<typename Boundary_T>
+	bool overlapWithWall(const Boundary_T &wall) const;
 	bool overlapWithWalls() const;
-	Vec3d overlapVectorWithWall(const Boundary &wall);
+	template<typename Boundary_T>
+	Vec3d overlapVectorWithWall(const Boundary_T &wall);
 	Vec3d overlapVectorWithWalls();
 	void size() const;
 

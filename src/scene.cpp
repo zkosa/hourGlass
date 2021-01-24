@@ -334,7 +334,8 @@ void Scene::collideWithBoundaries() {
 void Scene::collideWithBoundariesCells() {
 
 	// collect them into vector to avoid execution of collision in different cells
-	std::vector<std::pair<Particle&, Boundary&>> to_be_collided;
+	std::vector<std::pair<Particle&, Boundary_axissymmetric&>> to_be_collided_ax;
+	std::vector<std::pair<Particle&, Boundary_planar&>> to_be_collided_pl;
 
 	// although particles may be contained in multiple cells at the same time,
 	// we can still save time via a cell-wise approach, by excluding cells without boundaries
@@ -345,13 +346,13 @@ void Scene::collideWithBoundariesCells() {
 				for (auto &b : boundaries_pl) {
 					if (b.distance(p) < p.getR()) {
 						//p.collideToWall(b);
-						to_be_collided.emplace_back(p, b);
+						to_be_collided_pl.emplace_back(p, b);
 					}
 				}
 				for (auto &b : boundaries_ax) {
 					if (b.distance(p) < p.getR()) {
 						//p.collideToWall(b);
-						to_be_collided.emplace_back(p, b);
+						to_be_collided_ax.emplace_back(p, b);
 					}
 				}
 			}
@@ -363,9 +364,14 @@ void Scene::collideWithBoundariesCells() {
 //	for (auto [particle, boundary] : to_be_collided) {
 //		particle.collideToWall(boundary);
 //	}
-	for (std::pair<Particle&, Boundary&> PBpair : to_be_collided) {
+	for (std::pair<Particle&, Boundary_planar&> PBpair : to_be_collided_pl) {
 		Particle& particle = PBpair.first;
-		Boundary& boundary = PBpair.second;
+		Boundary_planar& boundary = PBpair.second;
+		particle.collideToWall(boundary);
+	}
+	for (std::pair<Particle&, Boundary_axissymmetric&> PBpair : to_be_collided_ax) {
+		Particle& particle = PBpair.first;
+		Boundary_axissymmetric& boundary = PBpair.second;
 		particle.collideToWall(boundary);
 	}
 }
@@ -459,12 +465,12 @@ void Scene::markBoundaryCells() {
 	for (auto &c : cells) {
 		c.setCellWithoutBoundary(); // clear values before update
 		for (auto &b : boundaries_pl) {
-			if (c.contains(b)) {
+			if (c.containsBoundary(b)) {
 				c.setCellWithBoundary();
 			}
 		}
 		for (auto &b : boundaries_ax) {
-			if (c.contains(b)) {
+			if (c.containsBoundary(b)) {
 				c.setCellWithBoundary();
 			}
 		}
@@ -756,6 +762,7 @@ void Scene::removeDuplicates(std::vector<T> &vector) {
 
 // Explicitly instantiating template methods, in order to
 // avoid undefined reference problems in calls from other units:
-template void Scene::removeDuplicates<particle_boundary_pair>(std::vector<particle_boundary_pair> &vector);
+template void Scene::removeDuplicates<particle_boundary_pair_pl>(std::vector<particle_boundary_pair_pl> &vector);
+template void Scene::removeDuplicates<particle_boundary_pair_ax>(std::vector<particle_boundary_pair_ax> &vector);
 // this is used only for testing purposes, can be excluded from production variant:
 template void Scene::removeDuplicates<int>(std::vector<int> &vector);

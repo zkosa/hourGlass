@@ -1,13 +1,16 @@
 #ifndef BOUNDARY_AXISSYMMETRIC_H_
 #define BOUNDARY_AXISSYMMETRIC_H_
 
-#include "boundary.h"
 #include "vec3d.h"
+#include "particle.h"
 //#include <functional>
 #include "functionhandler.h"
 #include "minimum.h"
 
-class Boundary_axissymmetric: public Boundary {
+class Boundary_axissymmetric {
+	bool temporary = false; // TODO: rather derive temporary boundaries
+	bool planar = true;
+
 	Vec3d p1_axis { 0.0f, -1.0f, 0.0f };
 	Vec3d p2_axis { 0.0f,  1.0f, 0.0f };
 	Vec3d axis = norm(p2_axis - p1_axis);
@@ -41,25 +44,31 @@ public:
 		this->functionHandler_contour = &Boundary_axissymmetric::hourGlassShape;
 	}
 
-	bool operator==(const Boundary &other) const override;
+	bool operator==(const Boundary_axissymmetric &other) const;
 
 	float distance(const Vec3d &point) const;
 	__device__
 	float distanceDev(const Vec3d *point) const;
-	float distance(const Particle &particle) const override;
+	float distance(const Particle &particle) const;
 	__device__
-	float distanceDev(const Particle *particle) const override;
-	__host__ __device__
+	float distanceDev(const Particle *particle) const;
+	__host__
 	float distanceSigned(const Vec3d &point) const;
-	__host__ __device__
-	float distanceSigned(const Particle &particle) const override;
+	__device__
+	float distanceSigned(const Vec3d *point) const;
+	__host__
+	float distanceSigned(const Particle &particle) const;
+	__device__
+	float distanceSigned(const Particle *particle) const;
 
-	void draw2D() override;
+	void draw2D() const;
 
 	__host__
-	Vec3d getNormal(const Particle &particle) const override;
+	Vec3d getNormal(const Particle &particle) const;
 	__device__
-	Vec3d getNormal(const Particle *particle) const override;
+	Vec3d getNormal(const Particle *particle) const;
+	__device__
+	Vec3d getNormal(const Vec3d *point) const;
 	__host__
 	Vec3d getNormalNumDiff(const Vec3d &curve_point) const;
 	__device__
@@ -68,6 +77,18 @@ public:
 	__host__ __device__
 	const Vec3d& getAxis() const {
 		return axis;
+	}
+
+	void setTemporary() {
+		temporary = true;
+	}
+	__host__ __device__
+	bool isTemporary() const {
+		return temporary;
+	}
+	__host__ __device__
+	bool isPlanar() const {
+		return planar;
 	}
 
 };

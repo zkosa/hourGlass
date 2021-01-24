@@ -3,7 +3,8 @@
 #include <iostream>
 #include <QOpenGLWidget>
 
-bool Boundary_planar::operator==(const Boundary &other) const {
+bool Boundary_planar::operator==(const Boundary_planar &other) const {
+/*
 	const Boundary_planar* other_boundary_casted_to_this = dynamic_cast< const Boundary_planar* >( &other );
 	if ( other_boundary_casted_to_this == nullptr ) {
 		return false; // they have different derived type
@@ -15,6 +16,8 @@ bool Boundary_planar::operator==(const Boundary &other) const {
 			return false;
 		}
 	}
+*/
+	return false; // TODO implement
 }
 
 float Boundary_planar::distance(const Vec3d &point) const {
@@ -24,10 +27,7 @@ float Boundary_planar::distance(const Vec3d &point) const {
 float Boundary_planar::distance(const Particle &particle) const {
 	return Boundary_planar::distance(particle.getPos());
 }
-__device__
-float Boundary_planar::distanceDev(const Particle *particle) const {
-	return Boundary_planar::distance(particle->getPos());
-}
+
 float Boundary_planar::distanceSigned(const Vec3d &point) const {
 	return (point - plane_point) * normal;
 }
@@ -36,7 +36,7 @@ float Boundary_planar::distanceSigned(const Particle &particle) const {
 	return Boundary_planar::distanceSigned(particle.getPos());
 }
 
-void Boundary_planar::draw2D() {
+void Boundary_planar::draw2D() const {
 	if (std::abs(normal * Vec3d::k) < 1e-3f) { // we are parallel to the display plane
 		glBegin(GL_LINE_LOOP);
 		glVertex2f(float(p1.x), float(p1.y));

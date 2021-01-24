@@ -3,7 +3,8 @@
 #include <QOpenGLWidget>
 
 
-bool Boundary_axissymmetric::operator==(const Boundary &other) const {
+bool Boundary_axissymmetric::operator==(const Boundary_axissymmetric &other) const {
+	/*
 	const Boundary_axissymmetric* other_boundary_casted_to_this = dynamic_cast< const Boundary_axissymmetric* >( &other );
 	if ( other_boundary_casted_to_this == nullptr ) {
 		return false; // they have different derived type
@@ -16,6 +17,8 @@ bool Boundary_axissymmetric::operator==(const Boundary &other) const {
 			return false;
 		}
 	}
+	*/
+	return false; // TODO implement
 }
 
 __host__
@@ -30,10 +33,12 @@ float Boundary_axissymmetric::distance(const Vec3d &point) const {
 	return minimum_distance.getDistance();
 }
 
+__host__
 float Boundary_axissymmetric::distanceSigned(const Particle &particle) const {
 	return 	distanceSigned(particle.getPos());
 }
 
+__host__
 float Boundary_axissymmetric::distanceSigned(const Vec3d &point) const {
 	// Returns a signed distance between the contour and the particle.
 	// Negative value indicates that the particle is on the outer side.
@@ -96,7 +101,7 @@ Vec3d Boundary_axissymmetric::getNormalNumDiff(const Vec3d &curve_point) const {
 	return normal;
 }
 
-void Boundary_axissymmetric::draw2D() {
+void Boundary_axissymmetric::draw2D() const {
 	// hardcoded for x= 0 axis
 	// TODO: generalize
 	glLineWidth(2.0f);

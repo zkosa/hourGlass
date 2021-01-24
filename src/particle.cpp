@@ -1,6 +1,5 @@
 #include <iostream>
 #include "particle.h"
-#include "boundary.h"
 #include "scene.h"
 #include <QOpenGLWidget>
 //#include <device_launch_parameters.h> // just for proper indexing, nvcc includes it anyhow
@@ -86,7 +85,8 @@ void Particle::draw2D() const {
 	glColor4f(1, 1, 1, 1); // reset color
 }
 
-void Particle::collideToWall(const Boundary &wall) {
+template<typename Boundary_T>
+void Particle::collideToWall(const Boundary_T &wall) {
 
 	const Vec3d n = wall.getNormal(*this);
 
@@ -113,6 +113,8 @@ void Particle::collideToWall(const Boundary &wall) {
 	vel = vel - (1 + Particle::getRestitutionCoeff()) * (vel * n) * n;
 }
 
+template void Particle::collideToWall<Boundary_axissymmetric>(const Boundary_axissymmetric&);
+template void Particle::collideToWall<Boundary_planar>(const Boundary_planar&);
 
 void Particle::collideToParticle(Particle &other) {
 
@@ -215,13 +217,16 @@ void Particle::exchangeImpulse(Particle &other) {
 							* (other.getV() * n));
 }
 
-bool Particle::overlapWithWall(const Boundary &wall) const {
+template<typename Boundary_T>
+bool Particle::overlapWithWall(const Boundary_T &wall) const {
 	if (wall.distance(*this) - radius < 0) {
 		return true;
 	} else {
 		return false;
 	}
 }
+
+template bool Particle::overlapWithWall<Boundary_axissymmetric>(const Boundary_axissymmetric&) const;
 
 bool Particle::overlapWithWalls() const {
 	// TODO return pointers to the actually overlapped walls?
@@ -238,10 +243,14 @@ bool Particle::overlapWithWalls() const {
 	return false;
 }
 
-Vec3d Particle::overlapVectorWithWall(const Boundary &wall) {
+template<typename Boundary_T>
+Vec3d Particle::overlapVectorWithWall(const Boundary_T &wall) {
 	// TODO: simplify
 	return (wall.distance(*this) - radius) * wall.getNormal(*this);
 }
+
+template Vec3d Particle::overlapVectorWithWall<Boundary_axissymmetric>(const Boundary_axissymmetric&);
+template Vec3d Particle::overlapVectorWithWall<Boundary_planar>(const Boundary_planar&);
 
 Vec3d Particle::overlapVectorWithWalls() {
 	// returns the overlapVector to the first boundary that is overlapped

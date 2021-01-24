@@ -3,7 +3,6 @@
 
 #include <vector>
 #include "particle.h"
-#include "boundary.h"
 #include "boundingbox.h"
 #include "boundary_planar.h"
 #include "boundary_axissymmetric.h"
@@ -17,7 +16,8 @@ enum class Geometry {
 	hourglass = 0, hourglass_with_removable_orifice = 1, box = 2, test = 3
 };
 
-using particle_boundary_pair = std::pair<Particle&, Boundary&>;
+using particle_boundary_pair_pl = std::pair<Particle&, Boundary_planar&>;
+using particle_boundary_pair_ax = std::pair<Particle&, Boundary_axissymmetric&>;
 
 class Scene {
 	// TODO: allow only a single instance!

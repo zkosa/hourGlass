@@ -1,5 +1,6 @@
 #include "particle.h"
-#include "boundary.h"
+#include "boundary_axissymmetric.h"
+#include "boundary_planar.h"
 #include "cuda.h"
 
 __device__
@@ -40,9 +41,12 @@ Vec3d Particle::apply_forces() {
 	return Vec3d(0.0f, -g, 0.0f) + drag_acc; // TODO: readd gravity
 }
 
+template<typename Boundary_T>
 __device__
-void Particle::collideToWall(const Boundary *wall) {
+void Particle::collideToWall(const Boundary_T *wall) {
+	CUDA_HELLO;
 	const Vec3d n = wall->getNormal(this);
+	CUDA_HELLO;
 
 	Vec3d pos_corr { 0, 0, 0 };
 	if (std::abs(n * vel) > SMALL && wall->isPlanar()) { // not parallel, and moving
@@ -50,11 +54,11 @@ void Particle::collideToWall(const Boundary *wall) {
 		// that the normal correction component equals to the overlap,
 		// This doesn't ensure overlap-less corrected position for curved surfaces,
 		// so it is performed only for planar boundaries
-		pos_corr = (radius - wall->distanceSigned(*this)) / std::abs(n * vel) * vel * (-1);
+		pos_corr = (radius - wall->distanceSigned(this)) / std::abs(n * vel) * vel * (-1);
 	} else {
 		// If there is no wall normal movement,
 		// move in surface normal direction to the touching position
-		pos_corr = (radius - wall->distanceSigned(*this)) * n;
+		pos_corr = (radius - wall->distanceSigned(this)) * n;
 	}
 
 	// move back to the position when it touched the boundary:
@@ -66,6 +70,10 @@ void Particle::collideToWall(const Boundary *wall) {
 	// revert the wall normal velocity component
 	vel = vel - (1 + Particle::getRestitutionCoeff()) * (vel * n) * n;
 }
+
+// explicitly instantiating the template instances
+template __device__ void Particle::collideToWall<Boundary_axissymmetric>(const Boundary_axissymmetric*);
+template __device__ void Particle::collideToWall<Boundary_planar>(const Boundary_planar*);
 
 __host__ __device__
 void Particle::correctVelocity(const Vec3d &pos_corr) {

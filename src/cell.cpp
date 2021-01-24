@@ -156,13 +156,17 @@ bool Cell::contains(const Particle &p) const {
 			&& (p.getZ() + r > bounds.z1 && p.getZ() - r < bounds.z2);
 }
 
-bool Cell::contains(const Boundary &b) const {
+template<typename Boundary_T>
+bool Cell::containsBoundary(const Boundary_T &b) const {
 	if (b.distance(center) <= getHalfDiagonal()) {
 		return true;
 	} else {
 		return false;
 	}
 }
+
+template bool Cell::containsBoundary<Boundary_axissymmetric>(const Boundary_axissymmetric&) const;
+template bool Cell::containsBoundary<Boundary_planar>(const Boundary_planar&) const;
 
 void Cell::addParticle(const Particle &p) {
 	particle_IDs.emplace_back(p.getID());

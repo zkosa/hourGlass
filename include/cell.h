@@ -7,7 +7,6 @@
 
 class Scene;
 class Particle;
-class Boundary;
 class Boundary_planar;
 class Boundary_axissymmetric;
 
@@ -57,7 +56,8 @@ public:
 	bool contains(const Particle&) const;
 	__device__
 	bool containsCuda(const Particle*) const;
-	bool contains(const Boundary&) const;
+	template<typename Boundary_T>
+	bool containsBoundary(const Boundary_T&) const;
 	void addParticle(const Particle&);
 	// functionality is different from the CPU version!
 	// TODO: reflect it in name, consider making it a free function

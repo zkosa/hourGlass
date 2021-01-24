@@ -106,9 +106,9 @@ BOOST_AUTO_TEST_CASE( boundary_planar_test )
 	Cell c_touching(center + 0.5 * dX.y * Vec3d::j);
 	Cell c_above(   center + 1.5 * dX.y * Vec3d::j);
 
-	BOOST_REQUIRE_EQUAL( c_crossing.contains( ground ) , true );
-	BOOST_REQUIRE_EQUAL( c_touching.contains( ground ) , true );
-	BOOST_REQUIRE_EQUAL( c_above.contains( ground ) , false );
+	BOOST_REQUIRE_EQUAL( c_crossing.containsBoundary( ground ) , true );
+	BOOST_REQUIRE_EQUAL( c_touching.containsBoundary( ground ) , true );
+	BOOST_REQUIRE_EQUAL( c_above.containsBoundary( ground ) , false );
 }
 
 BOOST_AUTO_TEST_CASE( boundary_axissymmetric_test )
@@ -121,21 +121,21 @@ BOOST_AUTO_TEST_CASE( boundary_axissymmetric_test )
 	Cell::setDX(dX_small);
 	Cell c_small(center);
 
-	BOOST_REQUIRE_EQUAL( c_small.contains( glass ), false );
+	BOOST_REQUIRE_EQUAL( c_small.containsBoundary( glass ), false );
 
 
 	Vec3d dX_large(0.2,0.2,0.2);
 	Cell::setDX(dX_large);
 	Cell c_large(center);
 
-	BOOST_REQUIRE_EQUAL( c_large.contains( glass ), true );
+	BOOST_REQUIRE_EQUAL( c_large.containsBoundary( glass ), true );
 
 
 	Vec3d dX_touching(2*0.07,2*0.07,2*0.07);
 	Cell::setDX(dX_touching);
 	Cell c_touching(center);
 
-	BOOST_REQUIRE_EQUAL( c_touching.contains( glass ), true );
+	BOOST_REQUIRE_EQUAL( c_touching.containsBoundary( glass ), true );
 
 	// repeated execution fails
 /*
