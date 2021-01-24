@@ -250,13 +250,9 @@ void collide_with_boundaries(
 
 	for (int i_p = index; i_p < number_of_particles; i_p += stride ) {
 		for (int i_b = 0; i_b<N_boundaries_ax; i_b += 1) {
-
-//			(boundaries_ax_ptr + i_b)->distanceDev(p->cGetPos()); CUDA_HELLO; // fine
-//			(boundaries_ax_ptr + i_b)->distanceDev(p); CUDA_HELLO; // fail --> IT DOES NOT WORK with particle!
-
-			if ((boundaries_ax_ptr + i_b)->distanceDev((p + i_p)->cGetPos()) < (p + i_p)->getR()) {
+			if ((boundaries_ax_ptr + i_b)->distanceDev((p + i_p)) < (p + i_p)->getR()) {
 				(p + i_p)->collideToWall(boundaries_ax_ptr + i_b);
-				// to_be_collided.emplace_back(p, b); // more sophisticated is used on the CPU!!!
+				// to_be_collided.emplace_back(p, b); // more sophisticated method is used on the CPU!!!
 			}
 		}
 	}
