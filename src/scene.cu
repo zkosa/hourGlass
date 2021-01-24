@@ -350,8 +350,10 @@ void Scene::collideWithBoundariesCellsCuda() {
 	CHECK_CUDA_POINTER( device_particles_ptr );
 	CHECK_CUDA_POINTER( device_boundaries_ax_ptr );
 	CHECK_CUDA_POINTER( device_boundaries_pl_ptr );
-	collide_with_boundaries<<<1, N_particles>>>( // TODO: fix
-	//collide_with_boundaries<<<1, 1>>>( // DEBUG
+	dim3 threads(std::min(N_particles, 256), 1); // all cells are within a block with usual number of cells
+	dim3 blocks((N_particles + threads.x - 1)/threads.x, 1);
+	//std::cout << blocks.x << "x" << blocks.y << " X " << threads.x << "x" << threads.y << std::endl;
+	collide_with_boundaries<<<blocks, threads>>>(
 			device_particles_ptr, N_particles,
 			device_boundaries_ax_ptr, N_boundaries_ax,
 			device_boundaries_pl_ptr, N_boundaries_pl
