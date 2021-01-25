@@ -9,7 +9,7 @@
 
 class Boundary_axissymmetric {
 	bool temporary = false; // TODO: rather derive temporary boundaries
-	bool planar = true;
+	bool planar = false;
 
 	Vec3d p1_axis { 0.0f, -1.0f, 0.0f };
 	Vec3d p2_axis { 0.0f,  1.0f, 0.0f };
