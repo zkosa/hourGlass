@@ -4,7 +4,7 @@
 
 __device__
 float Boundary_planar::distanceDev(const Vec3d *point) const {
-	return Boundary_planar::distanceDev(point);
+	return std::abs(Boundary_planar::distanceSigned(point));
 }
 
 __device__

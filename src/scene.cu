@@ -33,7 +33,6 @@ void Scene::hostToDevice() {
 							&boundaries_pl[0],
 							N_boundaries_pl*sizeof(Boundary_planar),
 							cudaMemcpyHostToDevice) );
-
 }
 
 void Scene::deviceToHost() {
@@ -249,15 +248,19 @@ void collide_with_boundaries(
 	int stride = blockDim.x * gridDim.x;
 
 	for (int i_p = index; i_p < number_of_particles; i_p += stride ) {
-		for (int i_b = 0; i_b<N_boundaries_ax; i_b += 1) {
-			if ((boundaries_ax_ptr + i_b)->distanceDev((p + i_p)) < (p + i_p)->getR()) {
-				(p + i_p)->collideToWall(boundaries_ax_ptr + i_b);
+		for (int i_bax = 0; i_bax<N_boundaries_ax; i_bax += 1) {
+			if ((boundaries_ax_ptr + i_bax)->distanceDev((p + i_p)) < (p + i_p)->getR()) {
+				(p + i_p)->collideToWall(boundaries_ax_ptr + i_bax);
+				// to_be_collided.emplace_back(p, b); // more sophisticated method is used on the CPU!!!
+			}
+		}
+		for (int i_bpl = 0; i_bpl<N_boundaries_pl; i_bpl += 1) {
+			if ((boundaries_pl_ptr + i_bpl)->distanceDev((p + i_p)) < (p + i_p)->getR()) {
+				(p + i_p)->collideToWall(boundaries_pl_ptr + i_bpl);
 				// to_be_collided.emplace_back(p, b); // more sophisticated method is used on the CPU!!!
 			}
 		}
 	}
-// TODO: implement for planar too
-
 }
 
 void Scene::collideWithBoundariesCellsCuda() {
