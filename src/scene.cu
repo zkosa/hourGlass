@@ -98,7 +98,7 @@ __global__
 void get_particle_IDs_in_cells(
 		int number_of_particles, const Particle *p,
 		int number_of_cells, Cell *c,
-		const int *IN_number_of_particleIDs, // per cell, as input???
+		const int *IN_number_of_particleIDs, // per cell, as input
 		int *OUT_particle_IDs_in_cells,
 		int *OUT_particle_ID_counter // per cell, for counting
 		)

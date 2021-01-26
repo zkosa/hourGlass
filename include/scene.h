@@ -227,4 +227,27 @@ private:
 
 };
 
+__global__
+void get_number_of_particles_per_cell(
+		int number_of_particles, const Particle *p,
+		int number_of_cells, const Cell *c,
+		int *number_of_particle_IDs_per_cell
+		);
+
+__global__
+void get_particle_IDs_in_cells(
+		int number_of_particles, const Particle *p,
+		int number_of_cells, Cell *c,
+		const int *IN_number_of_particleIDs,
+		int *OUT_particle_IDs_in_cells,
+		int *OUT_particle_ID_counter
+		);
+
+__global__
+void collide_with_boundaries(
+		Particle *p, int number_of_particles,
+		const Boundary_axissymmetric *boundaries_ax_ptr, int N_boundaries_ax,
+		const Boundary_planar *boundaries_pl_ptr, int N_boundaries_pl
+		);
+
 #endif /* SCENE_H_ */
