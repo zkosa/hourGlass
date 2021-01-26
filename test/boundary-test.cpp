@@ -1,8 +1,8 @@
 #include "devtools.h"
-#include "boundary.h"
 #include "boundary_axissymmetric.h"
 #include "boundary_planar.h"
 #include "particle.h"
+#include "cuda.h"
 
 //#define BOOST_TEST_TOOLS_UNDER_DEBUGGER // it deactivates the tolerance!!!
 #define BOOST_TEST_DYN_LINK
@@ -82,8 +82,10 @@ BOOST_AUTO_TEST_CASE( distance_on_the_axis_hourglass_test )
 	// axial coordinate of closest point on the contour
 	// https://www.wolframalpha.com/input/?i=minimize+%28x-0.1%29%5E2+%2B+%28x%5E2%2B0.07-0%29%5E2+
 	float root = 0.1f * pow(25.0f + 2.0f*sqrt(1871.0f), 1.0f/3.0f) - 19.0f/(10.0f*pow(25.0f + 2.0f*sqrt(1871.0f), 1.0f/3.0f));
-	// closes point on the contour
-	Vec3d point_root(glass.getContourFun()(root), root, 0); // axis is the y axis!
+	// closest point on the contour
+	constFunctionHandler<Boundary_axissymmetric> contour = glass.functionHandler_contour;
+	Vec3d point_root((glass.*contour)(root), root, 0); // axis is the y axis!
+	//Vec3d point_root_((glass.*glass.functionHandler_contour)(root), root, 0); // axis is the y axis!
 
 	BOOST_TEST_REQUIRE( glass.distance(point2) == abs(point2 - point_root) );
 	BOOST_TEST_REQUIRE( glass.distance(point2) == glass.distanceSigned(point2), boost::test_tools::tolerance(1e-7f) );
@@ -146,7 +148,8 @@ BOOST_DATA_TEST_CASE( hourglass_numdiff_normal_test,
 	float rad = rad_;
 	float ax = std::sqrt(rad - 0.07f); // inverse of the contour function (one of the two solutions)
 	// check the inversion (y is the rotation axis!)
-	BOOST_TEST_REQUIRE( glass.getContourFun()(ax) == rad );
+	constFunctionHandler<Boundary_axissymmetric> contour = glass.functionHandler_contour;
+	BOOST_TEST_REQUIRE( (glass.*contour)(ax) == rad );
 
 	Vec3d point(rad, ax, 0);
 
@@ -179,7 +182,8 @@ BOOST_DATA_TEST_CASE( hourglass_numdiff_normal_negative_y_test,
 	float rad = rad_;
 	float ax = -std::sqrt(rad - 0.07f); // inverse of the contour function (one of the two solutions)
 	// check the inversion (y is the rotation axis!)
-	BOOST_TEST_REQUIRE( glass.getContourFun()(ax) == rad );
+	constFunctionHandler<Boundary_axissymmetric> contour = glass.functionHandler_contour;
+	BOOST_TEST_REQUIRE( (glass.*contour)(ax) == rad );
 
 	Vec3d point(rad, ax, 0);
 
@@ -212,7 +216,8 @@ BOOST_DATA_TEST_CASE( hourglass_normal_in_all_quadrants_test, ax_data, ax_ )
 	Boundary_axissymmetric glass;
 
 	float ax = ax_;
-	float rad = glass.getContourFun()(ax);
+	constFunctionHandler<Boundary_axissymmetric> contour = glass.functionHandler_contour;
+	float rad = (glass.*contour)(ax);
 	float slope = derivative_exact(ax);
 
 	std::vector<Vec3d> curve_points;
@@ -260,7 +265,8 @@ BOOST_DATA_TEST_CASE( collide_hourglass_zerovel_test, rad_data2, rad_ )
 	float rad = rad_;
 	float ax = std::sqrt(rad - 0.07f); // inverse of the contour function (one of the two solutions)
 	// check the inversion
-	BOOST_TEST_REQUIRE( glass.getContourFun()(ax) == rad, tolerance );
+	constFunctionHandler<Boundary_axissymmetric> contour = glass.functionHandler_contour;
+	BOOST_TEST_REQUIRE( (glass.*contour)(ax) == rad, tolerance );
 
 	Vec3d point(rad, ax, 0.0f);
 	Vec3d vel(0.0f, 0.0f, 0.0f);
@@ -300,7 +306,8 @@ BOOST_DATA_TEST_CASE( collide_hourglass_downvel_test, rad_data2, rad_ )
 	float rad = rad_;
 	float ax = std::sqrt(rad - 0.07f); // inverse of the contour function (one of the two solutions)
 	// check the inversion
-	BOOST_TEST_REQUIRE( glass.getContourFun()(ax) == rad, tolerance );
+	constFunctionHandler<Boundary_axissymmetric> contour = glass.functionHandler_contour;
+	BOOST_TEST_REQUIRE( (glass.*contour)(ax) == rad, tolerance );
 
 	Vec3d point(rad, ax, 0.0f);
 	Vec3d vel(0.0f, -3.0f, 0.0f);
