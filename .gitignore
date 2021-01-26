@@ -15,6 +15,7 @@
 !src/*.cpp
 !src/*.cu
 !test/*.h
+!test/*.cu
 !test/*.cpp
 
 # CMake:
