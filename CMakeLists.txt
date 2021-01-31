@@ -122,6 +122,14 @@ set_target_properties(boundary-test PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 target_link_libraries(boundary-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
 add_unit_test(boundary-test)
 
+# boundary-test-cuda
+file(GLOB SOURCES "test/boundary-test-cuda.cu" "src/scene.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cu" "src/customopenglwidget.cpp" "src/mainwindow.cpp" "src/particle.cu" "src/scene.cu" "src/cell.cu" "src/boundary_axissymmetric.cu"  "src/boundary_planar.cu"  "src/minimum.cu" "src/vec3d.cu")
+add_executable(boundary-test-cuda ${SOURCES} ${MOC_HEADERS} ${UI})
+target_include_directories(boundary-test-cuda PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}  ${Boost_INCLUDE_DIRS})
+set_target_properties(boundary-test-cuda PROPERTIES AUTOMOC TRUE)
+set_target_properties(boundary-test-cuda PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+target_link_libraries(boundary-test-cuda ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
+add_unit_test(boundary-test-cuda)
 # minimum-test
 file(GLOB SOURCES "test/minimum-test.cpp" "src/minimum.cpp")
 add_executable(minimum-test ${SOURCES} )
