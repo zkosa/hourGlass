@@ -53,8 +53,8 @@ private:
 	Vec3d apply_forces();
 
 public:
-//	CUDA_HOSTDEV
-//	Particle() = default;
+	CUDA_HOSTDEV
+	Particle() = default;
 	CUDA_HOSTDEV
 	Particle(Vec3d _pos, float _r = Particle::uniform_radius) :
 			pos(_pos), radius(_r) {
@@ -93,11 +93,17 @@ public:
 	template<typename Boundary_T>
 	__device__
 	void collideToWall(const Boundary_T *wall);
+	__host__
 	void collideToParticle(Particle &other);
+	__device__
+	void collideToParticle(Particle *other);
 	void collideToParticle_checkBoundary(Particle &other);
 	CUDA_HOSTDEV
 	void correctVelocity(const Vec3d &position_correction);
+	__host__
 	void exchangeImpulse(Particle &other);
+	__device__
+	void exchangeImpulse(Particle *other);
 	template<typename Boundary_T>
 	bool overlapWithWall(const Boundary_T &wall) const;
 	bool overlapWithWalls() const;
@@ -118,6 +124,7 @@ public:
 	void setR(float r) {
 		this->radius = r;
 	}
+	CUDA_HOSTDEV
 	void setV(Vec3d v) {
 		this->vel = v;
 	}
@@ -160,9 +167,11 @@ public:
 	float getR() const {
 		return radius;
 	}
+	CUDA_HOSTDEV
 	float getM() const {
 		return mass();
 	}
+	CUDA_HOSTDEV
 	Vec3d getV() const {
 		return vel;
 	}

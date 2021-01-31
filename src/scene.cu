@@ -291,6 +291,35 @@ void Scene::collideWithBoundariesCellsCuda() {
 
 }
 
+__global__
+void collide_particles_cellwise(
+		int number_of_particles, Particle *p,
+		int number_of_cells, const int *number_of_particleIDs_per_cell,
+		int number_of_particleIDs, const int *particle_IDs_in_cells
+		)
+{
+	int starting_index = 0;
+	int i_p_current;
+	int number_of_particleIDs_in_current_cell;
+	for (int i_c = 0; i_c < number_of_cells; i_c++) {
+		number_of_particleIDs_in_current_cell = *(number_of_particleIDs_per_cell + i_c);
+		for (int i_p = 0; i_p < number_of_particleIDs_in_current_cell; i_p++) {
+			i_p_current = *(particle_IDs_in_cells + starting_index + i_p);
+			for (int i_p_other = 0; i_p_other < number_of_particleIDs_in_current_cell; i_p_other++) {
+				(p + i_p_current)->collideToParticle(p + *(particle_IDs_in_cells + starting_index + i_p_other));
+			}
+		}
+		starting_index += number_of_particleIDs_in_current_cell;
+	}
+}
+
 void Scene::collideParticlesCellsCuda() {
 
+	int N_particles = particles.size();
+
+	collide_particles_cellwise<<<1,1>>>(
+			N_particles, device_particles_ptr,
+			N_cells, device_number_of_particle_IDs_per_cell,
+			total_number_of_IDs_in_cells, device_particle_IDs_per_cell
+			);  CHECK_CUDA_POST
 }

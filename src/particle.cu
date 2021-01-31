@@ -74,6 +74,30 @@ void Particle::collideToWall(const Boundary_T *wall) {
 template __device__ void Particle::collideToWall<Boundary_axissymmetric>(const Boundary_axissymmetric*);
 template __device__ void Particle::collideToWall<Boundary_planar>(const Boundary_planar*);
 
+__device__
+void Particle::collideToParticle(Particle *other) {
+	Vec3d n = other->pos - this->pos; // distance vector, pointing towards the other particle
+
+	const float distance = abs(n);
+
+	// do not do anything with distant particles:
+	if (distance > this->getR() + other->getR()) {
+		return;
+	}
+
+	n = norm(n); // normalize
+
+	// move back to the positions where they just touched the other:
+	const Vec3d pos_corr = -0.5 * n * (this->getR() + other->getR() - distance);
+	this->move(pos_corr);
+	other->move(-pos_corr);
+
+	correctVelocity(pos_corr);
+	other->correctVelocity(-pos_corr);
+
+	exchangeImpulse(other);
+}
+
 __host__ __device__
 void Particle::correctVelocity(const Vec3d &pos_corr) {
 	// correct the velocity to conserve energy (dissipation work is not considered!)
@@ -82,6 +106,25 @@ void Particle::correctVelocity(const Vec3d &pos_corr) {
 	} else {
 		vel = -std::sqrt(-(vel * vel + 2 * Vec3d(0.0f, -g, 0.0f) * pos_corr)) * norm(vel);
 	}
+}
+
+__device__
+void Particle::exchangeImpulse(Particle *other) {
+	Vec3d n = other->pos - this->pos; // distance vector, pointing towards the other particle
+	n = norm(n); // normalize
+
+	const Vec3d vel_old = vel; // store it for the other particle
+	vel = vel_old - n * (n * vel_old)
+			+ (mass() - other->mass()) / (mass() + other->mass()) * n
+					* (vel_old * n)
+			+ 2 * other->mass() / (mass() + other->mass()) * n
+					* (other->getV() * n);
+
+	other->setV(
+			other->getV() - n * (other->getV() * n)
+					+ 2 * mass() / (other->getM() + mass()) * n * (vel_old * n)
+					+ (other->mass() - mass()) / (other->mass() + mass()) * n
+							* (other->getV() * n));
 }
 
 CUDA_HOSTDEV

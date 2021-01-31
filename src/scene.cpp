@@ -280,8 +280,8 @@ void Scene::calculatePhysicsCuda() {
 	advanceCuda(); // not cellwise --> cells are not needed to be populated with cells!
 	populateCellsCuda(); // TODO: populate here only those cells which contain boundaries!
 	collideWithBoundariesCellsCuda();
-//	populateCellsCuda();
-//	collideParticlesCellsCuda();
+	populateCellsCuda();
+	collideParticlesCellsCuda();
 
 	deviceToHost();
 /*
