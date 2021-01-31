@@ -457,6 +457,8 @@ void Scene::createCells() {
 	markBoundaryCells();
 	markExternalCells();
 	removeExternalCells();
+
+	N_cells = cells.size();
 }
 
 void Scene::markBoundaryCells() {

@@ -128,14 +128,12 @@ void Scene::populateCellsCuda() {
 
 	// this->clearCells(); // do we need something like this?
 
-	int N_cells = cells.size();
 	int N_particles = particles.size();
 
 	dim3 threads(std::min(N_cells, 1024), 1); // all cells are within a block with usual number of cells
 	dim3 blocks((N_cells + threads.x - 1)/threads.x, (N_particles + threads.y - 1)/threads.y);
 	// std::cout << blocks.x << "x" << blocks.y << " X " << threads.x << "x" << threads.y << std::endl;
 
-	int *device_number_of_particle_IDs_per_cell;
 	CHECK_CUDA( cudaMalloc((void **)&device_number_of_particle_IDs_per_cell, sizeof(int)*N_cells) );
 	CHECK_CUDA( cudaMemset(device_number_of_particle_IDs_per_cell, 0, sizeof(int)*N_cells) );
 
@@ -154,12 +152,11 @@ void Scene::populateCellsCuda() {
 				cudaMemcpyDeviceToHost
 				) );
 
-	int total_number_of_IDs_in_cells = std::accumulate(
+	total_number_of_IDs_in_cells = std::accumulate(
 			host_number_of_particle_IDs_per_cell.begin(),
 			host_number_of_particle_IDs_per_cell.end(),
 			0);
 
-	int *device_particle_IDs_per_cell;
 	CHECK_CUDA( cudaMalloc((void **)&device_particle_IDs_per_cell, sizeof(int)*total_number_of_IDs_in_cells) );
 	CHECK_CUDA( cudaMemset(device_particle_IDs_per_cell, 0, sizeof(int)*total_number_of_IDs_in_cells) );
 

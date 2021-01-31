@@ -62,6 +62,11 @@ class Scene {
 	Boundary_axissymmetric* device_boundaries_ax_ptr = nullptr;
 	Boundary_planar* device_boundaries_pl_ptr = nullptr;
 
+	int N_cells = 0;
+	int* device_number_of_particle_IDs_per_cell = nullptr; // length: N_cells
+	int total_number_of_IDs_in_cells = 0; // accumulated value of device_number_of_particle_IDs_per_cell
+	int* device_particle_IDs_per_cell = nullptr; // length: total_number_of_IDs_in_cells
+
 public:
 	Timer timer_all, timer;
 
