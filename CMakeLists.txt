@@ -20,6 +20,7 @@ string(APPEND CMAKE_CXX_FLAGS "-Wall")
 #string(APPEND CMAKE_CXX_FLAGS_RELEASE " -O3")
 #string(APPEND CMAKE_CUDA_FLAGS "--relocatable-device-code=true")
 #string(APPEND CMAKE_CUDA_FLAGS "-Xcompiler=-std=c++17") # unsuccessful attempt to enable more C++ features in CUDA code
+string(APPEND CMAKE_CUDA_FLAGS_DEBUG " -g --generate-line-info")
 
 if (WIN32)
 	set(CMAKE_PREFIX_PATH "C:\\Qt\\Qt5.13.2\\5.13.2\\msvc2017_64") # add also to system path (Win)
