@@ -25,7 +25,7 @@ private:
 
 	Vec3d pos { 0.0, 1.0, 0.0 };
 	Vec3d vel { 0.0, 0.0, 0.0 };
-	Vec3d acc = gravity;
+	Vec3d acc = GRAVITY;
 
 	int ID = -1;
 

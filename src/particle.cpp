@@ -8,11 +8,11 @@
 
 int Particle::last_ID = -1;
 
-Vec3d Particle::force_field = gravity;
+Vec3d Particle::force_field = GRAVITY;
 
 Scene *Particle::scene = nullptr;
 
-float Particle::uniform_radius = 0.005;
+float Particle::uniform_radius = 0.005f;
 
 CUDA_HOSTDEV
 void Particle::setCd(const float _drag_coefficient) {
@@ -277,14 +277,14 @@ void Particle::size() const {
 
 float Particle::terminalVelocity() const {
 	// equilibrium velocity, where drag cancels the gravitation force
-	return std::sqrt(2 * mass() * abs(gravity) / CdA() / density_medium);
+	return std::sqrt(2 * mass() * abs(GRAVITY) / CdA() / density_medium);
 }
 
 float Particle::maxFreeFallVelocity() const {
 	// The velocity which can be reached by gravitational acceleration within the domain.
 	// domain height along the gravity vector:
-	const float h = std::abs(scene->getBoundingBox().diagonal() * norm(gravity));
-	return std::sqrt(2 * abs(gravity) * h);
+	const float h = std::abs(scene->getBoundingBox().diagonal() * norm(GRAVITY));
+	return std::sqrt(2 * abs(GRAVITY) * h);
 }
 
 float Particle::maxVelocity() const {

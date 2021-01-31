@@ -47,17 +47,6 @@ public:
 
 };
 
-const Vec3d gravity { 0, -g, 0 };
-// use global, "namespaced" variables to mimic static class member variables on the GPU device
-/*
-namespace static_container {
-//namespace Vec3d { // workaround
-	Vec3d* gravity_global_device; //= Vec3d::null;  //(0, -9.81f, 0);
-	cudaMalloc((void **)&gravity_global_device, sizeof(Vec3d));
-	cudaMemcpy(gravity_global_device, gravity.data(), N_particles*sizeof(Vec3d), cudaMemcpyHostToDevice); // TODO check
-//}
-}
-*/
 
 CUDA_HOSTDEV
 inline Vec3d Add(const Vec3d &a, const Vec3d &b) {

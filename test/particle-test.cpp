@@ -399,9 +399,9 @@ BOOST_AUTO_TEST_CASE( no_drag_first_step_test )
 
 	p.advance(time_step);
 
-	Vec3d calculated_travel = 0.5 * gravity * time_step * time_step;
-	Vec3d calculated_speed = gravity * time_step;
-	Vec3d calculated_acceleration = gravity;
+	Vec3d calculated_travel = 0.5 * GRAVITY * time_step * time_step;
+	Vec3d calculated_speed = GRAVITY * time_step;
+	Vec3d calculated_acceleration = GRAVITY;
 
 	Vec3d simulated_travel = p.getPos() - pos;
 	Vec3d simulated_speed = p.getV();
