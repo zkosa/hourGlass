@@ -98,7 +98,9 @@ inline void initializeFunctionHandle(Boundary_axissymmetric* bax) {
 	// it needs to be called after the object the object has been copied to the device!
 	// takes a device pointer to the object to be initialized
 	// unfortunately direct __host__ call of dev_bax->initializer() does not work as expected
-	bax->initializer();
+	if (bax) {
+		bax->initializer();
+	}
 }
 
 #endif /* BOUNDARY_AXISSYMMETRIC_H_ */
