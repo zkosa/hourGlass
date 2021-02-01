@@ -298,14 +298,19 @@ void collide_particles_cellwise(
 		int number_of_particleIDs, const int *particle_IDs_in_cells
 		)
 {
+	int index_current = blockIdx.x * blockDim.x + threadIdx.x;
+	int stride_current = blockDim.x * gridDim.x;
+	int index_other = blockIdx.y * blockDim.y + threadIdx.y;
+	int stride_other = blockDim.y * gridDim.y;
+
 	int starting_index = 0;
 	int i_p_current;
 	int number_of_particleIDs_in_current_cell;
 	for (int i_c = 0; i_c < number_of_cells; i_c++) {
 		number_of_particleIDs_in_current_cell = *(number_of_particleIDs_per_cell + i_c);
-		for (int i_p = 0; i_p < number_of_particleIDs_in_current_cell; i_p++) {
+		for (int i_p = index_current; i_p < number_of_particleIDs_in_current_cell; i_p+=stride_current) {
 			i_p_current = *(particle_IDs_in_cells + starting_index + i_p);
-			for (int i_p_other = 0; i_p_other < number_of_particleIDs_in_current_cell; i_p_other++) {
+			for (int i_p_other = index_other; i_p_other < number_of_particleIDs_in_current_cell; i_p_other+=stride_other) {
 				(p + i_p_current)->collideToParticle(p + *(particle_IDs_in_cells + starting_index + i_p_other));
 			}
 		}
@@ -313,11 +318,22 @@ void collide_particles_cellwise(
 	}
 }
 
+int roundToNextIntPowerOfTwo(float f) {
+	return std::pow(2, std::ceil(std::log2(f)));
+}
+
 void Scene::collideParticlesCellsCuda() {
 
 	int N_particles = particles.size();
 
-	collide_particles_cellwise<<<1,1>>>(
+	// estimating the square root of the necessary threads x blocks
+	// the grid stride loop handles the error in estimation
+	int n = roundToNextIntPowerOfTwo(N_particles/float(N_cells));
+	// use equal x and y dimensions:
+	dim3 threads(16, 16);
+	dim3 blocks((n + threads.x - 1)/threads.x, (n + threads.y - 1)/threads.y);
+
+	collide_particles_cellwise<<<blocks,threads>>>(
 			N_particles, device_particles_ptr,
 			N_cells, device_number_of_particle_IDs_per_cell,
 			total_number_of_IDs_in_cells, device_particle_IDs_per_cell

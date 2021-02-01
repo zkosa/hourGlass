@@ -255,4 +255,6 @@ void collide_with_boundaries(
 		const Boundary_planar *boundaries_pl_ptr, int N_boundaries_pl
 		);
 
+int roundToNextIntPowerOfTwo(float f);
+
 #endif /* SCENE_H_ */
