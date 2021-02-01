@@ -46,16 +46,16 @@ void Scene::deviceToHost() {
 				cudaMemcpyDeviceToHost
 				) );
 
-	// TODO: protect against overwriting (freeing after copy should do it (?))
+	// TODO: protect against overwriting
 	/* it has been copied in Scene::populateCellsCuda() */
 //	int N_cells = cells.size();
 //	CHECK_CUDA( cudaMemcpy( cells.data(),
 //				device_cells_ptr,
-//				N_cells*sizeof(Cell), // TODO: how does it know the changed amount of particle IDS, stored in a vector? (resize particle_IDS?)
+//				N_cells*sizeof(Cell), // TODO: how does it know the changed amount of particle IDS, stored in a vector? (resize particle_IDs?)
 //				cudaMemcpyDeviceToHost
 //				) );
 
-	// boundaries do not change (can it be enforced???) --> no need to copy
+	// boundaries do not change (can it be enforced?) --> no need to copy
 
 
 	CHECK_CUDA( cudaFree(device_particles_ptr) );
@@ -171,33 +171,7 @@ void Scene::populateCellsCuda() {
 			device_particle_IDs_per_cell, // output
 			device_indices_counter // output, for debugging
 			); CHECK_CUDA_POST
-
-//#define CHECK
-#ifdef CHECK
-	std::vector<int> host_number_of_particle_IDs_per_cell_second_kernel(N_cells);
-	CHECK_CUDA( cudaMemcpy( host_number_of_particle_IDs_per_cell_second_kernel.data(),
-				device_indices_counter,
-				sizeof(int)*N_cells,
-				cudaMemcpyDeviceToHost
-				) );
-
-	int total_number_of_IDs_in_cells_second_kernel = std::accumulate(
-			host_number_of_particle_IDs_per_cell_second_kernel.begin(),
-			host_number_of_particle_IDs_per_cell_second_kernel.end(),
-			0);
-
-	if (total_number_of_IDs_in_cells != total_number_of_IDs_in_cells_second_kernel) {
-		std::cout << "number of particle IDs does not match between the two kernels: "
-				<< total_number_of_IDs_in_cells << " != "
-				<< total_number_of_IDs_in_cells_second_kernel << std::endl;
-
-		std::exit(EXIT_FAILURE); // causes trouble in testing
-	} else {
-		std::cout << "first and second count gives the same number: " << total_number_of_IDs_in_cells << ": fine" << std::endl;
-	}
-#endif
-#undef CHECK
-
+/*
 	// copy the collected particle IDs into the cells in the device
 	// it is useful for testing, but the target is to keep everything on the device!
 	int array_index = 0;
@@ -211,7 +185,7 @@ void Scene::populateCellsCuda() {
 					) );
 		array_index = array_index + number_of_elements;
 	}
-
+*/
 }
 
 void Scene::advanceCuda() {
@@ -261,24 +235,14 @@ void collide_with_boundaries(
 }
 
 void Scene::collideWithBoundariesCellsCuda() {
-	// number of collision checks:
-	// cells (with boundaries) * boundaries * particles_icell = ~ 100 * 2 * 5000/100 = 50 000
-	// here the only benefit from the cells that we have to collide only those particles which are in a cell with boundaries
+	// we could make use of the getIDsOfParticlesInCellsWithBoundary();
+	// and collide only in cells with boundaries
 
-//	auto particle_IDs = getIDsOfParticlesInCellsWithBoundary();
-//
-//	int* device_particle_IDs;
-//	int n = particle_IDs.size();
-//
-//	CHECK_CUDA( cudaMalloc((void **)&device_particle_IDs, n*sizeof(int)) );
-//	CHECK_CUDA( cudaMemcpy( device_particle_IDs, particle_IDs.data(),
-//							n*sizeof(int),
-//							cudaMemcpyHostToDevice) );
 	int N_particles = particles.size();
 	int N_boundaries_ax = boundaries_ax.size();
 	int N_boundaries_pl = boundaries_pl.size();
 
-	dim3 threads(std::min(N_particles, 256), 1); // all cells are within a block with usual number of cells
+	dim3 threads(std::min(N_particles, 256), 1); // all cells are within the same block with usual number of cells
 	dim3 blocks((N_particles + threads.x - 1)/threads.x, 1);
 	//std::cout << blocks.x << "x" << blocks.y << " X " << threads.x << "x" << threads.y << std::endl;
 	collide_with_boundaries<<<blocks, threads>>>(
@@ -286,8 +250,6 @@ void Scene::collideWithBoundariesCellsCuda() {
 			device_boundaries_ax_ptr, N_boundaries_ax,
 			device_boundaries_pl_ptr, N_boundaries_pl
 			); CHECK_CUDA_POST
-
-	// TODO: boundaries constant
 
 }
 
