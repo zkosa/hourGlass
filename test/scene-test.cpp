@@ -332,7 +332,7 @@ BOOST_AUTO_TEST_CASE ( scene_removeDuplicates_test )
 
 	Boundary_axissymmetric b_ax;
 
-	std::vector<particle_boundary_pair> pb_pairs;
+	std::vector<particle_boundary_pair_ax> pb_pairs;
 	//std::vector<std::pair<Particle&, Boundary&>> pb_pairs;
 	pb_pairs.emplace_back(p1, b_ax);
 	pb_pairs.emplace_back(p2, b_ax);  // this is a duplicate
@@ -341,8 +341,8 @@ BOOST_AUTO_TEST_CASE ( scene_removeDuplicates_test )
 	BOOST_TEST_REQUIRE( pb_pairs.size() == 3);
 	Scene::removeDuplicates(pb_pairs);
 	BOOST_TEST_REQUIRE( pb_pairs.size() == 2);
-	BOOST_TEST_REQUIRE( (pb_pairs[0] == particle_boundary_pair{p1, b_ax}) );
-	BOOST_TEST_REQUIRE( (pb_pairs[1] == particle_boundary_pair{p3, b_ax}) ); // check whether the last was simply skipped
+	BOOST_TEST_REQUIRE( (pb_pairs[0] == particle_boundary_pair_ax{p1, b_ax}) );
+	BOOST_TEST_REQUIRE( (pb_pairs[1] == particle_boundary_pair_ax{p3, b_ax}) ); // check whether the last was simply skipped
 }
 
 BOOST_AUTO_TEST_CASE( scene_createCells_performance_test )

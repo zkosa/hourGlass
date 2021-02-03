@@ -29,6 +29,20 @@ class MinimumDistance {
 				+ ((function_owner->*functionHandler_contour)(X) - point_R0) * ((function_owner->*functionHandler_contour)(X) - point_R0);
 	};
 
+	float negCosine(float X) const {
+		return -cos(X);
+	}
+	float parabola(float X) const {
+		float vertex_height = 0.2;
+		float X_offset = 0.1;
+		return (X - X_offset)*(X - X_offset) + vertex_height;
+	}
+
+public: //added here because of initialization order
+	// function pointer to the function (square of the distance) to be minimized:
+	constFunctionHandler<MinimumDistance> functionHandler_distance2 = &MinimumDistance::distance2;
+
+private:
 	Minimum minimum;
 
 	Vec3d closest_point_on_the_contour;
@@ -38,6 +52,18 @@ class MinimumDistance {
 	void setInitialGuess(float guess) {
 		minimum.setInitialGuess(guess);
 	}
+
+protected:
+	// FOR TESTING, could be made private and friend of the tests
+	__host__ __device__
+	MinimumDistance() :
+		point(),
+		axis(),
+		function_owner(),
+		functionHandler_contour(),
+		functionHandler_distance2(&MinimumDistance::parabola),
+		minimum(this, functionHandler_distance2)
+	{ };
 
 public:
 	__host__ __device__
@@ -93,9 +119,6 @@ public:
 		setInitialGuess(point * axis);
 		findClosestPointOnContour();
 	};
-
-	// function pointer to the function (square of the distance) to be minimized:
-	constFunctionHandler<MinimumDistance> functionHandler_distance2 = &MinimumDistance::distance2;
 
 	// call in all constructors!
 	__host__ __device__

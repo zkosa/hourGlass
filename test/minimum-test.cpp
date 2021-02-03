@@ -1,6 +1,6 @@
-#include "devtools.h"
-#include "constants.h"
-#include "minimum.h"
+//#include "devtools.h"
+//#include "constants.h"
+//#include "minimum.h"
 
 //#define BOOST_TEST_TOOLS_UNDER_DEBUGGER // it can deactivate the tolerance!!!
 #define BOOST_TEST_DYN_LINK
@@ -9,12 +9,20 @@
 #include <boost/test/data/test_case.hpp>
 #include <boost/array.hpp>
 
+
 float vertex_height = 0.2;
 float X_offset = 0.1;
 
-float parabola(float X) {
-	return (X - X_offset)*(X - X_offset) + vertex_height;
-}
+//template<typename T> using constFunctionHandler = float(T::*)(float) const;
+#include "functionhandler.h"
+
+#include "minimumdistance.h"
+#include "minimum.h"
+
+class test_MinimumDistance : public MinimumDistance {
+public: // constructor access modification
+   using MinimumDistance::MinimumDistance;
+};
 
 // same result is expected with various starting values
 static const boost::array< float, 9 > guess_data{
@@ -24,7 +32,9 @@ BOOST_DATA_TEST_CASE( parabola_minimum_test, guess_data, guess_ )
 {
 	// find the vertex of the parabola
 
-	Minimum curve_minimum(parabola);
+	test_MinimumDistance md;
+	md.functionHandler_distance2 = &MinimumDistance::parabola;
+	Minimum curve_minimum(&md, md.functionHandler_distance2);
 
 	//auto tolerance = boost::test_tools::tolerance( float(3.0f * Minimum::getTolerance()) );
 	auto tolerance = boost::test_tools::tolerance( float(3e-05f) );
@@ -44,10 +54,7 @@ BOOST_DATA_TEST_CASE( parabola_minimum_test, guess_data, guess_ )
 	BOOST_TEST_REQUIRE( root == truth, tolerance );
 }
 
-float negCosine(float X) {
-	return -cos(X);
-}
-
+/*
 // same result is expected with various starting values
 static const boost::array< float, 7 > guess_data_cos{
 	-0.5f, -0.1f, -1e-5f, 0.0f, 1e-6f, 0.5f, 0.9f*pi/4.0f }; // 0.9f*pi/2.0f would find other minimum
@@ -56,7 +63,9 @@ BOOST_DATA_TEST_CASE( cos_minimum_test, guess_data_cos, guess_ )
 {
 	// find the minimum of the -cosine function
 
-	Minimum curve_minimum(negCosine);
+	test_MinimumDistance md;
+	md.functionHandler_distance2 =  &MinimumDistance::negCosine;
+	Minimum curve_minimum(&md, md.functionHandler_distance2);
 
 	auto tolerance = boost::test_tools::tolerance( float(3e-05f) );
 	// changing the tolerance does not effect the result, only the number of iterations. hmmm...
@@ -77,7 +86,9 @@ BOOST_DATA_TEST_CASE( cos_minimum_offset_test, guess_data_cos, guess_ )
 {
 	// find the minimum of the -cosine function
 
-	Minimum curve_minimum(negCosine);
+	test_MinimumDistance md;
+	md.functionHandler_distance2 =  &MinimumDistance::negCosine;
+	Minimum curve_minimum(&md, md.functionHandler_distance2);
 
 	float offset = 2.0f * pi;
 	auto tolerance = boost::test_tools::tolerance( float(3e-05f) );
@@ -93,7 +104,9 @@ BOOST_DATA_TEST_CASE( cos_minimum_offset_setGuess_test, guess_data_cos, guess_ )
 {
 	// find the minimum of the -cosine function
 
-	Minimum curve_minimum(negCosine);
+	test_MinimumDistance md;
+	md.functionHandler_distance2 =  &MinimumDistance::negCosine;
+	Minimum curve_minimum(&md, md.functionHandler_distance2);
 
 	float offset = 2.0f * pi;
 	auto tolerance = boost::test_tools::tolerance( float(3e-05f) );
@@ -112,7 +125,9 @@ BOOST_DATA_TEST_CASE( cos_minimum_setTolerance_test, guess_data_cos, guess_ )
 {
 
 	std::cout << "-------------------------" << std::endl;
-	Minimum curve_minimum(negCosine);
+	test_MinimumDistance md;
+	md.functionHandler_distance2 =  &MinimumDistance::negCosine;
+	Minimum curve_minimum(&md, md.functionHandler_distance2);
 
 	curve_minimum.setInitialGuess(guess_);
 	float truth = 0.0f;

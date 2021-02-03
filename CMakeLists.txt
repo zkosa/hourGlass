@@ -80,14 +80,14 @@ macro(add_unit_test UNIT_TEST)
 endmacro(add_unit_test)
 
 # vec3d-test 
-file(GLOB SOURCES "test/vec3d-test.cpp" "src/vec3d.cpp" "src/vecaxisym.cpp") 
+file(GLOB SOURCES "test/vec3d-test.cpp" "src/vec3d.cpp" "src/vec3d.cu" "src/vecaxisym.cpp")
 add_executable(vec3d-test ${SOURCES})
 target_include_directories(vec3d-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 target_link_libraries(vec3d-test ${Boost_LIBRARIES})
 add_unit_test(vec3d-test)
 
 # particle-test
-file(GLOB SOURCES "test/particle-test.cpp" "src/particle.cpp" "src/scene.cpp" "src/cell.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp" "src/particle.cu" "src/scene.cu" "src/cell.cu")
+file(GLOB SOURCES "test/particle-test.cpp" "src/particle.cpp" "src/scene.cpp" "src/cell.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/vec3d.cu" "src/boundary_planar.cpp" "src/boundary_planar.cu" "src/boundary_axissymmetric.cpp" "src/boundary_axissymmetric.cu" "src/minimum.cu" "src/mainwindow.cpp" "src/customopenglwidget.cpp" "src/particle.cu" "src/scene.cu" "src/cell.cu")
 add_executable(particle-test ${SOURCES} ${MOC_HEADERS} ${UI})
 target_include_directories(particle-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 set_target_properties(particle-test PROPERTIES AUTOMOC TRUE)
@@ -96,7 +96,7 @@ target_link_libraries(particle-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIB
 add_unit_test(particle-test)
 
 # cell-test
-file(GLOB SOURCES "test/cell-test.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/vecaxisym.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/scene.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp" "src/particle.cu" "src/scene.cu" "src/cell.cu")
+file(GLOB SOURCES "test/cell-test.cpp" "src/cell.cpp" "src/cell.cu" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/vec3d.cu" "src/vecaxisym.cpp" "src/boundary_planar.cpp" "src/boundary_planar.cu" "src/boundary_axissymmetric.cpp" "src/boundary_axissymmetric.cu" "src/minimum.cu" "src/scene.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp" "src/particle.cu" "src/scene.cu")
 add_executable(cell-test ${SOURCES} ${MOC_HEADERS})
 target_include_directories(cell-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 set_target_properties(cell-test PROPERTIES AUTOMOC TRUE)
@@ -105,7 +105,7 @@ target_link_libraries(cell-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARI
 add_unit_test(cell-test)
 
 # scene-test
-file(GLOB SOURCES "test/scene-test.cpp" "src/scene.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp" "src/particle.cu" "src/scene.cu" "src/cell.cu")
+file(GLOB SOURCES "test/scene-test.cpp" "src/scene.cpp" "src/cell.cpp" "src/cell.cu" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/vec3d.cu" "src/boundary_planar.cpp" "src/boundary_planar.cu" "src/boundary_axissymmetric.cpp" "src/boundary_axissymmetric.cu" "src/minimum.cu" "src/mainwindow.cpp" "src/customopenglwidget.cpp" "src/particle.cu" "src/scene.cu" "src/cell.cu")
 add_executable(scene-test ${SOURCES} ${MOC_HEADERS} ${UI})
 target_include_directories(scene-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 set_target_properties(scene-test PROPERTIES AUTOMOC TRUE)
@@ -114,7 +114,7 @@ target_link_libraries(scene-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRAR
 add_unit_test(scene-test)
 
 # boundary-test
-file(GLOB SOURCES "test/boundary-test.cpp" "src/scene.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/customopenglwidget.cpp" "src/mainwindow.cpp" "src/particle.cu" "src/scene.cu" "src/cell.cu")
+file(GLOB SOURCES "test/boundary-test.cpp" "src/scene.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cu" "src/customopenglwidget.cpp" "src/mainwindow.cpp" "src/particle.cu" "src/scene.cu" "src/cell.cu" "src/boundary_axissymmetric.cu"  "src/boundary_planar.cu"  "src/minimum.cu" "src/vec3d.cu")
 add_executable(boundary-test ${SOURCES} ${MOC_HEADERS} ${UI})
 target_include_directories(boundary-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}  ${Boost_INCLUDE_DIRS})
 set_target_properties(boundary-test PROPERTIES AUTOMOC TRUE)
@@ -131,21 +131,21 @@ set_target_properties(boundary-test-cuda PROPERTIES CUDA_SEPARABLE_COMPILATION O
 target_link_libraries(boundary-test-cuda ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
 add_unit_test(boundary-test-cuda)
 # minimum-test
-file(GLOB SOURCES "test/minimum-test.cpp" "src/minimum.cpp")
+file(GLOB SOURCES "test/minimum-test.cpp" "src/minimum.cu")
 add_executable(minimum-test ${SOURCES} )
 target_include_directories(minimum-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 target_link_libraries(minimum-test ${Boost_LIBRARIES})
 add_unit_test(minimum-test)
 
 # minimumdistance-test
-file(GLOB SOURCES "test/minimumdistance-test.cpp" "src/minimum.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/particle.cpp" "src/vector.cpp" "src/boundingbox.cpp" "src/particle.cu")
+file(GLOB SOURCES "test/minimumdistance-test.cpp" "src/minimum.cu" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/particle.cpp" "src/vector.cpp" "src/boundingbox.cpp" "src/particle.cu")
 add_executable(minimumdistance-test ${SOURCES} )
 target_include_directories(minimumdistance-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 target_link_libraries(minimumdistance-test ${Boost_LIBRARIES} Qt5::Widgets Qt5::Core Qt5::Gui ${OPENGL_LIBRARIES})
 add_unit_test(minimumdistance-test)
 
 # cuda-test
-add_executable(cuda-test ${CUDA_SOURCES} ${MOC_HEADERS} ${UI} "test/cuda-test.cpp" "src/scene.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp")
+add_executable(cuda-test ${CUDA_SOURCES} ${MOC_HEADERS} ${UI} "test/cuda-test.cpp" "src/scene.cpp" "src/cell.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cu" "src/mainwindow.cpp" "src/customopenglwidget.cpp")
 target_include_directories(cuda-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 set_target_properties(cuda-test PROPERTIES AUTOMOC TRUE)
 target_link_libraries(cuda-test ${Boost_LIBRARIES} Qt5::Widgets ${OPENGL_LIBRARIES})
@@ -185,7 +185,7 @@ if(TEST_THE_TEST)
 endif(TEST_THE_TEST)
 
 # object_size
-file(GLOB SOURCES "test/object_size.cpp" "src/vec3d.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp" "src/cell.cpp" "src/scene.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp" "src/scene.cu" "src/particle.cu" "src/cell.cu") #  "src/boundingbox.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cpp"
+file(GLOB SOURCES "test/object_size.cpp" "src/vec3d.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cu" "src/cell.cpp" "src/scene.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp" "src/scene.cu" "src/particle.cu" "src/cell.cu") #  "src/boundingbox.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cu"
 add_executable(object_size ${SOURCES} ${MOC_HEADERS} ${UI})
 target_include_directories(object_size PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 set_target_properties(object_size PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
