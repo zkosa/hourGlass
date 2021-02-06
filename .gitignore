@@ -14,6 +14,7 @@
 !include/*.cuh
 !src/*.cpp
 !src/*.cu
+!src/*.ui
 !test/*.h
 !test/*.cu
 !test/*.cpp
