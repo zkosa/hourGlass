@@ -130,7 +130,7 @@ BOOST_DATA_TEST_CASE( cuda_populateCells_test, number_of_particles_data, number_
 	prepareTest(sceneCuda, number_of_particles);
 	sceneCuda.hostToDevice();
 	sceneCuda.populateCellsCuda();
-	sceneCuda.deviceToHost();
+	sceneCuda.deviceToHost_Cells();
 	if (number_of_particles < print_limit) {
 		printResults(sceneCuda);
 	}

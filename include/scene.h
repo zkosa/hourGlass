@@ -93,6 +93,7 @@ public:
 
 	void hostToDevice();
 	void deviceToHost();
+	void deviceToHost_Cells();
 
 	float getSimulationTime() const {
 		return simulation_time;

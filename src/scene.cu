@@ -66,6 +66,30 @@ void Scene::deviceToHost() {
 	// TODO: unlock data on host
 }
 
+void Scene::deviceToHost_Cells() {
+
+	std::vector<int> host_number_of_particle_IDs_per_cell(N_cells);
+	CHECK_CUDA( cudaMemcpy( host_number_of_particle_IDs_per_cell.data(),
+				device_number_of_particle_IDs_per_cell,
+				sizeof(int)*N_cells,
+				cudaMemcpyDeviceToHost
+				) );
+
+	// copy the collected particle IDs into the cells in the device
+	// it is useful for testing, but the target is to keep everything on the device!
+	int array_index = 0;
+	for (int cell_ID=0; cell_ID<N_cells; cell_ID++) {
+		size_t number_of_elements = host_number_of_particle_IDs_per_cell[cell_ID];
+		cells[cell_ID].getParticleIDs().resize(number_of_elements);
+		CHECK_CUDA( cudaMemcpy( cells[cell_ID].getParticleIDs().data(),
+					device_particle_IDs_per_cell + array_index,
+					sizeof(int)*number_of_elements,
+					cudaMemcpyDeviceToHost
+					) );
+		array_index = array_index + number_of_elements;
+	}
+}
+
 __global__
 void get_number_of_particles_per_cell(
 		int number_of_particles, const Particle *p,
@@ -171,21 +195,6 @@ void Scene::populateCellsCuda() {
 			device_particle_IDs_per_cell, // output
 			device_indices_counter // output, for debugging
 			); CHECK_CUDA_POST
-/*
-	// copy the collected particle IDs into the cells in the device
-	// it is useful for testing, but the target is to keep everything on the device!
-	int array_index = 0;
-	for (int cell_ID=0; cell_ID<N_cells; cell_ID++) {
-		size_t number_of_elements = host_number_of_particle_IDs_per_cell[cell_ID];
-		cells[cell_ID].getParticleIDs().resize(number_of_elements);
-		CHECK_CUDA( cudaMemcpy( cells[cell_ID].getParticleIDs().data(),
-					device_particle_IDs_per_cell + array_index,
-					sizeof(int)*number_of_elements,
-					cudaMemcpyDeviceToHost
-					) );
-		array_index = array_index + number_of_elements;
-	}
-*/
 }
 
 void Scene::advanceCuda() {
