@@ -98,10 +98,10 @@ void get_number_of_particles_per_cell(
 		)
 {
 	// nested (2D) grid-stride loop
-	int index_particle = blockIdx.x * blockDim.x + threadIdx.x;
-	int stride_particle = blockDim.x * gridDim.x;
-	int index_cell = blockIdx.y * blockDim.y + threadIdx.y;
-	int stride_cell = blockDim.y * gridDim.y;
+	int index_cell = blockIdx.x * blockDim.x + threadIdx.x;
+	int stride_cell = blockDim.x * gridDim.x;
+	int index_particle= blockIdx.y * blockDim.y + threadIdx.y;
+	int stride_particle = blockDim.y * gridDim.y;
 
 	for (int i_c = index_cell;
 		i_c < number_of_cells;
@@ -128,10 +128,10 @@ void get_particle_IDs_in_cells(
 		)
 {
 	// nested (2D) grid-stride loop
-	int index_particle = blockIdx.x * blockDim.x + threadIdx.x;
-	int stride_particle = blockDim.x * gridDim.x;
-	int index_cell = blockIdx.y * blockDim.y + threadIdx.y;
-	int stride_cell = blockDim.y * gridDim.y;
+	int index_cell = blockIdx.x * blockDim.x + threadIdx.x;
+	int stride_cell = blockDim.x * gridDim.x;
+	int index_particle = blockIdx.y * blockDim.y + threadIdx.y;
+	int stride_particle = blockDim.y * gridDim.y;
 
 	for (int i_c = index_cell;
 		i_c < number_of_cells;
@@ -154,8 +154,8 @@ void Scene::populateCellsCuda() {
 
 	int N_particles = particles.size();
 
-	dim3 threads(std::min(N_cells, 1024), 1); // all cells are within a block with usual number of cells
-	dim3 blocks((N_cells + threads.x - 1)/threads.x, (N_particles + threads.y - 1)/threads.y);
+	dim3 threads(1, std::min(N_cells, 1024)); // all cells are within a block with usual number of cells
+	dim3 blocks((N_particles + threads.x - 1)/threads.x, (N_cells + threads.y - 1)/threads.y);
 	// std::cout << blocks.x << "x" << blocks.y << " X " << threads.x << "x" << threads.y << std::endl;
 
 	CHECK_CUDA( cudaMalloc((void **)&device_number_of_particle_IDs_per_cell, sizeof(int)*N_cells) );
