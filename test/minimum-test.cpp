@@ -1,6 +1,4 @@
-//#include "devtools.h"
-//#include "constants.h"
-//#include "minimum.h"
+#include "devtools.h"
 
 //#define BOOST_TEST_TOOLS_UNDER_DEBUGGER // it can deactivate the tolerance!!!
 #define BOOST_TEST_DYN_LINK
@@ -10,12 +8,9 @@
 #include <boost/array.hpp>
 
 
-float vertex_height = 0.2;
 float X_offset = 0.1;
 
-//template<typename T> using constFunctionHandler = float(T::*)(float) const;
 #include "functionhandler.h"
-
 #include "minimumdistance.h"
 #include "minimum.h"
 
@@ -54,7 +49,6 @@ BOOST_DATA_TEST_CASE( parabola_minimum_test, guess_data, guess_ )
 	BOOST_TEST_REQUIRE( root == truth, tolerance );
 }
 
-/*
 // same result is expected with various starting values
 static const boost::array< float, 7 > guess_data_cos{
 	-0.5f, -0.1f, -1e-5f, 0.0f, 1e-6f, 0.5f, 0.9f*pi/4.0f }; // 0.9f*pi/2.0f would find other minimum
@@ -142,11 +136,11 @@ BOOST_DATA_TEST_CASE( cos_minimum_setTolerance_test, guess_data_cos, guess_ )
 	root = curve_minimum.findRoot();
 	watch( curve_minimum.getPerformedIterations() );
 	BOOST_TEST_REQUIRE( root == truth, boost::test_tools::tolerance( float(curve_minimum.getTolerance()) ) );
-/*
-	// precision limit is reached, the new X_new is the same as the old one
-	curve_minimum.setTolerance(1e-7f);
-	root = curve_minimum.findRoot();
-	watch( curve_minimum.getPerformedIterations() );
-	BOOST_TEST_REQUIRE( root == truth, boost::test_tools::tolerance( float(curve_minimum.getTolerance()) ) );
-*/
+
+//	// precision limit is reached, the new X_new is the same as the old one
+//	curve_minimum.setTolerance(1e-7f);
+//	root = curve_minimum.findRoot();
+//	watch( curve_minimum.getPerformedIterations() );
+//	BOOST_TEST_REQUIRE( root == truth, boost::test_tools::tolerance( float(curve_minimum.getTolerance()) ) );
+
 }
