@@ -138,9 +138,10 @@ target_link_libraries(minimum-test ${Boost_LIBRARIES})
 add_unit_test(minimum-test)
 
 # minimumdistance-test
-file(GLOB SOURCES "test/minimumdistance-test.cpp" "src/minimum.cu" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/particle.cpp" "src/vector.cpp" "src/boundingbox.cpp" "src/particle.cu")
+file(GLOB SOURCES "test/minimumdistance-test.cpp" "src/minimum.cu" "src/vec3d.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/particle.cu" "src/vec3d.cu")
 add_executable(minimumdistance-test ${SOURCES} )
 target_include_directories(minimumdistance-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
+set_target_properties(minimumdistance-test PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 target_link_libraries(minimumdistance-test ${Boost_LIBRARIES} Qt5::Widgets Qt5::Core Qt5::Gui ${OPENGL_LIBRARIES})
 add_unit_test(minimumdistance-test)
 
