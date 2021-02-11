@@ -186,7 +186,7 @@ if(TEST_THE_TEST)
 endif(TEST_THE_TEST)
 
 # object_size
-file(GLOB SOURCES "test/object_size.cpp" "src/vec3d.cpp" "src/particle.cpp" "src/boundingbox.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cu" "src/cell.cpp" "src/scene.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp" "src/scene.cu" "src/particle.cu" "src/cell.cu") #  "src/boundingbox.cpp" "src/boundary_planar.cpp" "src/boundary_axissymmetric.cpp" "src/minimum.cu"
+file(GLOB SOURCES "test/object_size.cpp" "src/vec3d.cpp" "src/vec3d.cu" "src/particle.cpp" "src/boundingbox.cpp" "src/boundary_planar.cpp" "src/boundary_planar.cu" "src/boundary_axissymmetric.cpp" "src/boundary_axissymmetric.cu" "src/minimum.cu" "src/cell.cpp" "src/scene.cpp" "src/mainwindow.cpp" "src/customopenglwidget.cpp" "src/scene.cu" "src/particle.cu" "src/cell.cu")
 add_executable(object_size ${SOURCES} ${MOC_HEADERS} ${UI})
 target_include_directories(object_size PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 set_target_properties(object_size PROPERTIES CUDA_SEPARABLE_COMPILATION ON)

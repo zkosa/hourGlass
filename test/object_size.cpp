@@ -13,16 +13,16 @@ int main() {
 	Vec3d v;
 	std::cout << "Vec3d:                  " << sizeof(v) << " B" << std::endl;
 
-	Particle p(v, 0.005f);
+	const Particle p(v, 0.005f);
 	std::cout << "Particle:               " << sizeof(p) << " B" << std::endl;
 
 	Cell c(v);
 	std::cout << "Cell:                   " << sizeof(c) << " B" << std::endl;
 
-	Boundary_axissymmetric hourglass;
+	const Boundary_axissymmetric hourglass;
 	std::cout << "Boundary_axissymmetric: " << sizeof(hourglass) << " B" << std::endl;
 
-	MinimumDistance md(hourglass, p);
+	MinimumDistance md(&hourglass, &p);
 	std::cout << "MinimumDistance:        " << sizeof(md) << " B" << std::endl;
 
 	Scene s;
