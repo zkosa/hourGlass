@@ -21,16 +21,16 @@ class Boundary_axissymmetric: public Boundary {
 
 public:
 
-	bool operator==(const Boundary &other) const override;
+	bool operator==(const Boundary &other) const override final;
 
 	float distance(const Vec3d &point) const;
-	float distance(const Particle &particle) const override;
+	float distance(const Particle &particle) const override final;
 	float distanceSigned(const Vec3d &point) const;
-	float distanceSigned(const Particle &particle) const override;
+	float distanceSigned(const Particle &particle) const override final;
 
-	void draw2D() override;
+	void draw2D() override final;
 
-	Vec3d getNormal(const Particle &particle) const override;
+	Vec3d getNormal(const Particle &particle) const override final;
 	Vec3d getNormalNumDiff(const Vec3d &curve_point) const;
 
 	const Vec3d& getAxis() const {
