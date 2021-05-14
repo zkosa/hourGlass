@@ -294,7 +294,7 @@ void Scene::collideWithBoundaries() {
 void Scene::collideWithBoundariesCells() {
 
 	// collect them into vector to avoid execution of collision in different cells
-	std::vector<std::pair<Particle&, Boundary&>> to_be_collided;
+	std::vector<std::pair<Particle&, const Boundary&>> to_be_collided;
 
 	// although particles may be contained in multiple cells at the same time,
 	// we can still save time via a cell-wise approach, by excluding cells without boundaries
@@ -302,13 +302,13 @@ void Scene::collideWithBoundariesCells() {
 		if (c.hasBoundary()) {
 			for (int pID : c.getParticleIDs()) {
 				auto &p = particles[pID];
-				for (auto &b : boundaries_pl) {
+				for (const auto &b : boundaries_pl) {
 					if (b.distance(p) < p.getR()) {
 						//p.collideToWall(b);
 						to_be_collided.emplace_back(p, b);
 					}
 				}
-				for (auto &b : boundaries_ax) {
+				for (const auto &b : boundaries_ax) {
 					if (b.distance(p) < p.getR()) {
 						//p.collideToWall(b);
 						to_be_collided.emplace_back(p, b);
@@ -413,12 +413,12 @@ void Scene::markBoundaryCells() {
 
 	for (auto &c : cells) {
 		c.setCellWithoutBoundary(); // clear values before update
-		for (auto &b : boundaries_pl) {
+		for (const auto &b : boundaries_pl) {
 			if (c.contains(b)) {
 				c.setCellWithBoundary();
 			}
 		}
-		for (auto &b : boundaries_ax) {
+		for (const auto &b : boundaries_ax) {
 			if (c.contains(b)) {
 				c.setCellWithBoundary();
 			}

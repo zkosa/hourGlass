@@ -263,12 +263,12 @@ Vec3d Particle::overlapVectorWithWalls() {
 	// returns the overlapVector to the first boundary that is overlapped
 	// start with planar boundaries, because those are cheaper to be checked
 
-	for(auto b: scene->getBoundariesPlanar()) {
+	for(const auto& b: scene->getBoundariesPlanar()) {
 		if (overlapWithWall(b)) {
 			return overlapVectorWithWall(b);
 		}
 	}
-	for(auto b: scene->getBoundariesAxiSym()) {
+	for(const auto& b: scene->getBoundariesAxiSym()) {
 		if (overlapWithWall(b)) {
 			return overlapVectorWithWall(b);
 		}
