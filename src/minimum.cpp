@@ -1,3 +1,4 @@
+#include <cmath>
 #include "minimum.h"
 
 float Minimum::tolerance = 1e-5f;
