@@ -21,7 +21,7 @@ class Minimum {
 
 public:
 
-	Minimum(std::function<float(float)> _function) :
+	Minimum(const std::function<float(float)>& _function) :
 			function(_function) {
 	}
 

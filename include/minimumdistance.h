@@ -36,7 +36,7 @@ class MinimumDistance {
 	}
 
 public:
-	MinimumDistance(std::function<float(float)> contour, const Vec3d& point) :
+	MinimumDistance(const std::function<float(float)>& contour, const Vec3d& point) :
 		point(point),
 		contour(contour),
 		function( std::bind(&MinimumDistance::distance2, this, std::placeholders::_1) ),
