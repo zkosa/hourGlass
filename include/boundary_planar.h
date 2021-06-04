@@ -20,19 +20,19 @@ public:
 		planar = true;
 	}
 
-	bool operator==(const Boundary &other) const override final;
+	bool operator==(const Boundary &other) const final;
 
 	float distance(const Vec3d &point) const;
-	float distance(const Particle &particle) const override final;
+	float distance(const Particle &particle) const final;
 	float distanceSigned(const Vec3d &point) const;
-	float distanceSigned(const Particle &particle) const override final;
+	float distanceSigned(const Particle &particle) const final;
 
-	void draw2D() override final;
+	void draw2D() final;
 
 	Vec3d getNormal() const {
 		return normal;
 	}
-	Vec3d getNormal(const Particle &particle) const override final {
+	Vec3d getNormal(const Particle &particle) const final {
 		return normal;
 	} // argument is not used, only to conform virtual function
 
