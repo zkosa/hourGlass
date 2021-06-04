@@ -10,8 +10,8 @@ class Scene;
 class Particle {
 private:
 
-	Vec3d pos { 0.0, 1.0, 0.0 };
-	Vec3d vel { 0.0, 0.0, 0.0 };
+	Vec3d pos { 0.0f, 1.0f, 0.0f };
+	Vec3d vel { 0.0f, 0.0f, 0.0f };
 	Vec3d acc = gravity;
 
 	int ID = -1;
@@ -20,14 +20,14 @@ private:
 	static Scene *scene;
 
 	static int last_ID;
-	static constexpr float density = 2700.0; // kg/m3
-	static constexpr float density_medium = 1.0; // air kg/m3
+	static constexpr float density = 2700.0f; // kg/m3
+	static constexpr float density_medium = 1.0f; // air kg/m3
 	static float restitution_coeff;
 	static float drag_coefficient; // non-const can not be initialized in the declaration
 	static float uniform_radius;
 	float radius = uniform_radius;
 	float volume() const {
-		return radius * radius * radius * pi * 4.0 / 3.0;
+		return radius * radius * radius * pi * 4.0f / 3.0f;
 	}
 	float mass() const {
 		return volume() * density;

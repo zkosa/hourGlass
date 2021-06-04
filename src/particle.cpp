@@ -12,17 +12,17 @@ Vec3d Particle::force_field = gravity;
 
 Scene *Particle::scene = nullptr;
 
-float Particle::drag_coefficient = 0.5; // non-constexpr static members must be initialized in the definition
+float Particle::drag_coefficient = 0.5f; // non-constexpr static members must be initialized in the definition
 
-float Particle::restitution_coeff = 0.5;
+float Particle::restitution_coeff = 0.5f;
 
-float Particle::uniform_radius = 0.005;
+float Particle::uniform_radius = 0.005f;
 
 void Particle::advance(float dt) {
 	// velocity Verlet integration:
-	const Vec3d new_pos = pos + vel * dt + acc * dt * dt * 0.5;
+	const Vec3d new_pos = pos + vel * dt + acc * dt * dt * 0.5f;
 	const Vec3d new_acc = apply_forces();
-	const Vec3d new_vel = vel + 0.5 * (acc + new_acc) * dt;
+	const Vec3d new_vel = vel + 0.5f * (acc + new_acc) * dt;
 
 	pos = new_pos;
 	vel = new_vel;
@@ -30,12 +30,12 @@ void Particle::advance(float dt) {
 }
 
 float Particle::kineticEnergy() const {
-	return vel * vel * (mass() / 2);
+	return vel * vel * (mass() / 2.0f);
 }
 
 float Particle::potentialEnergy() const {
 	//return mass * (gravity * (pos + Vec3d(0,1,0)));
-	return mass() * g * (pos.y + 1);
+	return mass() * g * (pos.y + 1.0f);
 }
 
 float Particle::energy() const {
@@ -47,7 +47,7 @@ Vec3d Particle::impulse() const {
 }
 
 Vec3d Particle::apply_forces() {
-	const Vec3d drag_force = -0.5 * density_medium * CdA() * (vel * abs(vel));
+	const Vec3d drag_force = -0.5f * density_medium * CdA() * (vel * abs(vel));
 	const Vec3d drag_acc = drag_force / mass(); // a = F/m
 
 	return gravity + drag_acc;
@@ -68,43 +68,43 @@ void Particle::draw2D() const {
 	constexpr GLfloat twicePi = 2.0f * pi;
 
 	int number_of_triangles; //# of triangles used to draw circle
-	if (display_radius < 0.002) {
+	if (display_radius < 0.002f) {
 		number_of_triangles = 6;
-	} else if (display_radius < 0.01) {
+	} else if (display_radius < 0.01f) {
 		number_of_triangles = 10;
-	} else if (display_radius < 0.05) {
+	} else if (display_radius < 0.05f) {
 		number_of_triangles = 15;
 	} else {
 		number_of_triangles = 20;
 	}
 
-	glColor4f(0.86, 0.72, 0.39, 1); // "sand"
+	glColor4f(0.86f, 0.72f, 0.39f, 1.0f); // "sand"
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex2f(pos.x, pos.y); // center of circle
 	for (int i = 0; i <= number_of_triangles; i++) {
 		glVertex2f(
 				pos.x
 						+ (display_radius
-								* cos(i * twicePi / number_of_triangles)),
+								* cos(static_cast<float>(i) * twicePi / static_cast<float>(number_of_triangles))),
 				pos.y
 						+ (display_radius
-								* sin(i * twicePi / number_of_triangles)));
+								* sin(static_cast<float>(i) * twicePi / static_cast<float>(number_of_triangles))));
 	}
 	glEnd();
-	glColor4f(1, 1, 1, 1); // reset color
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f); // reset color
 }
 
 void Particle::collideToWall(const Boundary &wall) {
 
 	const Vec3d n = wall.getNormal(*this);
 
-	Vec3d pos_corr { 0, 0, 0 };
+	Vec3d pos_corr { 0.0f, 0.0f, 0.0f };
 	if (std::abs(n * vel) > SMALL && wall.isPlanar()) { // not parallel, and moving
 		// Move outwards along the incoming velocity vector so,
 		// that the normal correction component equals to the overlap,
 		// This doesn't ensure overlap-less corrected position for curved surfaces,
 		// so it is performed only for planar boundaries
-		pos_corr = (radius - wall.distanceSigned(*this)) / std::abs(n * vel) * vel * (-1);
+		pos_corr = (radius - wall.distanceSigned(*this)) / std::abs(n * vel) * vel * (-1.0f);
 	} else {
 		// If there is no wall normal movement,
 		// move in surface normal direction to the touching position
@@ -118,7 +118,7 @@ void Particle::collideToWall(const Boundary &wall) {
 	correctVelocity(pos_corr);
 
 	// revert the wall normal velocity component
-	vel = vel - (1 + Particle::restitution_coeff) * (vel * n) * n;
+	vel = vel - (1.0f + Particle::restitution_coeff) * (vel * n) * n;
 }
 
 void Particle::collideToParticle(Particle &other) {
@@ -135,7 +135,7 @@ void Particle::collideToParticle(Particle &other) {
 	n = norm(n); // normalize
 
 	// move back to the positions where they just touched the other:
-	const Vec3d pos_corr = -0.5 * n * (this->getR() + other.getR() - distance);
+	const Vec3d pos_corr = -0.5f * n * (this->getR() + other.getR() - distance);
 	this->move(pos_corr);
 	other.move(-pos_corr);
 
@@ -159,7 +159,7 @@ void Particle::collideToParticle_checkBoundary(Particle &other) {
 	n = norm(n); // normalize
 
 	// necessary correction to reach touching position
-	Vec3d pos_corr = -0.5 * n * (this->getR() + other.getR() - distance);
+	Vec3d pos_corr = -0.5f * n * (this->getR() + other.getR() - distance);
 
 	// create temporary particles with the planned correction, for overlap checking
 	Particle tmp_particle(*this);
@@ -205,10 +205,10 @@ void Particle::collideToParticle_checkBoundary(Particle &other) {
 
 void Particle::correctVelocity(const Vec3d &pos_corr) {
 	// correct the velocity to conserve energy (dissipation work is not considered!)
-	if (vel * vel + 2 * gravity * pos_corr >= 0.0) {
-		vel = std::sqrt(vel * vel + 2 * gravity * pos_corr) * norm(vel);
+	if (vel * vel + 2.0f * gravity * pos_corr >= 0.0f) {
+		vel = std::sqrt(vel * vel + 2.0f * gravity * pos_corr) * norm(vel);
 	} else {
-		vel = -std::sqrt(-(vel * vel + 2 * gravity * pos_corr)) * norm(vel);
+		vel = -std::sqrt(-(vel * vel + 2.0f * gravity * pos_corr)) * norm(vel);
 	}
 }
 
@@ -221,18 +221,18 @@ void Particle::exchangeImpulse(Particle &other) {
 	vel = vel_old - n * (n * vel_old)
 			+ (mass() - other.mass()) / (mass() + other.mass()) * n
 					* (vel_old * n)
-			+ 2 * other.mass() / (mass() + other.mass()) * n
+			+ 2.0f * other.mass() / (mass() + other.mass()) * n
 					* (other.getV() * n);
 
 	other.setV(
 			other.getV() - n * (other.getV() * n)
-					+ 2 * mass() / (other.getM() + mass()) * n * (vel_old * n)
+					+ 2.0f * mass() / (other.getM() + mass()) * n * (vel_old * n)
 					+ (other.mass() - mass()) / (other.mass() + mass()) * n
 							* (other.getV() * n));
 }
 
 bool Particle::overlapWithWall(const Boundary &wall) const {
-	if (wall.distance(*this) - radius < 0) {
+	if (wall.distance(*this) - radius < 0.0f) {
 		return true;
 	} else {
 		return false;
@@ -284,14 +284,14 @@ void Particle::size() const {
 
 float Particle::terminalVelocity() const {
 	// equilibrium velocity, where drag cancels the gravitation force
-	return std::sqrt(2 * mass() * abs(gravity) / CdA() / density_medium);
+	return std::sqrt(2.0f * mass() * abs(gravity) / CdA() / density_medium);
 }
 
 float Particle::maxFreeFallVelocity() const {
 	// The velocity which can be reached by gravitational acceleration within the domain.
 	// domain height along the gravity vector:
 	const float h = std::abs(scene->getBoundingBox().diagonal() * norm(gravity));
-	return std::sqrt(2 * abs(gravity) * h);
+	return std::sqrt(2.0f * abs(gravity) * h);
 }
 
 float Particle::maxVelocity() const {

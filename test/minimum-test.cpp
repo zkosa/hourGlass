@@ -26,8 +26,8 @@ BOOST_DATA_TEST_CASE( parabola_minimum_test, guess_data, guess_ )
 
 	Minimum curve_minimum(parabola);
 
-	//auto tolerance = boost::test_tools::tolerance( float(3.0f * Minimum::getTolerance()) );
-	auto tolerance = boost::test_tools::tolerance( float(3e-05f) );
+	//auto tolerance = boost::test_tools::tolerance( 3.0f * Minimum::getTolerance() );
+	auto tolerance = boost::test_tools::tolerance( 3e-05f );
 	// changing the tolerance does not effect the result, only the number of iterations. hmmm...
 	//curve_minimum.setTolerance(1e-9f);
 	float guess = guess_;
@@ -58,7 +58,7 @@ BOOST_DATA_TEST_CASE( cos_minimum_test, guess_data_cos, guess_ )
 
 	Minimum curve_minimum(negCosine);
 
-	auto tolerance = boost::test_tools::tolerance( float(3e-05f) );
+	auto tolerance = boost::test_tools::tolerance( 3e-05f );
 	// changing the tolerance does not effect the result, only the number of iterations. hmmm...
 	//curve_minimum.setTolerance(1e-9f);
 	float guess = guess_;
@@ -80,7 +80,7 @@ BOOST_DATA_TEST_CASE( cos_minimum_offset_test, guess_data_cos, guess_ )
 	Minimum curve_minimum(negCosine);
 
 	float offset = 2.0f * pi;
-	auto tolerance = boost::test_tools::tolerance( float(3e-05f) );
+	auto tolerance = boost::test_tools::tolerance( 3e-05f );
 	float guess = guess_ + offset;
 	float root = curve_minimum.findRoot(guess);
 	float truth = 0.0f + offset;
@@ -96,7 +96,7 @@ BOOST_DATA_TEST_CASE( cos_minimum_offset_setGuess_test, guess_data_cos, guess_ )
 	Minimum curve_minimum(negCosine);
 
 	float offset = 2.0f * pi;
-	auto tolerance = boost::test_tools::tolerance( float(3e-05f) );
+	auto tolerance = boost::test_tools::tolerance( 3e-05f );
 	float guess = guess_ + offset;
 	curve_minimum.setInitialGuess(guess);
 	curve_minimum.setTolerance(1e-5f);
@@ -121,17 +121,17 @@ BOOST_DATA_TEST_CASE( cos_minimum_setTolerance_test, guess_data_cos, guess_ )
 	curve_minimum.setTolerance(1e-3f);
 	root = curve_minimum.findRoot();
 	watch( curve_minimum.getPerformedIterations() );
-	BOOST_TEST_REQUIRE( root == truth, boost::test_tools::tolerance( float(curve_minimum.getTolerance()) ) );
+	BOOST_TEST_REQUIRE( root == truth, boost::test_tools::tolerance( curve_minimum.getTolerance() ) );
 
 	curve_minimum.setTolerance(1e-5f);
 	root = curve_minimum.findRoot();
 	watch( curve_minimum.getPerformedIterations() );
-	BOOST_TEST_REQUIRE( root == truth, boost::test_tools::tolerance( float(curve_minimum.getTolerance()) ) );
+	BOOST_TEST_REQUIRE( root == truth, boost::test_tools::tolerance( curve_minimum.getTolerance() ) );
 /*
 	// precision limit is reached, the new X_new is the same as the old one
 	curve_minimum.setTolerance(1e-7f);
 	root = curve_minimum.findRoot();
 	watch( curve_minimum.getPerformedIterations() );
-	BOOST_TEST_REQUIRE( root == truth, boost::test_tools::tolerance( float(curve_minimum.getTolerance()) ) );
+	BOOST_TEST_REQUIRE( root == truth, boost::test_tools::tolerance( curve_minimum.getTolerance() ) );
 */
 }

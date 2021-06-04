@@ -24,43 +24,43 @@ void Scene::createGeometry(Geometry geometry) {
 	boundaries_pl.clear();
 	boundaries_ax.clear();
 
-	constexpr float corner = 0.999;
+	constexpr float corner = 0.999f;
 
 	if (geometry == Geometry::hourglass ||
 		geometry == Geometry::hourglass_with_removable_orifice)
 	{
-		const Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, -corner, 0),
-				Vec3d(-1, -corner, 1));
+		const Boundary_planar ground(Vec3d(-1.0f, -corner, 0.0f), Vec3d(1.0f, -corner, 0.0f),
+				Vec3d(-1.0f, -corner, 1.0f));
 		const Boundary_axissymmetric glass;
 
 		boundaries_pl.push_back(ground);
 		boundaries_ax.push_back(glass);
 		if (geometry == Geometry::hourglass_with_removable_orifice) {
-			Boundary_planar temporary_orifice(Vec3d(-0.07, 0, 0),
-					Vec3d(0.07, 0, 0), Vec3d(-0.07, 0, 1));
+			Boundary_planar temporary_orifice(Vec3d(-0.07f, 0.0f, 0.0f),
+					Vec3d(0.07f, 0.0f, 0.0f), Vec3d(-0.07f, 0.0f, 1.0f));
 			temporary_orifice.setTemporary();
 			boundaries_pl.push_back(temporary_orifice);
 		}
 
 	} else if (geometry == Geometry::box) {
-		const Boundary_planar slope(Vec3d(-corner, -corner, 0), Vec3d(corner, 0, 0),
-				Vec3d(-corner, -corner, 1));
-		const Boundary_planar side_wall_left(Vec3d(-corner, -corner, 0),
-				Vec3d(-corner, corner, 0), Vec3d(-corner, -corner, -1));
-		const Boundary_planar side_wall_right(Vec3d(corner, 0, 0),
-				Vec3d(corner, corner, 0), Vec3d(corner, 0, 1));
+		const Boundary_planar slope(Vec3d(-corner, -corner, 0.0f), Vec3d(corner, 0.0f, 0.0f),
+				Vec3d(-corner, -corner, 1.0f));
+		const Boundary_planar side_wall_left(Vec3d(-corner, -corner, 0.0f),
+				Vec3d(-corner, corner, 0.0f), Vec3d(-corner, -corner, -1.0f));
+		const Boundary_planar side_wall_right(Vec3d(corner, 0.0f, 0.0f),
+				Vec3d(corner, corner, 0.0f), Vec3d(corner, 0.0f, 1.0f));
 
 		boundaries_pl.push_back(slope);
 		boundaries_pl.push_back(side_wall_left);
 		boundaries_pl.push_back(side_wall_right);
 
 	} else if (geometry == Geometry::test) {
-		const Boundary_planar ground(Vec3d(-1, -corner, 0), Vec3d(1, -corner, 0),
-						Vec3d(-1, -corner, 1));
+		const Boundary_planar ground(Vec3d(-1.0f, -corner, 0.0f), Vec3d(1.0f, -corner, 0.0f),
+						Vec3d(-1.0f, -corner, 1.0f));
 		const Boundary_planar side_wall_left(Vec3d(-corner, -corner, 0),
-				Vec3d(-corner, corner, 0), Vec3d(-corner, -corner, -1));
-		const Boundary_planar side_wall_right(Vec3d(corner, -corner, 0),
-				Vec3d(corner, corner, 0), Vec3d(corner, -corner, 1));
+				Vec3d(-corner, corner, 0.0f), Vec3d(-corner, -corner, -1.0f));
+		const Boundary_planar side_wall_right(Vec3d(corner, -corner, 0.0f),
+				Vec3d(corner, corner, 0.0f), Vec3d(corner, -corner, 1.0f));
 
 		boundaries_pl.push_back(ground);
 		boundaries_pl.push_back(side_wall_left);
@@ -79,7 +79,7 @@ void Scene::setVeloThreeParticlesTest() {
 	// check, whether the context is appropriate
 	if( geometry == Geometry::test && getNumberOfParticles() == 3 ) {
 		const int particle_diameter_mm = 50;
-		const float r = particle_diameter_mm / 1000. / 2.; // int [mm] --> float [m], diameter --> radius
+		const float r = particle_diameter_mm / 1000.0f / 2.0f; // int [mm] --> float [m], diameter --> radius
 		Particle::setUniformRadius(r);
 		const float vx = 10.0f;
 		// left particle:
@@ -376,8 +376,8 @@ void Scene::createCells() {
 	const int Ny = Cell::getNy();
 	const int Nz = Cell::getNz();
 
-	const float dx = bounding_box.diagonal().x / Nx;
-	const float dy = bounding_box.diagonal().y / Ny;
+	const float dx = bounding_box.diagonal().x / static_cast<float>(Nx);
+	const float dy = bounding_box.diagonal().y / static_cast<float>(Ny);
 	const float dz = 0.0f; //dy; // bounding_box.diagonal().z / Nz;// 2D: keep the third dimension small !!!
 
 	Cell::setDX(Vec3d(dx, dy, dz));
@@ -394,9 +394,9 @@ void Scene::createCells() {
 	for (int i = 0; i < Nx; ++i) {
 		for (int j = 0; j < Ny + extra_layers_on_top; ++j) {
 			for (int k = 0; k < Nz; ++k) {
-				cell_center.x = corner1.x + dx * (i + 0.5);
-				cell_center.y = corner1.y + dy * (j + 0.5);
-				cell_center.z = 0.0; //corner1.z + dz * (k + 0.5);  // 2D workaround
+				cell_center.x = corner1.x + dx * (i + 0.5f);
+				cell_center.y = corner1.y + dy * (j + 0.5f);
+				cell_center.z = 0.0f; //corner1.z + dz * (k + 0.5f);  // 2D workaround
 
 				cells.emplace_back(cell_center);
 			}
@@ -435,7 +435,7 @@ bool Scene::pointIsExternal(const Boundary_axissymmetric &b,
 			point - (point * norm(b.getAxis())) * norm(b.getAxis()));
 	// tuning factor for marking also those cells where all points are external,
 	// but there is still interference with a boundary:
-	point_radius *= 1.0;
+	//point_radius *= 1.0f;
 
 	if (point_radius > contour_radius) {
 		return true;
@@ -572,20 +572,20 @@ void Scene::addParticles(int N, float y, float r, bool randomize_y) {
 	std::uniform_int_distribution<> distr(-number_of_distinct_random,
 			number_of_distinct_random); // define the range
 
-	const float corner = 0.999;
+	const float corner = 0.999f;
 	float x;
 	float random_y;
 	for (int i = 0; i < N; i++) {
-		x = -corner * 0.99 + i * (2 * corner * 0.99) / N;
+		x = -corner * 0.99f + static_cast<float>(i) * (2.0f * corner * 0.99f) / static_cast<float>(N);
 
 		if (randomize_y) {
-			random_y = float(distr(eng)) / number_of_distinct_random;
+			random_y = static_cast<float>(distr(eng)) / static_cast<float>(number_of_distinct_random);
 		} else {
-			random_y = 0;
+			random_y = 0.0f;
 		}
 
-		const Vec3d pos(x, y * (1 + random_y / 200.), 0);
-		const Vec3d vel(0,0,0);
+		const Vec3d pos(x, y * (1.0f + random_y / 200.0f), 0.0f);
+		const Vec3d vel(0.0f, 0.0f, 0.0f);
 		const Particle p(pos, vel, r);
 
 		addParticle(p);
@@ -594,7 +594,7 @@ void Scene::addParticles(int N, float y, float r, bool randomize_y) {
 }
 
 float Scene::energy() const {
-	float energy = 0;
+	float energy = 0.0f;
 	for (auto &p : particles) {
 		energy += p.energy();
 	}
@@ -602,7 +602,7 @@ float Scene::energy() const {
 }
 
 Vec3d Scene::impulse() const {
-	Vec3d impulse { 0, 0, 0 };
+	Vec3d impulse { 0.0f, 0.0f, 0.0f };
 	for (auto &p : particles) {
 		impulse = impulse + p.impulse();
 	}
@@ -666,7 +666,7 @@ void Scene::reset() {
 	finished = false;
 	std::cout << "Resetting..." << std::endl;
 
-	simulation_time = 0;
+	simulation_time = 0.0f;
 
 	boundaries_ax.clear();
 	boundaries_pl.clear();
@@ -689,7 +689,7 @@ void Scene::applyDefaults() {
 	Cell::setNy(defaults.Ny);
 	Cell::setNz(defaults.Nz);
 	setNumberOfParticles(defaults.number_of_particles);
-	Particle::setUniformRadius(0.5 * defaults.particle_diameter);
+	Particle::setUniformRadius(0.5f * defaults.particle_diameter);
 	Particle::setCd(defaults.Cd);
 }
 

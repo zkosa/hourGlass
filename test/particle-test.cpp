@@ -15,9 +15,9 @@
 
 BOOST_AUTO_TEST_CASE( construction_test )
 {
-	float r = 0.005;
-	Vec3d pos(0,0,0);
-	Vec3d vel(-1,0,0);
+	float r = 0.005f;
+	Vec3d pos(0.0f, 0.0f, 0.0f);
+	Vec3d vel(-1.0f, 0.0f, 0.0f);
 
 	Particle p1(pos - r*Vec3d::i, vel, r);
 	Particle p2(p1);
@@ -29,17 +29,17 @@ BOOST_AUTO_TEST_CASE( construction_test )
 	BOOST_TEST_REQUIRE( p1.getCd() == p2.getCd() );
 	BOOST_TEST_REQUIRE( p1.getID() == p2.getID() );
 
-	p1.setV(2*vel);
-	BOOST_TEST_REQUIRE( p1.getV() == 2*vel );
+	p1.setV(2.0f*vel);
+	BOOST_TEST_REQUIRE( p1.getV() == 2.0f*vel );
 }
 
 BOOST_AUTO_TEST_CASE( ID_test )
 {
 	Particle::resetLastID();
 
-	float r = 0.005;
-	Vec3d pos(0,0,0);
-	Vec3d vel(-1,0,0);
+	float r = 0.005f;
+	Vec3d pos(0.0f, 0.0f, 0.0f);
+	Vec3d vel(-1.0f, 0.0f, 0.0f);
 /*
 	Particle p0();
 	// it has the default ID:
@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE( ID_test )
 	scene.addParticles(2, 0.0f, r);
 	auto ps = scene.getParticles();
 	for (std::size_t i = 0; i < ps.size(); i++) {
-		BOOST_TEST_REQUIRE( ps[i].getID() == int(i) );
+		BOOST_TEST_REQUIRE( ps[i].getID() == static_cast<int>(i) );
 	}
 
 	Particle p0{pos, vel, r};
@@ -71,8 +71,8 @@ BOOST_AUTO_TEST_CASE( ID_test )
 
 BOOST_AUTO_TEST_CASE( move_test )
 {
-	Vec3d pos(0,0,0);
-	Vec3d movement(-1,0,0);
+	Vec3d pos(0.0f, 0.0f, 0.0f);
+	Vec3d movement(-1.0f, 0.0f, 0.0f);
 
 	Particle p1(pos);
 	Particle p2(p1);
@@ -84,9 +84,9 @@ BOOST_AUTO_TEST_CASE( move_test )
 BOOST_AUTO_TEST_CASE( self_collision_test )
 {
 	// Nothing should change when the particle collides to itself
-	float r = 0.005;
-	Vec3d pos(0,0,0);
-	Vec3d vel(-1,0,0);
+	float r = 0.005f;
+	Vec3d pos(0.0f, 0.0f, 0.0f);
+	Vec3d vel(-1.0f, 0.0f, 0.0f);
 
 	Particle p1(pos, vel, r);
 
@@ -98,9 +98,9 @@ BOOST_AUTO_TEST_CASE( self_collision_test )
 
 BOOST_AUTO_TEST_CASE( collision_touching_test )
 {
-	float r = 0.005;
-	Vec3d pos(0,0,0);
-	Vec3d vel(-1,0,0);
+	float r = 0.005f;
+	Vec3d pos(0.0f, 0.0f, 0.0f);
+	Vec3d vel(-1.0f, 0.0f, 0.0f);
 
 	Particle p1(pos - r*Vec3d::i, vel, r);
 	Particle p2(pos + r*Vec3d::i, -vel, r);
@@ -113,14 +113,14 @@ BOOST_AUTO_TEST_CASE( collision_touching_test )
 
 BOOST_AUTO_TEST_CASE( collision_overlapping_test )
 {
-	float r = 0.005;
-	float scale = 0.5;
-	Vec3d pos1(-scale*r,0,0);
-	Vec3d vel1(1,0,0);
+	float r = 0.005f;
+	float scale = 0.5f;
+	Vec3d pos1(-scale*r, 0.0f, 0.0f);
+	Vec3d vel1(1.0f, 0.0f, 0.0f);
 	Vec3d pos2 = -pos1;
 	Vec3d vel2 = -vel1;
 
-	Particle::setCd(0);
+	Particle::setCd(0.0f);
 	Particle p1(pos1, vel1, r);
 	Particle p2(pos2, vel2, r);
 
@@ -134,11 +134,11 @@ BOOST_AUTO_TEST_CASE( collision_distant_test )
 {
 	// Nothing should change when the particles are distant
 	// it crashed before distance check in the collision
-	float r = 0.005;
-	float scale = 1.5;
-	Vec3d pos1(-scale*r,0,0);
+	float r = 0.005f;
+	float scale = 1.5f;
+	Vec3d pos1(-scale*r, 0.0f, 0.0f);
 	Vec3d pos2(-pos1);
-	Vec3d vel1(-1,0,0);
+	Vec3d vel1(-1.0f, 0.0f, 0.0f);
 	Vec3d vel2(-vel1);
 
 	Particle p1(pos1, vel1, r);
@@ -155,9 +155,9 @@ BOOST_AUTO_TEST_CASE( collision_distant_test )
 BOOST_AUTO_TEST_CASE( collision_touching_parallel_test )
 {
 	// no friction --> no change in velo/pos
-	float r = 0.005;
-	Vec3d pos(0,0,0);
-	Vec3d vel(0,1,0);
+	float r = 0.005f;
+	Vec3d pos(0.0f, 0.0f, 0.0f);
+	Vec3d vel(0.0f, 1.0f, 0.0f);
 
 	Vec3d pos1 = pos - r*Vec3d::i;
 	Vec3d pos2 = pos + r*Vec3d::i;
@@ -182,9 +182,9 @@ BOOST_AUTO_TEST_CASE( overlap_with_wall_test )
 	Boundary_axissymmetric glass = scene.getBoundariesAxiSym()[0]; // hardcoded shape, orifice diameter 0.014 [m]
 	Boundary_planar ground = scene.getBoundariesPlanar()[0];
 
-	float radius = 0.005;
-	float offset = 0.9*radius;
-	Vec3d point(0, -0.999f + offset, 0); // point close to the ground plane
+	float radius = 0.005f;
+	float offset = 0.9f*radius;
+	Vec3d point(0.0f, -0.999f + offset, 0.0f); // point close to the ground plane
 	Particle p(point, radius); // particle overlapping with the wall
 
 	BOOST_TEST_REQUIRE( p.overlapWithWall(ground) == true );
@@ -230,7 +230,7 @@ BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_far_test )
 	p1.collideToParticle_checkBoundary(p2);
 	float distance_after = p1.distance(p2);
 
-	auto tol = boost::test_tools::tolerance(float(2e-5f));
+	auto tol = boost::test_tools::tolerance( 2e-5f );
 
 	BOOST_TEST_REQUIRE( distance_before == distance_after, tol );
 }
@@ -255,7 +255,7 @@ BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_noneTouches_test )
 	watch(ground.distance(p2));
 	p1.collideToParticle_checkBoundary(p2);
 
-	auto tol = boost::test_tools::tolerance(float(2e-5f));
+	auto tol = boost::test_tools::tolerance( 2e-5f );
 
 	BOOST_TEST_REQUIRE( p1.distance(p2) == 2.0f*r, tol );
 	BOOST_TEST_REQUIRE( ground.distance(p1) > r, tol ); // TODO: expect touch?
@@ -275,7 +275,7 @@ BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_noneTouches_butWouldAfterC
 	Boundary_planar ground = scene.getBoundariesPlanar()[0];
 
 	float r = Particle::getUniformRadius();
-	Particle p1( Vec3d(0.0f, -0.999f + r*1.1, 0.0f), Vec3d(0.0f, 0.0f, 0.0f) );
+	Particle p1( Vec3d(0.0f, -0.999f + r*1.1f, 0.0f), Vec3d(0.0f, 0.0f, 0.0f) );
 	Particle p2(p1);
 	p2.move(Vec3d(0.0f, 1.5f*r, 0.0f));
 
@@ -284,7 +284,7 @@ BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_noneTouches_butWouldAfterC
 	watch(ground.distance(p2));
 	p1.collideToParticle_checkBoundary(p2);
 
-	auto tol = boost::test_tools::tolerance(float(1e-6f));
+	auto tol = boost::test_tools::tolerance( 1e-6f );
 
 	BOOST_TEST_REQUIRE( p1.distance(p2) == 2.0f*r, tol );
 	BOOST_TEST_REQUIRE( ground.distance(p1) > r, tol ); // TODO: expect touch?
@@ -303,13 +303,13 @@ BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_oneTouches_test )
 	Boundary_planar ground = scene.getBoundariesPlanar()[0];
 
 	float r = Particle::getUniformRadius();
-	Particle p1( Vec3d(0.0f, -0.999f + r*0.9, 0.0f), Vec3d(0.0f, 0.0f, 0.0f) );
+	Particle p1( Vec3d(0.0f, -0.999f + r*0.9f, 0.0f), Vec3d(0.0f, 0.0f, 0.0f) );
 	Particle p2(p1);
 	p2.move(Vec3d(0.0f, 1.5f*r, 0.0f));
 
 	p1.collideToParticle_checkBoundary(p2);
 
-	auto tol = boost::test_tools::tolerance(float(2e-5f));
+	auto tol = boost::test_tools::tolerance( 2e-5f );
 
 	BOOST_TEST_REQUIRE( p1.distance(p2) == 2.0f*r, tol );
 	BOOST_TEST_REQUIRE( ground.distance(p1) == r, tol );
@@ -326,14 +326,14 @@ BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_otherTouches_test )
 	Boundary_planar ground = scene.getBoundariesPlanar()[0];
 
 	float r = Particle::getUniformRadius();
-	Particle p1( Vec3d(0.0f, -0.999f + r*0.9, 0.0f), Vec3d(0.0f, 0.0f, 0.0f) );
+	Particle p1( Vec3d(0.0f, -0.999f + r*0.9f, 0.0f), Vec3d(0.0f, 0.0f, 0.0f) );
 	Particle p2(p1);
 	p2.move(Vec3d(0.0f, 1.5f*r, 0.0f));
 
 	// now p2 becomes the "other" particle
 	p2.collideToParticle_checkBoundary(p1);
 
-	auto tol = boost::test_tools::tolerance(float(2e-5f));
+	auto tol = boost::test_tools::tolerance( 2e-5f );
 
 	BOOST_TEST_REQUIRE( p1.distance(p2) == 2.0f*r, tol );
 	BOOST_TEST_REQUIRE( ground.distance(p1) == r, tol );
@@ -356,7 +356,7 @@ BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_twoTouch_test )
 
 	p1.collideToParticle_checkBoundary(p2);
 
-	auto tol = boost::test_tools::tolerance(float(1e-6f));
+	auto tol = boost::test_tools::tolerance( 1e-6f );
 
 	BOOST_TEST_REQUIRE( p1.distance(p2) == 2.0f*r, tol );
 	BOOST_TEST_REQUIRE( ground.distance(p1) == r, tol );
@@ -379,7 +379,7 @@ BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_twoTouch_axisymm_test )
 
 	p1.collideToParticle_checkBoundary(p2);
 
-	auto tol = boost::test_tools::tolerance(float(1e-6f));
+	auto tol = boost::test_tools::tolerance( 1e-6f );
 //  TODO: check the reason for the high difference!
 	BOOST_TEST_REQUIRE( p1.distance(p2) == 2.0f*r, tol );
 	BOOST_TEST_REQUIRE( hourglass.distance(p1) == r, tol );
@@ -388,18 +388,18 @@ BOOST_AUTO_TEST_CASE( collideToParticle_checkBoundary_twoTouch_axisymm_test )
 
 BOOST_AUTO_TEST_CASE( no_drag_first_step_test )
 {
-	float time_step = 0.001; // [s]
-	float r = 0.005;
-	float height = 1;
-	Vec3d pos(0,height,0);
-	Vec3d vel(0,0,0);
+	float time_step = 0.001f; // [s]
+	float r = 0.005f;
+	float height = 1.0f;
+	Vec3d pos(0.0f, height, 0.0f);
+	Vec3d vel(0.0f, 0.0f, 0.0f);
 
 	Particle p(pos, vel, r);
-	Particle::setCd(0.0);
+	Particle::setCd(0.0f);
 
 	p.advance(time_step);
 
-	Vec3d calculated_travel = 0.5 * gravity * time_step * time_step;
+	Vec3d calculated_travel = 0.5f * gravity * time_step * time_step;
 	Vec3d calculated_speed = gravity * time_step;
 	Vec3d calculated_acceleration = gravity;
 
@@ -407,7 +407,7 @@ BOOST_AUTO_TEST_CASE( no_drag_first_step_test )
 	Vec3d simulated_speed = p.getV();
 	Vec3d simulated_acceleration = p.getAcceleration();
 
-	float tolerance = 1e-7; // [%]
+	float tolerance = 1e-7f; // [%]
 	BOOST_REQUIRE_SMALL( abs(calculated_travel - simulated_travel), tolerance );
 	BOOST_REQUIRE_SMALL( abs(calculated_speed - simulated_speed), tolerance );
 	BOOST_REQUIRE_SMALL( abs(calculated_acceleration - simulated_acceleration), tolerance );
@@ -415,33 +415,33 @@ BOOST_AUTO_TEST_CASE( no_drag_first_step_test )
 
 BOOST_AUTO_TEST_CASE( no_drag_fall_test )
 {
-	float time_step = 0.001; // [s]
-	float r = 0.005;
-	float height = 1.999;
-	Vec3d pos(0,height,0);
-	Vec3d vel(0,0,0);
+	float time_step = 0.001f; // [s]
+	float r = 0.005f;
+	float height = 1.999f;
+	Vec3d pos(0.0f, height, 0.0f);
+	Vec3d vel(0.0f, 0.0f, 0.0f);
 
 	Particle p(pos, vel, r);
-	Particle::setCd(0.0);
+	Particle::setCd(0.0f);
 
-	float elapsed_time = 0;
+	float elapsed_time = 0.0f;
 	do {
 		p.advance(time_step);
 		elapsed_time += time_step;
 	}
-	while (p.getPos().y > 0); // particle reaching the ground, traveling 2 [m]
+	while (p.getPos().y > 0.0f); // particle reaching the ground, traveling 2 [m]
 
 	float simulated_height = height - p.getPos().y;
-	float calculated_time = std::sqrt(2*simulated_height/g);
+	float calculated_time = std::sqrt(2.0f*simulated_height/g);
 
-	auto tol = boost::test_tools::tolerance(float(1e-5));
+	auto tol = boost::test_tools::tolerance( 1e-5f );
 	BOOST_TEST_REQUIRE( calculated_time == elapsed_time, tol );
 
 	// connect scene, otherwise maxFreeFallVelocity gives nan
 	Scene scene;
 	scene.createGeometry(Geometry::test); // box with level ground
 
-	tol = boost::test_tools::tolerance(float(1e-3));
+	tol = boost::test_tools::tolerance( 1e-3f );
 	BOOST_TEST_REQUIRE( std::abs(p.getV().y) == p.maxFreeFallVelocity(), tol );
 
 
@@ -456,17 +456,17 @@ BOOST_AUTO_TEST_CASE( no_drag_fall_test )
 
 }
 
-static const boost::array< float, 6 > Cd_data{0.01, 0.1, 0.5, 5.0, 25.0, 100.0}; // it would fail with 0, because there the terminal velocity is infinite
-//static const boost::array< float, 5 > r_data{0.001, 0.005, 0.025, 0.1, 0.25};
+static const boost::array< float, 6 > Cd_data{0.01f, 0.1f, 0.5f, 5.0f, 25.0f, 100.0f}; // it would fail with 0, because there the terminal velocity is infinite
+//static const boost::array< float, 5 > r_data{0.001f, 0.005f, 0.025f, 0.1f, 0.25f};
 
 BOOST_DATA_TEST_CASE( terminal_velocity_test, Cd_data, Cd )
 //BOOST_DATA_TEST_CASE( terminal_velocity_test, r_data, R )
 {
-	float time_step = 0.001; // [s]
-	float r = 0.005;
-	float height = 1;
-	Vec3d pos(0,height,0);
-	Vec3d vel(0,0,0);
+	float time_step = 0.001f; // [s]
+	float r = 0.005f;
+	float height = 1.0f;
+	Vec3d pos(0.0f, height, 0.0f);
+	Vec3d vel(0.0f, 0.0f, 0.0f);
 
 	Particle p(pos, vel, r);
 	Particle::setCd(Cd); // although it is the default, but needed, because in the previous test it was set to 0
@@ -483,6 +483,6 @@ BOOST_DATA_TEST_CASE( terminal_velocity_test, Cd_data, Cd )
 	float simulated_terminal_velocity = abs(p.getV());
 
 	//std::cout << calculated_terminal_velocity << std::endl;
-	float tolerance = 0.05; // [%]
+	float tolerance = 0.05f; // [%]
 	BOOST_REQUIRE_CLOSE( calculated_terminal_velocity, simulated_terminal_velocity, tolerance );
 }

@@ -96,7 +96,7 @@ void Boundary_axissymmetric::draw2D() {
 	// hardcoded for x= 0 axis
 	// TODO: generalize
 	glLineWidth(2.0f);
-	glColor4f(0.6, 0.8, 0.8, 1);
+	glColor4f(0.6f, 0.8f, 0.8f, 1.0f);
 
 	float X;
 	constexpr int resolution = 20;
@@ -104,18 +104,18 @@ void Boundary_axissymmetric::draw2D() {
 	// the right hand side section in the (x,y) plane:
 	glBegin(GL_LINE_LOOP);
 	for (int i = 0; i <= resolution; ++i) {
-		X = Vec3d(p1_axis + (p2_axis - p1_axis) * (i / float(resolution))).y;
-		glVertex2f(float(contour(X)), X);
+		X = Vec3d(p1_axis + (p2_axis - p1_axis) * (static_cast<float>(i) / static_cast<float>(resolution))).y;
+		glVertex2f(contour(X), X);
 	}
 	glEnd();
 
 	// the left hand side section in the (x,y) plane:
 	glBegin(GL_LINE_LOOP);
 	for (int i = 0; i <= resolution; ++i) {
-		X = Vec3d(p1_axis + (p2_axis - p1_axis) * (i / float(resolution))).y;
-		glVertex2f(-float(contour(X)), X);
+		X = Vec3d(p1_axis + (p2_axis - p1_axis) * (static_cast<float>(i) / static_cast<float>(resolution))).y;
+		glVertex2f(-contour(X), X);
 	}
 	glEnd();
-	glColor4f(1, 1, 1, 1);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glLineWidth(1.0f);
 }
