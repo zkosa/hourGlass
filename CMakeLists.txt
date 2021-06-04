@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.13)
-set(CMAKE_VERBOSE_MAKEFILE On) # enables indexing in eclipse?
 
 project(hourGlass LANGUAGES CXX)
+
+set(CMAKE_VERBOSE_MAKEFILE ON) # enables indexing in eclipse?
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # for clang-tidy and debugging
 
 set(TESTS ON) # ON / OFF, requires Boost
 set(BENCHMARKS ON) # ON / OFF, requires Google Benchmark
