@@ -3,17 +3,25 @@
 #include <iostream>
 #include <QOpenGLWidget>
 
+
 bool Boundary_planar::operator==(const Boundary &other) const {
 	const Boundary_planar* other_boundary_casted_to_this = dynamic_cast< const Boundary_planar* >( &other );
 	if ( other_boundary_casted_to_this == nullptr ) {
 		return false; // they have different derived type
 	} else {
-		if (plane_point == other_boundary_casted_to_this->plane_point &&
-			normal == other_boundary_casted_to_this->normal) {
-			return true;
-		} else {
-			return false;
-		}
+		return *this == other;
+	}
+}
+
+bool Boundary_planar::operator==(const Boundary_axissymmetric &other) const {
+	return false;
+}
+
+bool Boundary_planar::operator==(const Boundary_planar &other) const {
+	if (plane_point == other.plane_point && normal == other.normal) {
+		return true;
+	} else {
+		return false;
 	}
 }
 

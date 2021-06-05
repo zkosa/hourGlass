@@ -2,19 +2,26 @@
 #include "minimumdistance.h"
 #include <QOpenGLWidget>
 
-
 bool Boundary_axissymmetric::operator==(const Boundary &other) const {
 	const Boundary_axissymmetric* other_boundary_casted_to_this = dynamic_cast< const Boundary_axissymmetric* >( &other );
 	if ( other_boundary_casted_to_this == nullptr ) {
 		return false; // they have different derived type
 	} else {
-		if (axis == other_boundary_casted_to_this->axis
-			// && contour == other_boundary_casted_to_this->contour // TODO: resolve it later
+		return *this == other;
+	}
+}
+
+bool Boundary_axissymmetric::operator==(const Boundary_planar &other) const {
+	return false;
+}
+
+bool Boundary_axissymmetric::operator==(const Boundary_axissymmetric &other) const {
+	if (axis == other.axis
+			// && contour == other.contour  // TODO: std::function equality?
 			) {
-			return true;
-		} else {
-			return false;
-		}
+		return true;
+	} else {
+		return false;
 	}
 }
 

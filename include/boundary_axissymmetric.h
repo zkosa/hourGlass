@@ -5,6 +5,8 @@
 #include "vec3d.h"
 #include <functional>
 
+class Boundary_planar;
+
 class Boundary_axissymmetric: public Boundary {
 	Vec3d p1_axis { 0.0f, -1.0f, 0.0f };
 	Vec3d p2_axis { 0.0f,  1.0f, 0.0f };
@@ -22,6 +24,8 @@ class Boundary_axissymmetric: public Boundary {
 public:
 
 	bool operator==(const Boundary &other) const final;
+	bool operator==(const Boundary_planar &other) const;
+	bool operator==(const Boundary_axissymmetric &other) const;
 
 	float distance(const Vec3d &point) const;
 	float distance(const Particle &particle) const final;
