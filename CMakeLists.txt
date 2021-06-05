@@ -56,18 +56,18 @@ if(BOLT_POST_LINK_OPTIMIZATION)
 # the benchmark may run alongside other compile tasks!
 	add_custom_command(
 	      COMMENT "Generating perf.data in automatic benchmark mode..."
-	      OUTPUT perf.data
+	      OUTPUT ${CMAKE_BINARY_DIR}/perf.data
 	      COMMAND perf ARGS record -e cycles:u -j any,u -o perf.data -- ${CMAKE_BINARY_DIR}/${PROJECT_NAME} -benchmark
-	      DEPENDS ${PROJECT_NAME} # is it used?
+	      DEPENDS ${CMAKE_BINARY_DIR}/${PROJECT_NAME}
 	)
 
 	add_custom_target( bolt ALL DEPENDS ${PROJECT_NAME}.bolt)
 	add_custom_command(
 	      COMMENT "Running BOLT post-link optimizer..."
-	      OUTPUT ${PROJECT_NAME}.bolt
+	      OUTPUT ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.bolt
 	      COMMAND /home/kosaz/work/C++/bolt-install/build/bin/llvm-bolt
 	      ARGS ${CMAKE_BINARY_DIR}/${PROJECT_NAME} -o ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.bolt -data=perf.data -reorder-blocks=cache+ -reorder-functions=hfsort -split-functions=2 -split-all-cold -split-eh -dyno-stats
-	      DEPENDS perf.data
+	      DEPENDS ${CMAKE_BINARY_DIR}/perf.data
 	)
 endif(BOLT_POST_LINK_OPTIMIZATION)
 
